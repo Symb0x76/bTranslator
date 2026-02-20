@@ -1,0 +1,23 @@
+name: dotnet-ci
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+      - name: Restore
+        run: dotnet restore BTranslator.slnx
+      - name: Build
+        run: dotnet build BTranslator.slnx --configuration Release --no-restore
+      - name: Test
+        run: dotnet test BTranslator.slnx --configuration Release --no-build

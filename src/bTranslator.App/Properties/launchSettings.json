@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "bTranslator.App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "bTranslator.App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
+

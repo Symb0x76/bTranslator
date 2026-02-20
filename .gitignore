@@ -1,0 +1,11 @@
+bin/
+obj/
+.vscode/
+*.code-workspace
+.vs/
+*.user
+*.suo
+*.cache
+logs/
+TestResults/
+Package/

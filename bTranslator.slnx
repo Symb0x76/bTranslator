@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/bTranslator.App/bTranslator.App.csproj" />
+    <Project Path="src/bTranslator.Application/bTranslator.Application.csproj" />
+    <Project Path="src/bTranslator.Automation/bTranslator.Automation.csproj" />
+    <Project Path="src/bTranslator.Domain/bTranslator.Domain.csproj" />
+    <Project Path="src/bTranslator.Infrastructure.Bethesda/bTranslator.Infrastructure.Bethesda.csproj" />
+    <Project Path="src/bTranslator.Infrastructure.Persistence/bTranslator.Infrastructure.Persistence.csproj" />
+    <Project Path="src/bTranslator.Infrastructure.Security/bTranslator.Infrastructure.Security.csproj" />
+    <Project Path="src/bTranslator.Infrastructure.Translation/bTranslator.Infrastructure.Translation.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/bTranslator.Tests.Integration/bTranslator.Tests.Integration.csproj" />
+    <Project Path="tests/bTranslator.Tests.Unit/bTranslator.Tests.Unit.csproj" />
+  </Folder>
+</Solution>
+

@@ -1,0 +1,995 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Page
+    x:Class="bTranslator.App.Views.MainPage"
+    x:Name="RootPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:bTranslator.App.ViewModels"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="FluentSurfaceBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource VsCodeBorderBrush}" />
+            <Setter Property="BorderThickness" Value="0,1,0,0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
+        <Style x:Key="TopMenuBarStyle" TargetType="MenuBar">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource VsCodeTextBrush}" />
+            <Setter Property="FontFamily" Value="Segoe UI Variable Text" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="TopMenuBarItemStyle" TargetType="MenuBarItem">
+            <Setter Property="Foreground" Value="{StaticResource VsCodeTextBrush}" />
+            <Setter Property="FontFamily" Value="Segoe UI Variable Text" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="1,0,1,0" />
+        </Style>
+
+        <Style x:Key="TableHeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI Variable Text Semibold" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{StaticResource VsCodeSubtleTextBrush}" />
+        </Style>
+
+    </Page.Resources>
+
+    <Grid
+        Background="{StaticResource VsCodeBackgroundBrush}"
+        Padding="12,0,12,12"
+        RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="220" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border
+            x:Name="TopTitleBarHost"
+            Grid.Row="0"
+            Background="{StaticResource VsCodeBackgroundBrush}"
+            BorderThickness="0"
+            CornerRadius="0"
+            Margin="-12,0,-12,0"
+            Padding="14,9">
+            <Grid RowSpacing="6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        FontSize="14"
+                        Foreground="{StaticResource VsCodeSubtleTextBrush}"
+                        Glyph="&#xEA86;"
+                        VerticalAlignment="Center" />
+                    <StackPanel
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            FontFamily="Segoe UI Variable Display Semibold"
+                            FontSize="18"
+                            Foreground="{StaticResource VsCodeTextBrush}"
+                            Text="bTranslator" />
+                        <TextBlock
+                            FontFamily="Segoe UI Variable Text"
+                            Foreground="{StaticResource VsCodeSubtleTextBrush}"
+                            Text="{Binding WorkspaceTitle}"
+                            VerticalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid
+                    Grid.Row="1"
+                    ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <MenuBar
+                        Grid.Column="0"
+                        Style="{StaticResource TopMenuBarStyle}">
+                    <MenuBarItem
+                        Style="{StaticResource TopMenuBarItemStyle}"
+                        Title="File">
+                        <MenuFlyoutItem
+                            Click="OnOpenPluginFromMenuClicked"
+                            Text="Open Plugin..." />
+                        <MenuFlyoutItem
+                            Command="{Binding SaveWorkspaceCommand}"
+                            Text="Save" />
+                        <MenuFlyoutItem
+                            Click="OnOpenAndTranslateFromMenuClicked"
+                            Text="Open + Auto Translate" />
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutSubItem Text="Paths">
+                            <MenuFlyoutItem
+                                Click="OnBrowsePluginPathClicked"
+                                Text="Plugin Path..." />
+                            <MenuFlyoutItem
+                                Click="OnBrowseOutputPathClicked"
+                                Text="Output Path..." />
+                            <MenuFlyoutSubItem Text="Optional">
+                                <MenuFlyoutItem
+                                    Click="OnBrowseStringsDirectoryClicked"
+                                    Text="Strings Directory..." />
+                                <MenuFlyoutItem
+                                    Click="OnBrowseRecordDefinitionsPathClicked"
+                                    Text="RecordDefs Path..." />
+                            </MenuFlyoutSubItem>
+                        </MenuFlyoutSubItem>
+                    </MenuBarItem>
+
+                    <MenuBarItem
+                        Style="{StaticResource TopMenuBarItemStyle}"
+                        Title="Translate">
+                        <MenuFlyoutItem
+                            Command="{Binding RunBatchTranslationCommand}"
+                            Text="Run Batch Translation" />
+                        <MenuFlyoutSubItem Text="Scope">
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding LoadStrings, Mode=TwoWay}"
+                                Text="Load STRINGS" />
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
+                                Text="Load Record Fields" />
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
+                                Text="Only Pending Rows" />
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding ShowLocked, Mode=TwoWay}"
+                                Text="Include Locked Rows" />
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Selection">
+                            <MenuFlyoutItem
+                                Command="{Binding CopySourceToTargetCommand}"
+                                Text="Copy Source to Translation" />
+                            <MenuFlyoutItem
+                                Command="{Binding ApplyInspectorToRowCommand}"
+                                Text="Apply Inspector Edit" />
+                            <MenuFlyoutItem
+                                Command="{Binding MarkSelectedValidatedCommand}"
+                                Text="Mark Selected Validated" />
+                            <MenuFlyoutItem
+                                Command="{Binding ToggleSelectedLockCommand}"
+                                Text="Toggle Lock" />
+                        </MenuFlyoutSubItem>
+                    </MenuBarItem>
+
+                    <MenuBarItem
+                        Style="{StaticResource TopMenuBarItemStyle}"
+                        Title="Providers">
+                        <MenuFlyoutItem
+                            Command="{Binding RefreshCommand}"
+                            Text="Reload Metadata" />
+                        <MenuFlyoutSubItem Text="AI Workflow">
+                            <MenuFlyoutItem
+                                Click="OnOpenAiWorkflowPageClicked"
+                                Text="Open Workflow Designer" />
+                            <MenuFlyoutSubItem Text="Chain">
+                                <MenuFlyoutItem
+                                    Command="{Binding MoveSelectedProviderUpCommand}"
+                                    Text="Move Selected Up" />
+                                <MenuFlyoutItem
+                                    Command="{Binding MoveSelectedProviderDownCommand}"
+                                    Text="Move Selected Down" />
+                                <MenuFlyoutItem
+                                    Command="{Binding SelectAllProvidersCommand}"
+                                    Text="Enable All" />
+                                <MenuFlyoutItem
+                                    Command="{Binding ClearProviderSelectionCommand}"
+                                    Text="Disable All" />
+                            </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Text="Current Chain">
+                                <MenuFlyoutItem
+                                    IsEnabled="False"
+                                    Text="{Binding ProviderChainPreview}" />
+                            </MenuFlyoutSubItem>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Configuration">
+                            <MenuFlyoutItem
+                                Command="{Binding SaveSelectedProviderConfigurationCommand}"
+                                Text="Save Selected Provider" />
+                            <MenuFlyoutItem
+                                Command="{Binding ReloadSelectedProviderConfigurationCommand}"
+                                Text="Reload Selected Provider" />
+                            <MenuFlyoutItem
+                                Command="{Binding TestSelectedProviderConnectionCommand}"
+                                Text="Test Selected Provider" />
+                            <MenuFlyoutItem
+                                Click="OnImportLegacyApiTranslatorConfigClicked"
+                                Text="Import ApiTranslator.txt..." />
+                        </MenuFlyoutSubItem>
+                    </MenuBarItem>
+
+                    <MenuBarItem
+                        Style="{StaticResource TopMenuBarItemStyle}"
+                        Title="View">
+                        <MenuFlyoutItem
+                            Command="{Binding RefreshCommand}"
+                            Text="Refresh Workspace" />
+                        <MenuFlyoutSubItem Text="Filter">
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
+                                Text="Only Pending Rows" />
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding ShowLocked, Mode=TwoWay}"
+                                Text="Show Locked Rows" />
+                        </MenuFlyoutSubItem>
+                    </MenuBarItem>
+
+                    <MenuBarItem
+                        Style="{StaticResource TopMenuBarItemStyle}"
+                        Title="Actions">
+                        <MenuFlyoutSubItem Text="File">
+                            <MenuFlyoutItem
+                                Click="OnOpenPluginFromMenuClicked"
+                                Text="Open Plugin..." />
+                            <MenuFlyoutItem
+                                Command="{Binding SaveWorkspaceCommand}"
+                                Text="Save" />
+                            <MenuFlyoutItem
+                                Click="OnOpenAndTranslateFromMenuClicked"
+                                Text="Open + Auto Translate" />
+                            <MenuFlyoutSeparator />
+                            <MenuFlyoutSubItem Text="Paths">
+                                <MenuFlyoutItem
+                                    Click="OnBrowsePluginPathClicked"
+                                    Text="Plugin Path..." />
+                                <MenuFlyoutItem
+                                    Click="OnBrowseOutputPathClicked"
+                                    Text="Output Path..." />
+                                <MenuFlyoutSubItem Text="Optional">
+                                    <MenuFlyoutItem
+                                        Click="OnBrowseStringsDirectoryClicked"
+                                        Text="Strings Directory..." />
+                                    <MenuFlyoutItem
+                                        Click="OnBrowseRecordDefinitionsPathClicked"
+                                        Text="RecordDefs Path..." />
+                                </MenuFlyoutSubItem>
+                            </MenuFlyoutSubItem>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Translate">
+                            <MenuFlyoutItem
+                                Command="{Binding RunBatchTranslationCommand}"
+                                Text="Run Batch Translation" />
+                            <MenuFlyoutSubItem Text="Scope">
+                                <ToggleMenuFlyoutItem
+                                    IsChecked="{Binding LoadStrings, Mode=TwoWay}"
+                                    Text="Load STRINGS" />
+                                <ToggleMenuFlyoutItem
+                                    IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
+                                    Text="Load Record Fields" />
+                                <ToggleMenuFlyoutItem
+                                    IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
+                                    Text="Only Pending Rows" />
+                                <ToggleMenuFlyoutItem
+                                    IsChecked="{Binding ShowLocked, Mode=TwoWay}"
+                                    Text="Include Locked Rows" />
+                            </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Text="Selection">
+                                <MenuFlyoutItem
+                                    Command="{Binding CopySourceToTargetCommand}"
+                                    Text="Copy Source to Translation" />
+                                <MenuFlyoutItem
+                                    Command="{Binding ApplyInspectorToRowCommand}"
+                                    Text="Apply Inspector Edit" />
+                                <MenuFlyoutItem
+                                    Command="{Binding MarkSelectedValidatedCommand}"
+                                    Text="Mark Selected Validated" />
+                                <MenuFlyoutItem
+                                    Command="{Binding ToggleSelectedLockCommand}"
+                                    Text="Toggle Lock" />
+                            </MenuFlyoutSubItem>
+                        </MenuFlyoutSubItem>
+                        <MenuFlyoutSubItem Text="Provider">
+                            <MenuFlyoutItem
+                                Command="{Binding RefreshCommand}"
+                                Text="Reload Metadata" />
+                            <MenuFlyoutSubItem Text="AI Workflow">
+                                <MenuFlyoutItem
+                                    Click="OnOpenAiWorkflowPageClicked"
+                                    Text="Open Workflow Designer" />
+                                <MenuFlyoutSubItem Text="Chain">
+                                    <MenuFlyoutItem
+                                        Command="{Binding MoveSelectedProviderUpCommand}"
+                                        Text="Move Selected Up" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding MoveSelectedProviderDownCommand}"
+                                        Text="Move Selected Down" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding SelectAllProvidersCommand}"
+                                        Text="Enable All" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding ClearProviderSelectionCommand}"
+                                        Text="Disable All" />
+                                </MenuFlyoutSubItem>
+                                <MenuFlyoutSubItem Text="Current Chain">
+                                    <MenuFlyoutItem
+                                        IsEnabled="False"
+                                        Text="{Binding ProviderChainPreview}" />
+                                </MenuFlyoutSubItem>
+                            </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Text="Configuration">
+                                <MenuFlyoutItem
+                                    Command="{Binding SaveSelectedProviderConfigurationCommand}"
+                                    Text="Save Selected Provider" />
+                                <MenuFlyoutItem
+                                    Command="{Binding ReloadSelectedProviderConfigurationCommand}"
+                                    Text="Reload Selected Provider" />
+                                <MenuFlyoutItem
+                                    Command="{Binding TestSelectedProviderConnectionCommand}"
+                                    Text="Test Selected Provider" />
+                                <MenuFlyoutItem
+                                    Click="OnImportLegacyApiTranslatorConfigClicked"
+                                    Text="Import ApiTranslator.txt..." />
+                            </MenuFlyoutSubItem>
+                        </MenuFlyoutSubItem>
+                    </MenuBarItem>
+
+                    <MenuBarItem
+                        Style="{StaticResource TopMenuBarItemStyle}"
+                        Title="Workspace">
+                        <MenuFlyoutSubItem
+                            x:Name="WorkspaceGameMenu"
+                            Text="Game" />
+                        <MenuFlyoutSubItem
+                            x:Name="WorkspaceSourceLanguageMenu"
+                            Text="Source Language" />
+                        <MenuFlyoutSubItem
+                            x:Name="WorkspaceTargetLanguageMenu"
+                            Text="Target Language" />
+                        <MenuFlyoutSeparator />
+                        <ToggleMenuFlyoutItem
+                            IsChecked="{Binding LoadStrings, Mode=TwoWay}"
+                            Text="Load STRINGS" />
+                        <ToggleMenuFlyoutItem
+                            IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
+                            Text="Load Record Fields" />
+                    </MenuBarItem>
+                    </MenuBar>
+
+                    <DropDownButton
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top">
+                        <DropDownButton.Content>
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Spacing="6">
+                                <FontIcon
+                                    FontFamily="Segoe Fluent Icons"
+                                    Glyph="&#xE8B7;" />
+                                <TextBlock
+                                    MaxWidth="220"
+                                    Text="{Binding ActivePluginName}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </DropDownButton.Content>
+                        <DropDownButton.Flyout>
+                            <Flyout Placement="BottomEdgeAlignedRight">
+                                <Border
+                                    MaxWidth="460"
+                                    MinWidth="340"
+                                    Background="{StaticResource VsCodeBackgroundBrush}"
+                                    BorderBrush="{StaticResource VsCodeBorderBrush}"
+                                    BorderThickness="0,1,0,0"
+                                    CornerRadius="0"
+                                    Padding="10">
+                                    <StackPanel Spacing="8">
+                                        <TextBlock
+                                            Style="{StaticResource SectionTitleTextStyle}"
+                                            Text="Plugin Switcher" />
+                                        <TextBox
+                                            PlaceholderText="Search by plugin name or path"
+                                            Text="{Binding PluginSwitcherSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <ListView
+                                            IsItemClickEnabled="True"
+                                            ItemClick="OnPluginSwitcherItemClick"
+                                            ItemsSource="{Binding FilteredPluginSwitcherItems}"
+                                            MaxHeight="280"
+                                            SelectedItem="{Binding SelectedPluginSwitcherItem, Mode=TwoWay}"
+                                            SelectionMode="Single">
+                                            <ListView.ItemTemplate>
+                                                <DataTemplate x:DataType="viewModels:PluginSwitcherItemViewModel">
+                                                    <Border
+                                                        Background="Transparent"
+                                                        BorderBrush="{StaticResource VsCodeBorderBrush}"
+                                                        BorderThickness="0,0,0,1"
+                                                        CornerRadius="0"
+                                                        Margin="0"
+                                                        Padding="8,6">
+                                                        <Grid ColumnSpacing="8">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <StackPanel Spacing="2">
+                                                                <TextBlock
+                                                                    FontFamily="Cascadia Mono"
+                                                                    FontSize="12"
+                                                                    Text="{Binding DisplayName}"
+                                                                    TextTrimming="CharacterEllipsis" />
+                                                                <TextBlock
+                                                                    FontSize="11"
+                                                                    Opacity="0.75"
+                                                                    Text="{Binding DirectoryPath}"
+                                                                    TextTrimming="CharacterEllipsis" />
+                                                                <TextBlock
+                                                                    FontSize="10"
+                                                                    Opacity="0.6"
+                                                                    Text="{Binding LastOpenedLabel}" />
+                                                            </StackPanel>
+                                                            <Button
+                                                                Grid.Column="1"
+                                                                Click="OnPluginSwitcherPinClicked"
+                                                                MinWidth="34"
+                                                                Style="{StaticResource SubtleAction}"
+                                                                ToolTipService.ToolTip="Pin or unpin plugin">
+                                                                <FontIcon
+                                                                    FontFamily="Segoe Fluent Icons"
+                                                                    Glyph="{Binding PinGlyph}" />
+                                                            </Button>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListView.ItemTemplate>
+                                        </ListView>
+                                        <StackPanel
+                                            Orientation="Horizontal"
+                                            Spacing="8">
+                                            <Button
+                                                Click="OnOpenPluginFromDropdownClicked"
+                                                Content="Open Plugin..."
+                                                Style="{StaticResource PrimaryAction}" />
+                                            <Button
+                                                Command="{Binding SaveWorkspaceCommand}"
+                                                Content="Save"
+                                                Style="{StaticResource SubtleAction}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </Flyout>
+                        </DropDownButton.Flyout>
+                    </DropDownButton>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Grid
+            Grid.Row="1"
+            ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border
+                Grid.Column="0"
+                Style="{StaticResource PanelCardBorderStyle}">
+                <StackPanel>
+                    <TextBlock
+                        Style="{StaticResource MetricLabelTextStyle}"
+                        Text="Total Rows" />
+                    <TextBlock
+                        Style="{StaticResource MetricValueTextStyle}"
+                        Text="{Binding TotalEntries}" />
+                </StackPanel>
+            </Border>
+
+            <Border
+                Grid.Column="1"
+                Style="{StaticResource PanelCardBorderStyle}">
+                <StackPanel>
+                    <TextBlock
+                        Style="{StaticResource MetricLabelTextStyle}"
+                        Text="Translated" />
+                    <TextBlock
+                        Style="{StaticResource MetricValueTextStyle}"
+                        Text="{Binding TranslatedEntries}" />
+                </StackPanel>
+            </Border>
+
+            <Border
+                Grid.Column="2"
+                Style="{StaticResource PanelCardBorderStyle}">
+                <StackPanel>
+                    <TextBlock
+                        Style="{StaticResource MetricLabelTextStyle}"
+                        Text="Pending" />
+                    <TextBlock
+                        Style="{StaticResource MetricValueTextStyle}"
+                        Text="{Binding PendingEntries}" />
+                </StackPanel>
+            </Border>
+
+            <Border
+                Grid.Column="3"
+                Style="{StaticResource PanelCardBorderStyle}">
+                <StackPanel>
+                    <TextBlock
+                        Style="{StaticResource MetricLabelTextStyle}"
+                        Text="Completion" />
+                    <TextBlock
+                        Style="{StaticResource MetricValueTextStyle}"
+                        Text="{Binding CompletionPercent}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid
+            Grid.Row="2"
+            ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <Border
+                Grid.Column="0"
+                Style="{StaticResource PanelCardBorderStyle}">
+                <Grid RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2.3*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox
+                            Grid.Column="0"
+                            Header="Search"
+                            PlaceholderText="EDID / Source / Translation / Field"
+                            Text="{Binding SearchText, Mode=TwoWay}" />
+                        <ComboBox
+                            Grid.Column="1"
+                            Header="List"
+                            ItemsSource="{Binding ListFilters}"
+                            SelectedItem="{Binding SelectedListFilter, Mode=TwoWay}" />
+                        <ToggleSwitch
+                            Grid.Column="2"
+                            Header="Only Pending"
+                            IsOn="{Binding ShowUntranslatedOnly, Mode=TwoWay}" />
+                        <ToggleSwitch
+                            Grid.Column="3"
+                            Header="Include Locked"
+                            IsOn="{Binding ShowLocked, Mode=TwoWay}" />
+                    </Grid>
+
+                    <Border
+                        Grid.Row="1"
+                        Background="Transparent"
+                        BorderBrush="{StaticResource VsCodeBorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        CornerRadius="0"
+                        Padding="8,6">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.4*" />
+                                <ColumnDefinition Width="1.2*" />
+                                <ColumnDefinition Width="2.6*" />
+                                <ColumnDefinition Width="2.6*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource TableHeaderTextStyle}"
+                                Text="EDID" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Style="{StaticResource TableHeaderTextStyle}"
+                                Text="Field" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Style="{StaticResource TableHeaderTextStyle}"
+                                Text="Source" />
+                            <TextBlock
+                                Grid.Column="3"
+                                Style="{StaticResource TableHeaderTextStyle}"
+                                Text="Translation" />
+                        </Grid>
+                    </Border>
+
+                    <ListView
+                        Grid.Row="2"
+                        ItemsSource="{Binding Rows}"
+                        SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
+                        SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:TranslationRowViewModel">
+                                <Border
+                                    Background="Transparent"
+                                    BorderBrush="{StaticResource VsCodeBorderBrush}"
+                                    BorderThickness="0,0,0,1"
+                                    CornerRadius="0"
+                                    Margin="0"
+                                    Padding="8,6">
+                                    <Grid ColumnSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border
+                                            Background="{Binding StatusBrush}"
+                                            CornerRadius="0" />
+                                        <Grid
+                                            Grid.Column="1"
+                                            ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2.4*" />
+                                                <ColumnDefinition Width="1.2*" />
+                                                <ColumnDefinition Width="2.6*" />
+                                                <ColumnDefinition Width="2.6*" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock
+                                                    FontFamily="Cascadia Mono"
+                                                    FontSize="12"
+                                                    Text="{Binding EditorId}" />
+                                                <StackPanel
+                                                    Orientation="Horizontal"
+                                                    Spacing="6">
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        Opacity="0.65"
+                                                        Text="{Binding ListKind}" />
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        Foreground="{Binding StatusBrush}"
+                                                        Text="{Binding QualityLabel}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                FontFamily="Cascadia Mono"
+                                                FontSize="12"
+                                                Opacity="0.85"
+                                                Text="{Binding FieldSignature}" />
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                FontSize="12"
+                                                Text="{Binding SourceText}"
+                                                TextTrimming="CharacterEllipsis" />
+                                            <TextBlock
+                                                Grid.Column="3"
+                                                FontSize="12"
+                                                Text="{Binding TranslatedText}"
+                                                TextTrimming="CharacterEllipsis" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+
+            <Border
+                Grid.Column="1"
+                Style="{StaticResource PanelCardBorderStyle}">
+                <Grid RowSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Style="{StaticResource SectionTitleTextStyle}"
+                        Text="Row Inspector" />
+
+                    <Grid
+                        Grid.Row="1"
+                        ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock
+                                Style="{StaticResource MetricLabelTextStyle}"
+                                Text="EDID" />
+                            <TextBlock
+                                FontFamily="Cascadia Mono"
+                                Text="{Binding InspectorRecordId}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock
+                                Style="{StaticResource MetricLabelTextStyle}"
+                                Text="Field" />
+                            <TextBlock
+                                FontFamily="Cascadia Mono"
+                                Text="{Binding InspectorField}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBox
+                        Grid.Row="2"
+                        AcceptsReturn="True"
+                        Header="Source"
+                        IsReadOnly="True"
+                        MinHeight="72"
+                        Text="{Binding InspectorSourceText}" />
+
+                    <StackPanel Grid.Row="3">
+                        <TextBox
+                            AcceptsReturn="True"
+                            Header="Translation"
+                            MinHeight="86"
+                            Text="{Binding InspectorTranslatedText, Mode=TwoWay}" />
+                        <StackPanel
+                            Margin="0,8,0,0"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                            <Button
+                                Command="{Binding ApplyInspectorToRowCommand}"
+                                Content="Apply"
+                                Style="{StaticResource PrimaryAction}" />
+                            <Button
+                                Command="{Binding CopySourceToTargetCommand}"
+                                Content="Copy Source"
+                                Style="{StaticResource SubtleAction}" />
+                            <Button
+                                Command="{Binding MarkSelectedValidatedCommand}"
+                                Content="Mark Validated"
+                                Style="{StaticResource SecondaryAction}" />
+                            <Button
+                                Command="{Binding ToggleSelectedLockCommand}"
+                                Content="Toggle Lock"
+                                Style="{StaticResource SubtleAction}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <ScrollViewer
+                        Grid.Row="4"
+                        VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="8">
+                            <TextBlock
+                                Margin="0,2,0,6"
+                                Style="{StaticResource MetricLabelTextStyle}"
+                                Text="{Binding InspectorHint}" />
+                            <TextBlock
+                                Margin="0,0,0,4"
+                                Style="{StaticResource SectionTitleTextStyle}"
+                                Text="Provider Chain" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ListView
+                                    Height="132"
+                                    ItemsSource="{Binding ProviderOptions}"
+                                    SelectedItem="{Binding SelectedProviderOption, Mode=TwoWay}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="viewModels:ProviderChainItemViewModel">
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox
+                                                    IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                                    VerticalAlignment="Center" />
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    FontFamily="Cascadia Mono"
+                                                    Text="{Binding ProviderId}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Spacing="6">
+                                    <Button
+                                        Command="{Binding MoveSelectedProviderUpCommand}"
+                                        Content="Up"
+                                        Style="{StaticResource SubtleAction}" />
+                                    <Button
+                                        Command="{Binding MoveSelectedProviderDownCommand}"
+                                        Content="Down"
+                                        Style="{StaticResource SubtleAction}" />
+                                    <Button
+                                        Command="{Binding SelectAllProvidersCommand}"
+                                        Content="All"
+                                        Style="{StaticResource SubtleAction}" />
+                                    <Button
+                                        Command="{Binding ClearProviderSelectionCommand}"
+                                        Content="None"
+                                        Style="{StaticResource SubtleAction}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                Style="{StaticResource SectionTitleTextStyle}"
+                                Text="Provider Configuration" />
+                            <TextBlock
+                                FontFamily="Cascadia Mono"
+                                Opacity="0.75"
+                                Text="{Binding ProviderConfigProviderId}" />
+
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Header="Base Url"
+                                    Text="{Binding ProviderBaseUrl, Mode=TwoWay}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Header="Model"
+                                    Text="{Binding ProviderModel, Mode=TwoWay}" />
+                            </Grid>
+
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Header="Region"
+                                    Text="{Binding ProviderRegion, Mode=TwoWay}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Header="Organization"
+                                    Text="{Binding ProviderOrganization, Mode=TwoWay}" />
+                            </Grid>
+
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    Header="API Key (DPAPI)"
+                                    PlaceholderText="Stored securely via DPAPI"
+                                    Text="{Binding ProviderApiKey, Mode=TwoWay}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Header="API Secret (DPAPI)"
+                                    PlaceholderText="For Baidu/Tencent dual-key providers"
+                                    Text="{Binding ProviderApiSecret, Mode=TwoWay}" />
+                            </Grid>
+
+                            <TextBox
+                                Header="Session Token (optional, DPAPI)"
+                                Text="{Binding ProviderSessionToken, Mode=TwoWay}" />
+
+                            <TextBox
+                                AcceptsReturn="True"
+                                Header="Prompt Template"
+                                MinHeight="80"
+                                Text="{Binding ProviderPromptTemplate, Mode=TwoWay}"
+                                TextWrapping="Wrap" />
+
+                            <TextBox
+                                AcceptsReturn="True"
+                                FontFamily="Cascadia Mono"
+                                Header="Language Map (key=value per line)"
+                                MinHeight="92"
+                                Text="{Binding ProviderLanguageMap, Mode=TwoWay}"
+                                TextWrapping="Wrap" />
+
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Spacing="8">
+                                <Button
+                                    Command="{Binding SaveSelectedProviderConfigurationCommand}"
+                                    Content="Save Config"
+                                    Style="{StaticResource PrimaryAction}" />
+                                <Button
+                                    Command="{Binding ReloadSelectedProviderConfigurationCommand}"
+                                    Content="Reload"
+                                    Style="{StaticResource SubtleAction}" />
+                                <Button
+                                    Command="{Binding TestSelectedProviderConnectionCommand}"
+                                    Content="Test"
+                                    Style="{StaticResource SecondaryAction}" />
+                                <Button
+                                    Click="OnImportLegacyApiTranslatorConfigClicked"
+                                    Content="Import ApiTranslator.txt"
+                                    Style="{StaticResource SubtleAction}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <TabView
+            Grid.Row="3"
+            Background="Transparent"
+            BorderBrush="{StaticResource VsCodeBorderBrush}"
+            BorderThickness="0,1,0,0">
+            <TabViewItem Header="Logs">
+                <ListView ItemsSource="{Binding ActivityLogs}" />
+            </TabViewItem>
+            <TabViewItem Header="Batch Script">
+                <Grid Padding="10" RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Style="{StaticResource SectionTitleTextStyle}"
+                        Text="Current Batch Pipeline" />
+                    <ListView
+                        Grid.Row="1"
+                        ItemsSource="{Binding ScriptHints}" />
+                </Grid>
+            </TabViewItem>
+            <TabViewItem Header="Glossary">
+                <Grid Padding="10" RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ListView
+                        ItemsSource="{Binding GlossarySuggestions}"
+                        SelectedItem="{Binding SelectedGlossarySuggestion, Mode=TwoWay}" />
+                    <Button
+                        Grid.Row="1"
+                        Command="{Binding ApplySelectedGlossarySuggestionCommand}"
+                        Content="Apply Selected Suggestion"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource PrimaryAction}" />
+                </Grid>
+            </TabViewItem>
+            <TabViewItem Header="Task Queue">
+                <ListView ItemsSource="{Binding BatchQueue}" />
+            </TabViewItem>
+        </TabView>
+
+        <Border
+            Grid.Row="4"
+            Style="{StaticResource FluentSurfaceBorderStyle}"
+            Padding="12,8">
+            <Grid ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Text="{Binding StatusText}" />
+                <ProgressBar
+                    Grid.Column="1"
+                    Maximum="100"
+                    Minimum="0"
+                    Value="{Binding CompletionPercent}" />
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
+
+
+
