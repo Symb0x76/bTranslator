@@ -16,34 +16,34 @@ public partial class MainViewModel
     private const string SessionTokenSecretName = "session_token";
 
     [ObservableProperty]
-    private string providerConfigProviderId = "-";
+    public partial string ProviderConfigProviderId { get; set; } = "-";
 
     [ObservableProperty]
-    private string providerBaseUrl = string.Empty;
+    public partial string ProviderBaseUrl { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerModel = string.Empty;
+    public partial string ProviderModel { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerRegion = string.Empty;
+    public partial string ProviderRegion { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerOrganization = string.Empty;
+    public partial string ProviderOrganization { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerPromptTemplate = string.Empty;
+    public partial string ProviderPromptTemplate { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerApiKey = string.Empty;
+    public partial string ProviderApiKey { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerApiSecret = string.Empty;
+    public partial string ProviderApiSecret { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerSessionToken = string.Empty;
+    public partial string ProviderSessionToken { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string providerLanguageMap = string.Empty;
+    public partial string ProviderLanguageMap { get; set; } = string.Empty;
 
     partial void OnSelectedProviderOptionChanged(ProviderChainItemViewModel? value)
     {
@@ -56,7 +56,7 @@ public partial class MainViewModel
         var providerId = SelectedProviderOption?.ProviderId;
         if (string.IsNullOrWhiteSpace(providerId))
         {
-            StatusText = "No provider selected.";
+            StatusText = L("Status.NoProviderSelected", "No provider selected.");
             AddLog(StatusText);
             return;
         }
@@ -68,12 +68,15 @@ public partial class MainViewModel
             _translationProviderOptions.Providers[providerId] = updated;
             await PersistProviderSettingsAsync(providerId, updated, persistSecrets: true).ConfigureAwait(false);
 
-            StatusText = $"Saved provider settings for '{providerId}'.";
+            StatusText = Lf(
+                "Status.ProviderSettingsSaved",
+                "Saved provider settings for '{0}'.",
+                providerId);
             AddLog(StatusText);
         }
         catch (Exception ex)
         {
-            StatusText = $"Save provider settings failed: {ex.Message}";
+            StatusText = Lf("Status.ProviderSettingsSaveFailed", "Save provider settings failed: {0}", ex.Message);
             AddLog(StatusText);
         }
     }
@@ -82,7 +85,10 @@ public partial class MainViewModel
     private async Task ReloadSelectedProviderConfigurationAsync()
     {
         await LoadSelectedProviderConfigurationAsync().ConfigureAwait(false);
-        StatusText = $"Reloaded provider settings for '{ProviderConfigProviderId}'.";
+        StatusText = Lf(
+            "Status.ProviderSettingsReloaded",
+            "Reloaded provider settings for '{0}'.",
+            ProviderConfigProviderId);
         AddLog(StatusText);
     }
 
@@ -92,7 +98,7 @@ public partial class MainViewModel
         var providerId = SelectedProviderOption?.ProviderId;
         if (string.IsNullOrWhiteSpace(providerId))
         {
-            StatusText = "No provider selected.";
+            StatusText = L("Status.NoProviderSelected", "No provider selected.");
             AddLog(StatusText);
             return;
         }
@@ -107,7 +113,10 @@ public partial class MainViewModel
                 string.Equals(p.ProviderId, providerId, StringComparison.OrdinalIgnoreCase));
             if (provider is null)
             {
-                StatusText = $"Provider '{providerId}' is not registered.";
+                StatusText = Lf(
+                    "Status.ProviderNotRegistered",
+                    "Provider '{0}' is not registered.",
+                    providerId);
                 AddLog(StatusText);
                 return;
             }
@@ -126,17 +135,22 @@ public partial class MainViewModel
                 preview = preview[..64] + "...";
             }
 
-            StatusText = $"Provider '{providerId}' connectivity OK.";
-            AddLog($"{StatusText} Sample: {preview}");
+            StatusText = Lf("Status.ProviderConnectivityOk", "Provider '{0}' connectivity OK.", providerId);
+            AddLog(Lf("Log.ProviderConnectivitySample", "{0} Sample: {1}", StatusText, preview));
         }
         catch (TranslationProviderException ex)
         {
-            StatusText = $"Provider '{providerId}' test failed ({ex.ErrorKind}): {ex.Message}";
+            StatusText = Lf(
+                "Status.ProviderTestFailedWithKind",
+                "Provider '{0}' test failed ({1}): {2}",
+                providerId,
+                ex.ErrorKind,
+                ex.Message);
             AddLog(StatusText);
         }
         catch (Exception ex)
         {
-            StatusText = $"Provider '{providerId}' test failed: {ex.Message}";
+            StatusText = Lf("Status.ProviderTestFailed", "Provider '{0}' test failed: {1}", providerId, ex.Message);
             AddLog(StatusText);
         }
     }
@@ -146,7 +160,9 @@ public partial class MainViewModel
     {
         if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
         {
-            StatusText = "ApiTranslator config path is empty or file does not exist.";
+            StatusText = L(
+                "Status.ApiTranslatorPathMissing",
+                "ApiTranslator config path is empty or file does not exist.");
             AddLog(StatusText);
             return;
         }
@@ -157,7 +173,9 @@ public partial class MainViewModel
             var imported = ApiTranslatorConfigImporter.ImportFromIniLikeContent(content);
             if (imported.Providers.Count == 0)
             {
-                StatusText = "No provider settings found in ApiTranslator config.";
+                StatusText = L(
+                    "Status.NoProviderSettingsInApiTranslator",
+                    "No provider settings found in ApiTranslator config.");
                 AddLog(StatusText);
                 return;
             }
@@ -172,12 +190,16 @@ public partial class MainViewModel
             }
 
             await LoadSelectedProviderConfigurationAsync().ConfigureAwait(false);
-            StatusText = $"Imported ApiTranslator config from '{Path.GetFileName(path)}' ({applied} providers).";
+            StatusText = Lf(
+                "Status.ApiTranslatorImported",
+                "Imported ApiTranslator config from '{0}' ({1} providers).",
+                Path.GetFileName(path),
+                applied);
             AddLog(StatusText);
         }
         catch (Exception ex)
         {
-            StatusText = $"Import ApiTranslator config failed: {ex.Message}";
+            StatusText = Lf("Status.ApiTranslatorImportFailed", "Import ApiTranslator config failed: {0}", ex.Message);
             AddLog(StatusText);
         }
     }
@@ -260,7 +282,7 @@ public partial class MainViewModel
         }
         catch (Exception ex)
         {
-            StatusText = $"Load provider settings failed: {ex.Message}";
+            StatusText = Lf("Status.ProviderSettingsLoadFailed", "Load provider settings failed: {0}", ex.Message);
             AddLog(StatusText);
         }
     }

@@ -1,0 +1,627 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="App.WindowTitle" xml:space="preserve">
+    <value>bTranslator</value>
+  </data>
+  <data name="WindowTitle.AiWorkflow" xml:space="preserve">
+    <value>AI Workflow Designer</value>
+  </data>
+  <data name="WindowTitle.ProviderConfiguration" xml:space="preserve">
+    <value>Provider Configuration</value>
+  </data>
+  <data name="UiLanguage.SystemDefault" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="UiLanguage.English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="UiLanguage.ChineseSimplified" xml:space="preserve">
+    <value>Chinese (Simplified)</value>
+  </data>
+  <data name="Language.English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language.ChineseSimplified" xml:space="preserve">
+    <value>Chinese (Simplified)</value>
+  </data>
+  <data name="Language.Japanese" xml:space="preserve">
+    <value>Japanese</value>
+  </data>
+  <data name="Language.Korean" xml:space="preserve">
+    <value>Korean</value>
+  </data>
+  <data name="ListFilter.All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="ListFilter.Strings" xml:space="preserve">
+    <value>STRINGS</value>
+  </data>
+  <data name="ListFilter.DlStrings" xml:space="preserve">
+    <value>DLSTRINGS</value>
+  </data>
+  <data name="ListFilter.IlStrings" xml:space="preserve">
+    <value>ILSTRINGS</value>
+  </data>
+  <data name="ListFilter.Record" xml:space="preserve">
+    <value>RECORD</value>
+  </data>
+  <data name="EncodingMode.AutoDetect" xml:space="preserve">
+    <value>Auto Detect</value>
+  </data>
+  <data name="EncodingMode.Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="RowQuality.Locked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="RowQuality.Validated" xml:space="preserve">
+    <value>Validated</value>
+  </data>
+  <data name="RowQuality.Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="RowQuality.Draft" xml:space="preserve">
+    <value>Draft</value>
+  </data>
+  <data name="WorkspaceTitle.Format" xml:space="preserve">
+    <value>{0} Workspace</value>
+  </data>
+  <data name="PluginSwitcher.CurrentPlugin" xml:space="preserve">
+    <value>Current Plugin</value>
+  </data>
+  <data name="Status.Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="Status.MetadataRefreshed" xml:space="preserve">
+    <value>Metadata refreshed.</value>
+  </data>
+  <data name="Status.PlaceholderCheckFailed" xml:space="preserve">
+    <value>Placeholder pipeline check failed.</value>
+  </data>
+  <data name="Status.PluginPathMissing" xml:space="preserve">
+    <value>Plugin path is empty or file does not exist.</value>
+  </data>
+  <data name="Status.OpenedPlugin" xml:space="preserve">
+    <value>Opened '{0}' ({1}).</value>
+  </data>
+  <data name="Status.OpenFailed" xml:space="preserve">
+    <value>Open failed: {0}</value>
+  </data>
+  <data name="Status.NoActivePlugin" xml:space="preserve">
+    <value>No active plugin document. Open a plugin first.</value>
+  </data>
+  <data name="Status.SavedWorkspace" xml:space="preserve">
+    <value>Saved workspace to '{0}' ({1}).</value>
+  </data>
+  <data name="Status.SaveFailed" xml:space="preserve">
+    <value>Save failed: {0}</value>
+  </data>
+  <data name="Status.NoPendingRows" xml:space="preserve">
+    <value>No pending rows to translate.</value>
+  </data>
+  <data name="Status.NoAvailableProvider" xml:space="preserve">
+    <value>No available provider in chain.</value>
+  </data>
+  <data name="Status.BatchTranslationDone" xml:space="preserve">
+    <value>Batch translation done by '{0}', updated {1} rows.</value>
+  </data>
+  <data name="Status.BatchTranslationFailed" xml:space="preserve">
+    <value>Batch translation failed: {0}</value>
+  </data>
+  <data name="Status.PluginFileNotFound" xml:space="preserve">
+    <value>Plugin file not found: '{0}'.</value>
+  </data>
+  <data name="Status.NoProviderSelected" xml:space="preserve">
+    <value>No provider selected.</value>
+  </data>
+  <data name="Status.UiLanguageChangedRestart" xml:space="preserve">
+    <value>UI language switched to '{0}'. Restart the app to apply all texts.</value>
+  </data>
+  <data name="Status.FilePickerUnavailable" xml:space="preserve">
+    <value>Cannot open file picker: main window handle unavailable.</value>
+  </data>
+  <data name="Status.ProviderSettingsSaved" xml:space="preserve">
+    <value>Saved provider settings for '{0}'.</value>
+  </data>
+  <data name="Status.ProviderSettingsSaveFailed" xml:space="preserve">
+    <value>Save provider settings failed: {0}</value>
+  </data>
+  <data name="Status.ProviderSettingsReloaded" xml:space="preserve">
+    <value>Reloaded provider settings for '{0}'.</value>
+  </data>
+  <data name="Status.ProviderNotRegistered" xml:space="preserve">
+    <value>Provider '{0}' is not registered.</value>
+  </data>
+  <data name="Status.ProviderConnectivityOk" xml:space="preserve">
+    <value>Provider '{0}' connectivity OK.</value>
+  </data>
+  <data name="Status.ProviderTestFailedWithKind" xml:space="preserve">
+    <value>Provider '{0}' test failed ({1}): {2}</value>
+  </data>
+  <data name="Status.ProviderTestFailed" xml:space="preserve">
+    <value>Provider '{0}' test failed: {1}</value>
+  </data>
+  <data name="Status.ApiTranslatorPathMissing" xml:space="preserve">
+    <value>ApiTranslator config path is empty or file does not exist.</value>
+  </data>
+  <data name="Status.NoProviderSettingsInApiTranslator" xml:space="preserve">
+    <value>No provider settings found in ApiTranslator config.</value>
+  </data>
+  <data name="Status.ApiTranslatorImported" xml:space="preserve">
+    <value>Imported ApiTranslator config from '{0}' ({1} providers).</value>
+  </data>
+  <data name="Status.ApiTranslatorImportFailed" xml:space="preserve">
+    <value>Import ApiTranslator config failed: {0}</value>
+  </data>
+  <data name="Status.ProviderSettingsLoadFailed" xml:space="preserve">
+    <value>Load provider settings failed: {0}</value>
+  </data>
+  <data name="InspectorHint.SelectRow" xml:space="preserve">
+    <value>Select a row to review placeholders and terminology consistency.</value>
+  </data>
+  <data name="InspectorHint.RowLocked" xml:space="preserve">
+    <value>Current row is locked. Unlock it before writing translations.</value>
+  </data>
+  <data name="InspectorHint.KeepPlaceholders" xml:space="preserve">
+    <value>Keep tags and number placeholders unchanged during translation.</value>
+  </data>
+  <data name="InspectorHint.GlossaryMismatch" xml:space="preserve">
+    <value>Selected glossary term does not match current source text.</value>
+  </data>
+  <data name="Log.AppliedManualEdit" xml:space="preserve">
+    <value>Applied manual edit to '{0}'.</value>
+  </data>
+  <data name="Log.CopiedSourceToTarget" xml:space="preserve">
+    <value>Copied source text to target for '{0}'.</value>
+  </data>
+  <data name="Log.MarkedValidated" xml:space="preserve">
+    <value>Marked '{0}' as validated.</value>
+  </data>
+  <data name="Log.RowLocked" xml:space="preserve">
+    <value>Locked '{0}'.</value>
+  </data>
+  <data name="Log.RowUnlocked" xml:space="preserve">
+    <value>Unlocked '{0}'.</value>
+  </data>
+  <data name="Log.AppliedGlossarySuggestion" xml:space="preserve">
+    <value>Applied glossary suggestion '{0}' to '{1}'.</value>
+  </data>
+  <data name="Log.ProviderConnectivitySample" xml:space="preserve">
+    <value>{0} Sample: {1}</value>
+  </data>
+  <data name="Shortcut.Open" xml:space="preserve">
+    <value>Ctrl+O Open</value>
+  </data>
+  <data name="Shortcut.Save" xml:space="preserve">
+    <value>Ctrl+S Save</value>
+  </data>
+  <data name="Shortcut.AiBatch" xml:space="preserve">
+    <value>Ctrl+Shift+T AI Batch</value>
+  </data>
+  <data name="Shortcut.Search" xml:space="preserve">
+    <value>Ctrl+F Search</value>
+  </data>
+  <data name="Shortcut.Apply" xml:space="preserve">
+    <value>Ctrl+Enter Apply</value>
+  </data>
+  <data name="Shortcut.ApplyNext" xml:space="preserve">
+    <value>Ctrl+Shift+Enter Apply+Next</value>
+  </data>
+  <data name="Shortcut.CopySource" xml:space="preserve">
+    <value>Ctrl+Shift+C CopySource</value>
+  </data>
+  <data name="Shortcut.ToggleLock" xml:space="preserve">
+    <value>Ctrl+L Lock</value>
+  </data>
+  <data name="Shortcut.Validate" xml:space="preserve">
+    <value>Ctrl+M Validate</value>
+  </data>
+  <data name="Shortcut.NextPending" xml:space="preserve">
+    <value>F8 NextPending</value>
+  </data>
+  <data name="Shortcut.PrevPending" xml:space="preserve">
+    <value>Shift+F8 PrevPending</value>
+  </data>
+  <data name="Shortcut.Help" xml:space="preserve">
+    <value>F1 Help</value>
+  </data>
+  <data name="ShortcutGroup.File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ShortcutGroup.Translate" xml:space="preserve">
+    <value>Translate</value>
+  </data>
+  <data name="ShortcutGroup.Navigation" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="ShortcutGroup.Editing" xml:space="preserve">
+    <value>Editing</value>
+  </data>
+  <data name="ShortcutHelp.DialogTitle" xml:space="preserve">
+    <value>Keyboard Shortcuts</value>
+  </data>
+  <data name="ShortcutHelp.CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ShortcutHelp.SearchPlaceholder" xml:space="preserve">
+    <value>Filter by key or description</value>
+  </data>
+  <data name="ShortcutHelp.NoResults" xml:space="preserve">
+    <value>No shortcuts match current filter.</value>
+  </data>
+  <data name="ShortcutHelp.Open" xml:space="preserve">
+    <value>Open plugin and load workspace</value>
+  </data>
+  <data name="ShortcutHelp.Save" xml:space="preserve">
+    <value>Save current workspace</value>
+  </data>
+  <data name="ShortcutHelp.BatchTranslate" xml:space="preserve">
+    <value>Run batch translation via provider chain</value>
+  </data>
+  <data name="ShortcutHelp.Refresh" xml:space="preserve">
+    <value>Reload metadata and workspace settings</value>
+  </data>
+  <data name="ShortcutHelp.FocusSearch" xml:space="preserve">
+    <value>Focus search box</value>
+  </data>
+  <data name="ShortcutHelp.ApplyInspector" xml:space="preserve">
+    <value>Apply inspector translation to current row</value>
+  </data>
+  <data name="ShortcutHelp.ApplyAndNext" xml:space="preserve">
+    <value>Apply and jump to next pending row</value>
+  </data>
+  <data name="ShortcutHelp.CopySource" xml:space="preserve">
+    <value>Copy source text into translation box</value>
+  </data>
+  <data name="ShortcutHelp.ToggleLock" xml:space="preserve">
+    <value>Toggle lock state for selected row</value>
+  </data>
+  <data name="ShortcutHelp.MarkValidated" xml:space="preserve">
+    <value>Mark selected row as validated</value>
+  </data>
+  <data name="ShortcutHelp.NextPending" xml:space="preserve">
+    <value>Select next pending row</value>
+  </data>
+  <data name="ShortcutHelp.PreviousPending" xml:space="preserve">
+    <value>Select previous pending row</value>
+  </data>
+  <data name="ShortcutHelp.ShowHelp" xml:space="preserve">
+    <value>Open this keyboard shortcut help</value>
+  </data>
+  <data name="MainMenuFile.Title" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="MainMenuTranslate.Title" xml:space="preserve">
+    <value>Translate</value>
+  </data>
+  <data name="MainMenuProviders.Title" xml:space="preserve">
+    <value>Providers</value>
+  </data>
+  <data name="MainMenuView.Title" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="MainMenuActions.Title" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="MainMenuWorkspace.Title" xml:space="preserve">
+    <value>Workspace</value>
+  </data>
+  <data name="WorkspaceMenuUiLanguage.Text" xml:space="preserve">
+    <value>UI Language</value>
+  </data>
+  <data name="WorkspaceMenuGame.Text" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="WorkspaceMenuSourceLanguage.Text" xml:space="preserve">
+    <value>Source Language</value>
+  </data>
+  <data name="WorkspaceMenuTargetLanguage.Text" xml:space="preserve">
+    <value>Target Language</value>
+  </data>
+  <data name="WorkspaceMenuEncodingMode.Text" xml:space="preserve">
+    <value>Encoding Mode</value>
+  </data>
+  <data name="WorkspaceMenuEncodingManual.Text" xml:space="preserve">
+    <value>Encoding (Manual)</value>
+  </data>
+  <data name="PluginSwitcherTitle.Text" xml:space="preserve">
+    <value>Plugin Switcher</value>
+  </data>
+  <data name="PluginSwitcherSearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search by plugin name or path</value>
+  </data>
+  <data name="PluginSwitcherPinButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>Pin or unpin plugin</value>
+  </data>
+  <data name="PluginSwitcherOpenButton.Content" xml:space="preserve">
+    <value>Open Plugin...</value>
+  </data>
+  <data name="PluginSwitcherSaveButton.Content" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="MetricsTotalRowsLabel.Text" xml:space="preserve">
+    <value>Total Rows</value>
+  </data>
+  <data name="MetricsTranslatedLabel.Text" xml:space="preserve">
+    <value>Translated</value>
+  </data>
+  <data name="MetricsPendingLabel.Text" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="MetricsCompletionLabel.Text" xml:space="preserve">
+    <value>Completion</value>
+  </data>
+  <data name="MainSearchBox.Header" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="MainSearchBox.PlaceholderText" xml:space="preserve">
+    <value>EDID / Source / Translation / Field</value>
+  </data>
+  <data name="MainListFilterBox.Header" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="MainOnlyPendingToggle.Header" xml:space="preserve">
+    <value>Only Pending</value>
+  </data>
+  <data name="MainIncludeLockedToggle.Header" xml:space="preserve">
+    <value>Include Locked</value>
+  </data>
+  <data name="MainTableHeaderEdid.Text" xml:space="preserve">
+    <value>EDID</value>
+  </data>
+  <data name="MainTableHeaderField.Text" xml:space="preserve">
+    <value>Field</value>
+  </data>
+  <data name="MainTableHeaderSource.Text" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="MainTableHeaderTranslation.Text" xml:space="preserve">
+    <value>Translation</value>
+  </data>
+  <data name="InspectorSectionTitle.Text" xml:space="preserve">
+    <value>Row Inspector</value>
+  </data>
+  <data name="InspectorEdidLabel.Text" xml:space="preserve">
+    <value>EDID</value>
+  </data>
+  <data name="InspectorFieldLabel.Text" xml:space="preserve">
+    <value>Field</value>
+  </data>
+  <data name="InspectorSourceBox.Header" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="InspectorTranslationBox.Header" xml:space="preserve">
+    <value>Translation</value>
+  </data>
+  <data name="InspectorApplyButton.Content" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="InspectorCopySourceButton.Content" xml:space="preserve">
+    <value>Copy Source</value>
+  </data>
+  <data name="InspectorMarkValidatedButton.Content" xml:space="preserve">
+    <value>Mark Validated</value>
+  </data>
+  <data name="InspectorToggleLockButton.Content" xml:space="preserve">
+    <value>Toggle Lock</value>
+  </data>
+  <data name="InspectorProviderMovedHint.Text" xml:space="preserve">
+    <value>Provider configuration has moved to Actions -&gt; Provider -&gt; Configuration -&gt; Open Configuration Window.</value>
+  </data>
+  <data name="AiWorkflowPageTitle.Text" xml:space="preserve">
+    <value>AI Workflow Designer</value>
+  </data>
+  <data name="AiWorkflowChainBuilderTitle.Text" xml:space="preserve">
+    <value>Provider Chain Builder</value>
+  </data>
+  <data name="AiWorkflowMoveUpButton.Content" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="AiWorkflowMoveDownButton.Content" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="AiWorkflowAllButton.Content" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="AiWorkflowNoneButton.Content" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="AiWorkflowProfileTitle.Text" xml:space="preserve">
+    <value>Workflow Profile</value>
+  </data>
+  <data name="AiWorkflowSourceLanguageBox.Header" xml:space="preserve">
+    <value>Source Language</value>
+  </data>
+  <data name="AiWorkflowTargetLanguageBox.Header" xml:space="preserve">
+    <value>Target Language</value>
+  </data>
+  <data name="AiWorkflowLoadStringsToggle.Header" xml:space="preserve">
+    <value>Load STRINGS</value>
+  </data>
+  <data name="AiWorkflowLoadFieldsToggle.Header" xml:space="preserve">
+    <value>Load Record Fields</value>
+  </data>
+  <data name="AiWorkflowCurrentChainBox.Header" xml:space="preserve">
+    <value>Current Workflow Chain</value>
+  </data>
+  <data name="AiWorkflowRunButton.Content" xml:space="preserve">
+    <value>Run Workflow</value>
+  </data>
+  <data name="AiWorkflowTipText.Text" xml:space="preserve">
+    <value>Tip: Enable/disable providers and reorder them to define fallback sequence. The first available provider runs first, failures fall through automatically.</value>
+  </data>
+  <data name="ProviderConfigPageTitle.Text" xml:space="preserve">
+    <value>Provider Configuration</value>
+  </data>
+  <data name="ProviderConfigProviderBox.Header" xml:space="preserve">
+    <value>Provider</value>
+  </data>
+  <data name="ProviderConfigSelectedProviderTitle.Text" xml:space="preserve">
+    <value>Selected Provider</value>
+  </data>
+  <data name="ProviderConfigBaseUrlBox.Header" xml:space="preserve">
+    <value>Base Url</value>
+  </data>
+  <data name="ProviderConfigModelBox.Header" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="ProviderConfigRegionBox.Header" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ProviderConfigOrganizationBox.Header" xml:space="preserve">
+    <value>Organization</value>
+  </data>
+  <data name="ProviderConfigApiKeyBox.Header" xml:space="preserve">
+    <value>API Key (DPAPI)</value>
+  </data>
+  <data name="ProviderConfigApiKeyBox.PlaceholderText" xml:space="preserve">
+    <value>Stored securely via DPAPI</value>
+  </data>
+  <data name="ProviderConfigApiSecretBox.Header" xml:space="preserve">
+    <value>API Secret (DPAPI)</value>
+  </data>
+  <data name="ProviderConfigApiSecretBox.PlaceholderText" xml:space="preserve">
+    <value>For Baidu/Tencent dual-key providers</value>
+  </data>
+  <data name="ProviderConfigSessionTokenBox.Header" xml:space="preserve">
+    <value>Session Token (optional, DPAPI)</value>
+  </data>
+  <data name="ProviderConfigPromptTemplateBox.Header" xml:space="preserve">
+    <value>Prompt Template</value>
+  </data>
+  <data name="ProviderConfigLanguageMapBox.Header" xml:space="preserve">
+    <value>Language Map (key=value per line)</value>
+  </data>
+  <data name="ProviderConfigSaveButton.Content" xml:space="preserve">
+    <value>Save Config</value>
+  </data>
+  <data name="ProviderConfigReloadButton.Content" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="ProviderConfigTestButton.Content" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="ProviderConfigImportButton.Content" xml:space="preserve">
+    <value>Import ApiTranslator.txt</value>
+  </data>
+  <data name="Status.UiLanguageChanged" xml:space="preserve">
+    <value>UI language switched to '{0}'.</value>
+  </data>
+  <data name="Menu.OpenPlugin" xml:space="preserve">
+    <value>Open Plugin...</value>
+  </data>
+  <data name="Menu.Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Menu.OpenAndAutoTranslate" xml:space="preserve">
+    <value>Open + Auto Translate</value>
+  </data>
+  <data name="Menu.Paths" xml:space="preserve">
+    <value>Paths</value>
+  </data>
+  <data name="Menu.Optional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="Menu.PluginPath" xml:space="preserve">
+    <value>Plugin Path...</value>
+  </data>
+  <data name="Menu.OutputPath" xml:space="preserve">
+    <value>Output Path...</value>
+  </data>
+  <data name="Menu.StringsDirectory" xml:space="preserve">
+    <value>Strings Directory...</value>
+  </data>
+  <data name="Menu.RecordDefsPath" xml:space="preserve">
+    <value>RecordDefs Path...</value>
+  </data>
+  <data name="Menu.RunBatchTranslation" xml:space="preserve">
+    <value>Run Batch Translation</value>
+  </data>
+  <data name="Menu.Scope" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="Menu.Selection" xml:space="preserve">
+    <value>Selection</value>
+  </data>
+  <data name="Menu.LoadStrings" xml:space="preserve">
+    <value>Load STRINGS</value>
+  </data>
+  <data name="Menu.LoadRecordFields" xml:space="preserve">
+    <value>Load Record Fields</value>
+  </data>
+  <data name="Menu.OnlyPendingRows" xml:space="preserve">
+    <value>Only Pending Rows</value>
+  </data>
+  <data name="Menu.IncludeLockedRows" xml:space="preserve">
+    <value>Include Locked Rows</value>
+  </data>
+  <data name="Menu.CopySourceToTranslation" xml:space="preserve">
+    <value>Copy Source to Translation</value>
+  </data>
+  <data name="Menu.ApplyInspectorEdit" xml:space="preserve">
+    <value>Apply Inspector Edit</value>
+  </data>
+  <data name="Menu.MarkSelectedValidated" xml:space="preserve">
+    <value>Mark Selected Validated</value>
+  </data>
+  <data name="Menu.ToggleLock" xml:space="preserve">
+    <value>Toggle Lock</value>
+  </data>
+  <data name="Menu.ReloadMetadata" xml:space="preserve">
+    <value>Reload Metadata</value>
+  </data>
+  <data name="Menu.AiWorkflow" xml:space="preserve">
+    <value>AI Workflow</value>
+  </data>
+  <data name="Menu.OpenWorkflowDesigner" xml:space="preserve">
+    <value>Open Workflow Designer</value>
+  </data>
+  <data name="Menu.Chain" xml:space="preserve">
+    <value>Chain</value>
+  </data>
+  <data name="Menu.MoveSelectedUp" xml:space="preserve">
+    <value>Move Selected Up</value>
+  </data>
+  <data name="Menu.MoveSelectedDown" xml:space="preserve">
+    <value>Move Selected Down</value>
+  </data>
+  <data name="Menu.EnableAll" xml:space="preserve">
+    <value>Enable All</value>
+  </data>
+  <data name="Menu.DisableAll" xml:space="preserve">
+    <value>Disable All</value>
+  </data>
+  <data name="Menu.CurrentChain" xml:space="preserve">
+    <value>Current Chain</value>
+  </data>
+  <data name="Menu.Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="Menu.OpenConfigurationWindow" xml:space="preserve">
+    <value>Open Configuration Window</value>
+  </data>
+  <data name="Menu.SaveSelectedProvider" xml:space="preserve">
+    <value>Save Selected Provider</value>
+  </data>
+  <data name="Menu.ReloadSelectedProvider" xml:space="preserve">
+    <value>Reload Selected Provider</value>
+  </data>
+  <data name="Menu.TestSelectedProvider" xml:space="preserve">
+    <value>Test Selected Provider</value>
+  </data>
+  <data name="Menu.ImportApiTranslator" xml:space="preserve">
+    <value>Import ApiTranslator.txt...</value>
+  </data>
+  <data name="Menu.RefreshWorkspace" xml:space="preserve">
+    <value>Refresh Workspace</value>
+  </data>
+  <data name="Menu.Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="Menu.ShowLockedRows" xml:space="preserve">
+    <value>Show Locked Rows</value>
+  </data>
+  <data name="Status.UiLanguageChangeFailed" xml:space="preserve">
+    <value>UI language switch failed: {0}</value>
+  </data>
+</root>

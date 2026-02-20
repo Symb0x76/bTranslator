@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="bTranslator.App.Views.ProviderConfigurationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:bTranslator.App.ViewModels"
+    mc:Ignorable="d">
+    <Grid
+        Background="{StaticResource VsCodeBackgroundBrush}"
+        Padding="16"
+        RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border
+            Background="Transparent"
+            BorderBrush="{StaticResource VsCodeBorderBrush}"
+            BorderThickness="0,0,0,1"
+            CornerRadius="0"
+            Padding="14,10">
+            <Grid RowSpacing="8">
+                <TextBlock
+                    FontFamily="Segoe UI Variable Display Semibold"
+                    FontSize="20"
+                    Foreground="{StaticResource VsCodeTextBrush}"
+                    Text="{Binding Ui.ProviderConfigPageTitleText}" />
+                <Grid
+                    Margin="0,30,0,0"
+                    ColumnSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox
+                        Header="{Binding Ui.ProviderConfigProviderBoxHeader}"
+                        ItemsSource="{Binding ProviderOptions}"
+                        SelectedItem="{Binding SelectedProviderOption, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:ProviderChainItemViewModel">
+                                <TextBlock
+                                    FontFamily="Cascadia Mono"
+                                    Text="{Binding ProviderId}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="0,28,0,0"
+                        FontFamily="Cascadia Mono"
+                        Opacity="0.72"
+                        Text="{Binding ProviderChainPreview}"
+                        TextTrimming="CharacterEllipsis" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <ScrollViewer
+            Grid.Row="1"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+                <TextBlock
+                    Style="{StaticResource SectionTitleTextStyle}"
+                    Text="{Binding Ui.ProviderConfigSelectedProviderTitleText}" />
+                <TextBlock
+                    FontFamily="Cascadia Mono"
+                    Opacity="0.75"
+                    Text="{Binding ProviderConfigProviderId}" />
+
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        Header="{Binding Ui.ProviderConfigBaseUrlBoxHeader}"
+                        Text="{Binding ProviderBaseUrl, Mode=TwoWay}" />
+                    <TextBox
+                        Grid.Column="1"
+                        Header="{Binding Ui.ProviderConfigModelBoxHeader}"
+                        Text="{Binding ProviderModel, Mode=TwoWay}" />
+                </Grid>
+
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        Header="{Binding Ui.ProviderConfigRegionBoxHeader}"
+                        Text="{Binding ProviderRegion, Mode=TwoWay}" />
+                    <TextBox
+                        Grid.Column="1"
+                        Header="{Binding Ui.ProviderConfigOrganizationBoxHeader}"
+                        Text="{Binding ProviderOrganization, Mode=TwoWay}" />
+                </Grid>
+
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        Header="{Binding Ui.ProviderConfigApiKeyBoxHeader}"
+                        PlaceholderText="{Binding Ui.ProviderConfigApiKeyBoxPlaceholderText}"
+                        Text="{Binding ProviderApiKey, Mode=TwoWay}" />
+                    <TextBox
+                        Grid.Column="1"
+                        Header="{Binding Ui.ProviderConfigApiSecretBoxHeader}"
+                        PlaceholderText="{Binding Ui.ProviderConfigApiSecretBoxPlaceholderText}"
+                        Text="{Binding ProviderApiSecret, Mode=TwoWay}" />
+                </Grid>
+
+                <TextBox
+                    Header="{Binding Ui.ProviderConfigSessionTokenBoxHeader}"
+                    Text="{Binding ProviderSessionToken, Mode=TwoWay}" />
+
+                <TextBox
+                    AcceptsReturn="True"
+                    Header="{Binding Ui.ProviderConfigPromptTemplateBoxHeader}"
+                    MinHeight="80"
+                    Text="{Binding ProviderPromptTemplate, Mode=TwoWay}"
+                    TextWrapping="Wrap" />
+
+                <TextBox
+                    AcceptsReturn="True"
+                    FontFamily="Cascadia Mono"
+                    Header="{Binding Ui.ProviderConfigLanguageMapBoxHeader}"
+                    MinHeight="92"
+                    Text="{Binding ProviderLanguageMap, Mode=TwoWay}"
+                    TextWrapping="Wrap" />
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <Button
+                        Command="{Binding SaveSelectedProviderConfigurationCommand}"
+                        Content="{Binding Ui.ProviderConfigSaveButtonContent}"
+                        Style="{StaticResource PrimaryAction}" />
+                    <Button
+                        Command="{Binding ReloadSelectedProviderConfigurationCommand}"
+                        Content="{Binding Ui.ProviderConfigReloadButtonContent}"
+                        Style="{StaticResource SubtleAction}" />
+                    <Button
+                        Command="{Binding TestSelectedProviderConnectionCommand}"
+                        Content="{Binding Ui.ProviderConfigTestButtonContent}"
+                        Style="{StaticResource SecondaryAction}" />
+                    <Button
+                        Click="OnImportLegacyApiTranslatorConfigClicked"
+                        Content="{Binding Ui.ProviderConfigImportButtonContent}"
+                        Style="{StaticResource SubtleAction}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border
+            Grid.Row="2"
+            Style="{StaticResource PanelCardBorderStyle}"
+            Padding="12,8">
+            <TextBlock Text="{Binding StatusText}" />
+        </Border>
+    </Grid>
+</Page>
+
+

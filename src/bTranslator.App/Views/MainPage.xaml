@@ -38,7 +38,67 @@
             <Setter Property="Foreground" Value="{StaticResource VsCodeSubtleTextBrush}" />
         </Style>
 
+        <Style x:Key="SquareFlyoutPresenterStyle" TargetType="FlyoutPresenter">
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="{StaticResource VsCodeBackgroundBrush}" />
+        </Style>
+
     </Page.Resources>
+
+    <Page.KeyboardAccelerators>
+        <KeyboardAccelerator
+            Invoked="OnOpenWorkspaceAcceleratorInvoked"
+            Key="O"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnSaveWorkspaceAcceleratorInvoked"
+            Key="S"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnRunBatchAcceleratorInvoked"
+            Key="T"
+            Modifiers="Control,Shift" />
+        <KeyboardAccelerator
+            Invoked="OnReloadAcceleratorInvoked"
+            Key="R"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnFocusSearchAcceleratorInvoked"
+            Key="F"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnApplyInspectorAcceleratorInvoked"
+            Key="Enter"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnApplyAndNextAcceleratorInvoked"
+            Key="Enter"
+            Modifiers="Control,Shift" />
+        <KeyboardAccelerator
+            Invoked="OnCopySourceAcceleratorInvoked"
+            Key="C"
+            Modifiers="Control,Shift" />
+        <KeyboardAccelerator
+            Invoked="OnToggleLockAcceleratorInvoked"
+            Key="L"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnMarkValidatedAcceleratorInvoked"
+            Key="M"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnNextPendingAcceleratorInvoked"
+            Key="F8" />
+        <KeyboardAccelerator
+            Invoked="OnPreviousPendingAcceleratorInvoked"
+            Key="F8"
+            Modifiers="Shift" />
+        <KeyboardAccelerator
+            Invoked="OnShortcutHelpAcceleratorInvoked"
+            Key="F1" />
+    </Page.KeyboardAccelerators>
 
     <Grid
         Background="{StaticResource VsCodeBackgroundBrush}"
@@ -48,7 +108,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="220" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -86,7 +145,7 @@
                             FontFamily="Segoe UI Variable Display Semibold"
                             FontSize="18"
                             Foreground="{StaticResource VsCodeTextBrush}"
-                            Text="bTranslator" />
+                            Text="{x:Bind ViewModel.Ui.AppWindowTitle, Mode=OneWay}" />
                         <TextBlock
                             FontFamily="Segoe UI Variable Text"
                             Foreground="{StaticResource VsCodeSubtleTextBrush}"
@@ -106,268 +165,285 @@
                     <MenuBar
                         Grid.Column="0"
                         Style="{StaticResource TopMenuBarStyle}">
-                    <MenuBarItem
-                        Style="{StaticResource TopMenuBarItemStyle}"
-                        Title="File">
-                        <MenuFlyoutItem
-                            Click="OnOpenPluginFromMenuClicked"
-                            Text="Open Plugin..." />
-                        <MenuFlyoutItem
-                            Command="{Binding SaveWorkspaceCommand}"
-                            Text="Save" />
-                        <MenuFlyoutItem
-                            Click="OnOpenAndTranslateFromMenuClicked"
-                            Text="Open + Auto Translate" />
-                        <MenuFlyoutSeparator />
-                        <MenuFlyoutSubItem Text="Paths">
-                            <MenuFlyoutItem
-                                Click="OnBrowsePluginPathClicked"
-                                Text="Plugin Path..." />
-                            <MenuFlyoutItem
-                                Click="OnBrowseOutputPathClicked"
-                                Text="Output Path..." />
-                            <MenuFlyoutSubItem Text="Optional">
-                                <MenuFlyoutItem
-                                    Click="OnBrowseStringsDirectoryClicked"
-                                    Text="Strings Directory..." />
-                                <MenuFlyoutItem
-                                    Click="OnBrowseRecordDefinitionsPathClicked"
-                                    Text="RecordDefs Path..." />
-                            </MenuFlyoutSubItem>
-                        </MenuFlyoutSubItem>
-                    </MenuBarItem>
-
-                    <MenuBarItem
-                        Style="{StaticResource TopMenuBarItemStyle}"
-                        Title="Translate">
-                        <MenuFlyoutItem
-                            Command="{Binding RunBatchTranslationCommand}"
-                            Text="Run Batch Translation" />
-                        <MenuFlyoutSubItem Text="Scope">
-                            <ToggleMenuFlyoutItem
-                                IsChecked="{Binding LoadStrings, Mode=TwoWay}"
-                                Text="Load STRINGS" />
-                            <ToggleMenuFlyoutItem
-                                IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
-                                Text="Load Record Fields" />
-                            <ToggleMenuFlyoutItem
-                                IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
-                                Text="Only Pending Rows" />
-                            <ToggleMenuFlyoutItem
-                                IsChecked="{Binding ShowLocked, Mode=TwoWay}"
-                                Text="Include Locked Rows" />
-                        </MenuFlyoutSubItem>
-                        <MenuFlyoutSubItem Text="Selection">
-                            <MenuFlyoutItem
-                                Command="{Binding CopySourceToTargetCommand}"
-                                Text="Copy Source to Translation" />
-                            <MenuFlyoutItem
-                                Command="{Binding ApplyInspectorToRowCommand}"
-                                Text="Apply Inspector Edit" />
-                            <MenuFlyoutItem
-                                Command="{Binding MarkSelectedValidatedCommand}"
-                                Text="Mark Selected Validated" />
-                            <MenuFlyoutItem
-                                Command="{Binding ToggleSelectedLockCommand}"
-                                Text="Toggle Lock" />
-                        </MenuFlyoutSubItem>
-                    </MenuBarItem>
-
-                    <MenuBarItem
-                        Style="{StaticResource TopMenuBarItemStyle}"
-                        Title="Providers">
-                        <MenuFlyoutItem
-                            Command="{Binding RefreshCommand}"
-                            Text="Reload Metadata" />
-                        <MenuFlyoutSubItem Text="AI Workflow">
-                            <MenuFlyoutItem
-                                Click="OnOpenAiWorkflowPageClicked"
-                                Text="Open Workflow Designer" />
-                            <MenuFlyoutSubItem Text="Chain">
-                                <MenuFlyoutItem
-                                    Command="{Binding MoveSelectedProviderUpCommand}"
-                                    Text="Move Selected Up" />
-                                <MenuFlyoutItem
-                                    Command="{Binding MoveSelectedProviderDownCommand}"
-                                    Text="Move Selected Down" />
-                                <MenuFlyoutItem
-                                    Command="{Binding SelectAllProvidersCommand}"
-                                    Text="Enable All" />
-                                <MenuFlyoutItem
-                                    Command="{Binding ClearProviderSelectionCommand}"
-                                    Text="Disable All" />
-                            </MenuFlyoutSubItem>
-                            <MenuFlyoutSubItem Text="Current Chain">
-                                <MenuFlyoutItem
-                                    IsEnabled="False"
-                                    Text="{Binding ProviderChainPreview}" />
-                            </MenuFlyoutSubItem>
-                        </MenuFlyoutSubItem>
-                        <MenuFlyoutSubItem Text="Configuration">
-                            <MenuFlyoutItem
-                                Command="{Binding SaveSelectedProviderConfigurationCommand}"
-                                Text="Save Selected Provider" />
-                            <MenuFlyoutItem
-                                Command="{Binding ReloadSelectedProviderConfigurationCommand}"
-                                Text="Reload Selected Provider" />
-                            <MenuFlyoutItem
-                                Command="{Binding TestSelectedProviderConnectionCommand}"
-                                Text="Test Selected Provider" />
-                            <MenuFlyoutItem
-                                Click="OnImportLegacyApiTranslatorConfigClicked"
-                                Text="Import ApiTranslator.txt..." />
-                        </MenuFlyoutSubItem>
-                    </MenuBarItem>
-
-                    <MenuBarItem
-                        Style="{StaticResource TopMenuBarItemStyle}"
-                        Title="View">
-                        <MenuFlyoutItem
-                            Command="{Binding RefreshCommand}"
-                            Text="Refresh Workspace" />
-                        <MenuFlyoutSubItem Text="Filter">
-                            <ToggleMenuFlyoutItem
-                                IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
-                                Text="Only Pending Rows" />
-                            <ToggleMenuFlyoutItem
-                                IsChecked="{Binding ShowLocked, Mode=TwoWay}"
-                                Text="Show Locked Rows" />
-                        </MenuFlyoutSubItem>
-                    </MenuBarItem>
-
-                    <MenuBarItem
-                        Style="{StaticResource TopMenuBarItemStyle}"
-                        Title="Actions">
-                        <MenuFlyoutSubItem Text="File">
+                        <MenuBarItem
+                            Style="{StaticResource TopMenuBarItemStyle}"
+                            Title="{x:Bind ViewModel.Ui.MainMenuFileTitle, Mode=OneWay}">
                             <MenuFlyoutItem
                                 Click="OnOpenPluginFromMenuClicked"
-                                Text="Open Plugin..." />
+                                Text="{x:Bind ViewModel.Ui.MenuOpenPlugin, Mode=OneWay}" />
                             <MenuFlyoutItem
                                 Command="{Binding SaveWorkspaceCommand}"
-                                Text="Save" />
+                                Text="{x:Bind ViewModel.Ui.MenuSave, Mode=OneWay}" />
                             <MenuFlyoutItem
                                 Click="OnOpenAndTranslateFromMenuClicked"
-                                Text="Open + Auto Translate" />
+                                Text="{x:Bind ViewModel.Ui.MenuOpenAndAutoTranslate, Mode=OneWay}" />
                             <MenuFlyoutSeparator />
-                            <MenuFlyoutSubItem Text="Paths">
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuPaths, Mode=OneWay}">
                                 <MenuFlyoutItem
                                     Click="OnBrowsePluginPathClicked"
-                                    Text="Plugin Path..." />
+                                    Text="{x:Bind ViewModel.Ui.MenuPluginPath, Mode=OneWay}" />
                                 <MenuFlyoutItem
                                     Click="OnBrowseOutputPathClicked"
-                                    Text="Output Path..." />
-                                <MenuFlyoutSubItem Text="Optional">
+                                    Text="{x:Bind ViewModel.Ui.MenuOutputPath, Mode=OneWay}" />
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuOptional, Mode=OneWay}">
                                     <MenuFlyoutItem
                                         Click="OnBrowseStringsDirectoryClicked"
-                                        Text="Strings Directory..." />
+                                        Text="{x:Bind ViewModel.Ui.MenuStringsDirectory, Mode=OneWay}" />
                                     <MenuFlyoutItem
                                         Click="OnBrowseRecordDefinitionsPathClicked"
-                                        Text="RecordDefs Path..." />
+                                        Text="{x:Bind ViewModel.Ui.MenuRecordDefsPath, Mode=OneWay}" />
                                 </MenuFlyoutSubItem>
                             </MenuFlyoutSubItem>
-                        </MenuFlyoutSubItem>
-                        <MenuFlyoutSubItem Text="Translate">
+                        </MenuBarItem>
+
+                        <MenuBarItem
+                            Style="{StaticResource TopMenuBarItemStyle}"
+                            Title="{x:Bind ViewModel.Ui.MainMenuTranslateTitle, Mode=OneWay}">
                             <MenuFlyoutItem
                                 Command="{Binding RunBatchTranslationCommand}"
-                                Text="Run Batch Translation" />
-                            <MenuFlyoutSubItem Text="Scope">
+                                Text="{x:Bind ViewModel.Ui.MenuRunBatchTranslation, Mode=OneWay}" />
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuScope, Mode=OneWay}">
                                 <ToggleMenuFlyoutItem
                                     IsChecked="{Binding LoadStrings, Mode=TwoWay}"
-                                    Text="Load STRINGS" />
+                                    Text="{x:Bind ViewModel.Ui.MenuLoadStrings, Mode=OneWay}" />
                                 <ToggleMenuFlyoutItem
                                     IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
-                                    Text="Load Record Fields" />
+                                    Text="{x:Bind ViewModel.Ui.MenuLoadRecordFields, Mode=OneWay}" />
                                 <ToggleMenuFlyoutItem
                                     IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
-                                    Text="Only Pending Rows" />
+                                    Text="{x:Bind ViewModel.Ui.MenuOnlyPendingRows, Mode=OneWay}" />
                                 <ToggleMenuFlyoutItem
                                     IsChecked="{Binding ShowLocked, Mode=TwoWay}"
-                                    Text="Include Locked Rows" />
+                                    Text="{x:Bind ViewModel.Ui.MenuIncludeLockedRows, Mode=OneWay}" />
                             </MenuFlyoutSubItem>
-                            <MenuFlyoutSubItem Text="Selection">
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuSelection, Mode=OneWay}">
                                 <MenuFlyoutItem
                                     Command="{Binding CopySourceToTargetCommand}"
-                                    Text="Copy Source to Translation" />
+                                    Text="{x:Bind ViewModel.Ui.MenuCopySourceToTranslation, Mode=OneWay}" />
                                 <MenuFlyoutItem
                                     Command="{Binding ApplyInspectorToRowCommand}"
-                                    Text="Apply Inspector Edit" />
+                                    Text="{x:Bind ViewModel.Ui.MenuApplyInspectorEdit, Mode=OneWay}" />
                                 <MenuFlyoutItem
                                     Command="{Binding MarkSelectedValidatedCommand}"
-                                    Text="Mark Selected Validated" />
+                                    Text="{x:Bind ViewModel.Ui.MenuMarkSelectedValidated, Mode=OneWay}" />
                                 <MenuFlyoutItem
                                     Command="{Binding ToggleSelectedLockCommand}"
-                                    Text="Toggle Lock" />
+                                    Text="{x:Bind ViewModel.Ui.MenuToggleLock, Mode=OneWay}" />
                             </MenuFlyoutSubItem>
-                        </MenuFlyoutSubItem>
-                        <MenuFlyoutSubItem Text="Provider">
+                        </MenuBarItem>
+
+                        <MenuBarItem
+                            Style="{StaticResource TopMenuBarItemStyle}"
+                            Title="{x:Bind ViewModel.Ui.MainMenuProvidersTitle, Mode=OneWay}">
                             <MenuFlyoutItem
                                 Command="{Binding RefreshCommand}"
-                                Text="Reload Metadata" />
-                            <MenuFlyoutSubItem Text="AI Workflow">
+                                Text="{x:Bind ViewModel.Ui.MenuReloadMetadata, Mode=OneWay}" />
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuAiWorkflow, Mode=OneWay}">
                                 <MenuFlyoutItem
                                     Click="OnOpenAiWorkflowPageClicked"
-                                    Text="Open Workflow Designer" />
-                                <MenuFlyoutSubItem Text="Chain">
+                                    Text="{x:Bind ViewModel.Ui.MenuOpenWorkflowDesigner, Mode=OneWay}" />
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuChain, Mode=OneWay}">
                                     <MenuFlyoutItem
                                         Command="{Binding MoveSelectedProviderUpCommand}"
-                                        Text="Move Selected Up" />
+                                        Text="{x:Bind ViewModel.Ui.MenuMoveSelectedUp, Mode=OneWay}" />
                                     <MenuFlyoutItem
                                         Command="{Binding MoveSelectedProviderDownCommand}"
-                                        Text="Move Selected Down" />
+                                        Text="{x:Bind ViewModel.Ui.MenuMoveSelectedDown, Mode=OneWay}" />
                                     <MenuFlyoutItem
                                         Command="{Binding SelectAllProvidersCommand}"
-                                        Text="Enable All" />
+                                        Text="{x:Bind ViewModel.Ui.MenuEnableAll, Mode=OneWay}" />
                                     <MenuFlyoutItem
                                         Command="{Binding ClearProviderSelectionCommand}"
-                                        Text="Disable All" />
+                                        Text="{x:Bind ViewModel.Ui.MenuDisableAll, Mode=OneWay}" />
                                 </MenuFlyoutSubItem>
-                                <MenuFlyoutSubItem Text="Current Chain">
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCurrentChain, Mode=OneWay}">
                                     <MenuFlyoutItem
                                         IsEnabled="False"
                                         Text="{Binding ProviderChainPreview}" />
                                 </MenuFlyoutSubItem>
                             </MenuFlyoutSubItem>
-                            <MenuFlyoutSubItem Text="Configuration">
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuConfiguration, Mode=OneWay}">
+                                <MenuFlyoutItem
+                                    Click="OnOpenProviderConfigurationPageClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuOpenConfigurationWindow, Mode=OneWay}" />
+                                <MenuFlyoutSeparator />
                                 <MenuFlyoutItem
                                     Command="{Binding SaveSelectedProviderConfigurationCommand}"
-                                    Text="Save Selected Provider" />
+                                    Text="{x:Bind ViewModel.Ui.MenuSaveSelectedProvider, Mode=OneWay}" />
                                 <MenuFlyoutItem
                                     Command="{Binding ReloadSelectedProviderConfigurationCommand}"
-                                    Text="Reload Selected Provider" />
+                                    Text="{x:Bind ViewModel.Ui.MenuReloadSelectedProvider, Mode=OneWay}" />
                                 <MenuFlyoutItem
                                     Command="{Binding TestSelectedProviderConnectionCommand}"
-                                    Text="Test Selected Provider" />
+                                    Text="{x:Bind ViewModel.Ui.MenuTestSelectedProvider, Mode=OneWay}" />
                                 <MenuFlyoutItem
                                     Click="OnImportLegacyApiTranslatorConfigClicked"
-                                    Text="Import ApiTranslator.txt..." />
+                                    Text="{x:Bind ViewModel.Ui.MenuImportApiTranslator, Mode=OneWay}" />
                             </MenuFlyoutSubItem>
-                        </MenuFlyoutSubItem>
-                    </MenuBarItem>
+                        </MenuBarItem>
 
-                    <MenuBarItem
-                        Style="{StaticResource TopMenuBarItemStyle}"
-                        Title="Workspace">
-                        <MenuFlyoutSubItem
-                            x:Name="WorkspaceGameMenu"
-                            Text="Game" />
-                        <MenuFlyoutSubItem
-                            x:Name="WorkspaceSourceLanguageMenu"
-                            Text="Source Language" />
-                        <MenuFlyoutSubItem
-                            x:Name="WorkspaceTargetLanguageMenu"
-                            Text="Target Language" />
-                        <MenuFlyoutSeparator />
-                        <ToggleMenuFlyoutItem
-                            IsChecked="{Binding LoadStrings, Mode=TwoWay}"
-                            Text="Load STRINGS" />
-                        <ToggleMenuFlyoutItem
-                            IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
-                            Text="Load Record Fields" />
-                    </MenuBarItem>
+                        <MenuBarItem
+                            Style="{StaticResource TopMenuBarItemStyle}"
+                            Title="{x:Bind ViewModel.Ui.MainMenuViewTitle, Mode=OneWay}">
+                            <MenuFlyoutItem
+                                Command="{Binding RefreshCommand}"
+                                Text="{x:Bind ViewModel.Ui.MenuRefreshWorkspace, Mode=OneWay}" />
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuFilter, Mode=OneWay}">
+                                <ToggleMenuFlyoutItem
+                                    IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
+                                    Text="{x:Bind ViewModel.Ui.MenuOnlyPendingRows, Mode=OneWay}" />
+                                <ToggleMenuFlyoutItem
+                                    IsChecked="{Binding ShowLocked, Mode=TwoWay}"
+                                    Text="{x:Bind ViewModel.Ui.MenuShowLockedRows, Mode=OneWay}" />
+                            </MenuFlyoutSubItem>
+                        </MenuBarItem>
+
+                        <MenuBarItem
+                            Style="{StaticResource TopMenuBarItemStyle}"
+                            Title="{x:Bind ViewModel.Ui.MainMenuActionsTitle, Mode=OneWay}">
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MainMenuFileTitle, Mode=OneWay}">
+                                <MenuFlyoutItem
+                                    Click="OnOpenPluginFromMenuClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuOpenPlugin, Mode=OneWay}" />
+                                <MenuFlyoutItem
+                                    Command="{Binding SaveWorkspaceCommand}"
+                                    Text="{x:Bind ViewModel.Ui.MenuSave, Mode=OneWay}" />
+                                <MenuFlyoutItem
+                                    Click="OnOpenAndTranslateFromMenuClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuOpenAndAutoTranslate, Mode=OneWay}" />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuPaths, Mode=OneWay}">
+                                    <MenuFlyoutItem
+                                        Click="OnBrowsePluginPathClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuPluginPath, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Click="OnBrowseOutputPathClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuOutputPath, Mode=OneWay}" />
+                                    <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuOptional, Mode=OneWay}">
+                                        <MenuFlyoutItem
+                                            Click="OnBrowseStringsDirectoryClicked"
+                                            Text="{x:Bind ViewModel.Ui.MenuStringsDirectory, Mode=OneWay}" />
+                                        <MenuFlyoutItem
+                                            Click="OnBrowseRecordDefinitionsPathClicked"
+                                            Text="{x:Bind ViewModel.Ui.MenuRecordDefsPath, Mode=OneWay}" />
+                                    </MenuFlyoutSubItem>
+                                </MenuFlyoutSubItem>
+                            </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MainMenuTranslateTitle, Mode=OneWay}">
+                                <MenuFlyoutItem
+                                    Command="{Binding RunBatchTranslationCommand}"
+                                    Text="{x:Bind ViewModel.Ui.MenuRunBatchTranslation, Mode=OneWay}" />
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuScope, Mode=OneWay}">
+                                    <ToggleMenuFlyoutItem
+                                        IsChecked="{Binding LoadStrings, Mode=TwoWay}"
+                                        Text="{x:Bind ViewModel.Ui.MenuLoadStrings, Mode=OneWay}" />
+                                    <ToggleMenuFlyoutItem
+                                        IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
+                                        Text="{x:Bind ViewModel.Ui.MenuLoadRecordFields, Mode=OneWay}" />
+                                    <ToggleMenuFlyoutItem
+                                        IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
+                                        Text="{x:Bind ViewModel.Ui.MenuOnlyPendingRows, Mode=OneWay}" />
+                                    <ToggleMenuFlyoutItem
+                                        IsChecked="{Binding ShowLocked, Mode=TwoWay}"
+                                        Text="{x:Bind ViewModel.Ui.MenuIncludeLockedRows, Mode=OneWay}" />
+                                </MenuFlyoutSubItem>
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuSelection, Mode=OneWay}">
+                                    <MenuFlyoutItem
+                                        Command="{Binding CopySourceToTargetCommand}"
+                                        Text="{x:Bind ViewModel.Ui.MenuCopySourceToTranslation, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding ApplyInspectorToRowCommand}"
+                                        Text="{x:Bind ViewModel.Ui.MenuApplyInspectorEdit, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding MarkSelectedValidatedCommand}"
+                                        Text="{x:Bind ViewModel.Ui.MenuMarkSelectedValidated, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding ToggleSelectedLockCommand}"
+                                        Text="{x:Bind ViewModel.Ui.MenuToggleLock, Mode=OneWay}" />
+                                </MenuFlyoutSubItem>
+                            </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MainMenuProvidersTitle, Mode=OneWay}">
+                                <MenuFlyoutItem
+                                    Command="{Binding RefreshCommand}"
+                                    Text="{x:Bind ViewModel.Ui.MenuReloadMetadata, Mode=OneWay}" />
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuAiWorkflow, Mode=OneWay}">
+                                    <MenuFlyoutItem
+                                        Click="OnOpenAiWorkflowPageClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuOpenWorkflowDesigner, Mode=OneWay}" />
+                                    <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuChain, Mode=OneWay}">
+                                        <MenuFlyoutItem
+                                            Command="{Binding MoveSelectedProviderUpCommand}"
+                                            Text="{x:Bind ViewModel.Ui.MenuMoveSelectedUp, Mode=OneWay}" />
+                                        <MenuFlyoutItem
+                                            Command="{Binding MoveSelectedProviderDownCommand}"
+                                            Text="{x:Bind ViewModel.Ui.MenuMoveSelectedDown, Mode=OneWay}" />
+                                        <MenuFlyoutItem
+                                            Command="{Binding SelectAllProvidersCommand}"
+                                            Text="{x:Bind ViewModel.Ui.MenuEnableAll, Mode=OneWay}" />
+                                        <MenuFlyoutItem
+                                            Command="{Binding ClearProviderSelectionCommand}"
+                                            Text="{x:Bind ViewModel.Ui.MenuDisableAll, Mode=OneWay}" />
+                                    </MenuFlyoutSubItem>
+                                    <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCurrentChain, Mode=OneWay}">
+                                        <MenuFlyoutItem
+                                            IsEnabled="False"
+                                            Text="{Binding ProviderChainPreview}" />
+                                    </MenuFlyoutSubItem>
+                                </MenuFlyoutSubItem>
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuConfiguration, Mode=OneWay}">
+                                    <MenuFlyoutItem
+                                        Click="OnOpenProviderConfigurationPageClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuOpenConfigurationWindow, Mode=OneWay}" />
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem
+                                        Command="{Binding SaveSelectedProviderConfigurationCommand}"
+                                        Text="{x:Bind ViewModel.Ui.MenuSaveSelectedProvider, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding ReloadSelectedProviderConfigurationCommand}"
+                                        Text="{x:Bind ViewModel.Ui.MenuReloadSelectedProvider, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Command="{Binding TestSelectedProviderConnectionCommand}"
+                                        Text="{x:Bind ViewModel.Ui.MenuTestSelectedProvider, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Click="OnImportLegacyApiTranslatorConfigClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuImportApiTranslator, Mode=OneWay}" />
+                                </MenuFlyoutSubItem>
+                            </MenuFlyoutSubItem>
+                        </MenuBarItem>
+
+                        <MenuBarItem
+                            Style="{StaticResource TopMenuBarItemStyle}"
+                            Title="{x:Bind ViewModel.Ui.MainMenuWorkspaceTitle, Mode=OneWay}">
+                            <MenuFlyoutSubItem
+                                x:Name="WorkspaceUiLanguageMenu"
+                                Text="{x:Bind ViewModel.Ui.WorkspaceMenuUiLanguageText, Mode=OneWay}" />
+                            <MenuFlyoutSubItem
+                                x:Name="WorkspaceGameMenu"
+                                Text="{x:Bind ViewModel.Ui.WorkspaceMenuGameText, Mode=OneWay}" />
+                            <MenuFlyoutSubItem
+                                x:Name="WorkspaceSourceLanguageMenu"
+                                Text="{x:Bind ViewModel.Ui.WorkspaceMenuSourceLanguageText, Mode=OneWay}" />
+                            <MenuFlyoutSubItem
+                                x:Name="WorkspaceTargetLanguageMenu"
+                                Text="{x:Bind ViewModel.Ui.WorkspaceMenuTargetLanguageText, Mode=OneWay}" />
+                            <MenuFlyoutSubItem
+                                x:Name="WorkspaceEncodingModeMenu"
+                                Text="{x:Bind ViewModel.Ui.WorkspaceMenuEncodingModeText, Mode=OneWay}" />
+                            <MenuFlyoutSubItem
+                                x:Name="WorkspaceEncodingMenu"
+                                Text="{x:Bind ViewModel.Ui.WorkspaceMenuEncodingManualText, Mode=OneWay}" />
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding LoadStrings, Mode=TwoWay}"
+                                Text="{x:Bind ViewModel.Ui.MenuLoadStrings, Mode=OneWay}" />
+                            <ToggleMenuFlyoutItem
+                                IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
+                                Text="{x:Bind ViewModel.Ui.MenuLoadRecordFields, Mode=OneWay}" />
+                        </MenuBarItem>
                     </MenuBar>
 
                     <DropDownButton
                         Grid.Column="1"
+                        CornerRadius="0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top">
                         <DropDownButton.Content>
@@ -384,7 +460,9 @@
                             </StackPanel>
                         </DropDownButton.Content>
                         <DropDownButton.Flyout>
-                            <Flyout Placement="BottomEdgeAlignedRight">
+                            <Flyout
+                                FlyoutPresenterStyle="{StaticResource SquareFlyoutPresenterStyle}"
+                                Placement="BottomEdgeAlignedRight">
                                 <Border
                                     MaxWidth="460"
                                     MinWidth="340"
@@ -396,9 +474,9 @@
                                     <StackPanel Spacing="8">
                                         <TextBlock
                                             Style="{StaticResource SectionTitleTextStyle}"
-                                            Text="Plugin Switcher" />
+                                            Text="{x:Bind ViewModel.Ui.PluginSwitcherTitleText, Mode=OneWay}" />
                                         <TextBox
-                                            PlaceholderText="Search by plugin name or path"
+                                            PlaceholderText="{x:Bind ViewModel.Ui.PluginSwitcherSearchPlaceholder, Mode=OneWay}"
                                             Text="{Binding PluginSwitcherSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                         <ListView
                                             IsItemClickEnabled="True"
@@ -442,7 +520,7 @@
                                                                 Click="OnPluginSwitcherPinClicked"
                                                                 MinWidth="34"
                                                                 Style="{StaticResource SubtleAction}"
-                                                                ToolTipService.ToolTip="Pin or unpin plugin">
+                                                                ToolTipService.ToolTip="{Binding DataContext.Ui.PluginSwitcherPinTooltip, ElementName=RootPage}">
                                                                 <FontIcon
                                                                     FontFamily="Segoe Fluent Icons"
                                                                     Glyph="{Binding PinGlyph}" />
@@ -457,11 +535,11 @@
                                             Spacing="8">
                                             <Button
                                                 Click="OnOpenPluginFromDropdownClicked"
-                                                Content="Open Plugin..."
+                                                Content="{x:Bind ViewModel.Ui.PluginSwitcherOpenButtonContent, Mode=OneWay}"
                                                 Style="{StaticResource PrimaryAction}" />
                                             <Button
                                                 Command="{Binding SaveWorkspaceCommand}"
-                                                Content="Save"
+                                                Content="{x:Bind ViewModel.Ui.PluginSwitcherSaveButtonContent, Mode=OneWay}"
                                                 Style="{StaticResource SubtleAction}" />
                                         </StackPanel>
                                     </StackPanel>
@@ -489,7 +567,7 @@
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
-                        Text="Total Rows" />
+                        Text="{x:Bind ViewModel.Ui.MetricsTotalRowsLabelText, Mode=OneWay}" />
                     <TextBlock
                         Style="{StaticResource MetricValueTextStyle}"
                         Text="{Binding TotalEntries}" />
@@ -502,7 +580,7 @@
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
-                        Text="Translated" />
+                        Text="{x:Bind ViewModel.Ui.MetricsTranslatedLabelText, Mode=OneWay}" />
                     <TextBlock
                         Style="{StaticResource MetricValueTextStyle}"
                         Text="{Binding TranslatedEntries}" />
@@ -515,7 +593,7 @@
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
-                        Text="Pending" />
+                        Text="{x:Bind ViewModel.Ui.MetricsPendingLabelText, Mode=OneWay}" />
                     <TextBlock
                         Style="{StaticResource MetricValueTextStyle}"
                         Text="{Binding PendingEntries}" />
@@ -528,7 +606,7 @@
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
-                        Text="Completion" />
+                        Text="{x:Bind ViewModel.Ui.MetricsCompletionLabelText, Mode=OneWay}" />
                     <TextBlock
                         Style="{StaticResource MetricValueTextStyle}"
                         Text="{Binding CompletionPercent}" />
@@ -562,22 +640,25 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBox
+                            x:Name="SearchTextBox"
                             Grid.Column="0"
-                            Header="Search"
-                            PlaceholderText="EDID / Source / Translation / Field"
+                            Header="{x:Bind ViewModel.Ui.MainSearchBoxHeader, Mode=OneWay}"
+                            PlaceholderText="{x:Bind ViewModel.Ui.MainSearchBoxPlaceholderText, Mode=OneWay}"
                             Text="{Binding SearchText, Mode=TwoWay}" />
                         <ComboBox
                             Grid.Column="1"
-                            Header="List"
-                            ItemsSource="{Binding ListFilters}"
-                            SelectedItem="{Binding SelectedListFilter, Mode=TwoWay}" />
+                            Header="{x:Bind ViewModel.Ui.MainListFilterBoxHeader, Mode=OneWay}"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding ListFilterOptions}"
+                            SelectedValue="{Binding SelectedListFilter, Mode=TwoWay}"
+                            SelectedValuePath="Value" />
                         <ToggleSwitch
                             Grid.Column="2"
-                            Header="Only Pending"
+                            Header="{x:Bind ViewModel.Ui.MainOnlyPendingToggleHeader, Mode=OneWay}"
                             IsOn="{Binding ShowUntranslatedOnly, Mode=TwoWay}" />
                         <ToggleSwitch
                             Grid.Column="3"
-                            Header="Include Locked"
+                            Header="{x:Bind ViewModel.Ui.MainIncludeLockedToggleHeader, Mode=OneWay}"
                             IsOn="{Binding ShowLocked, Mode=TwoWay}" />
                     </Grid>
 
@@ -598,19 +679,19 @@
                             <TextBlock
                                 Grid.Column="0"
                                 Style="{StaticResource TableHeaderTextStyle}"
-                                Text="EDID" />
+                                Text="{x:Bind ViewModel.Ui.MainTableHeaderEdidText, Mode=OneWay}" />
                             <TextBlock
                                 Grid.Column="1"
                                 Style="{StaticResource TableHeaderTextStyle}"
-                                Text="Field" />
+                                Text="{x:Bind ViewModel.Ui.MainTableHeaderFieldText, Mode=OneWay}" />
                             <TextBlock
                                 Grid.Column="2"
                                 Style="{StaticResource TableHeaderTextStyle}"
-                                Text="Source" />
+                                Text="{x:Bind ViewModel.Ui.MainTableHeaderSourceText, Mode=OneWay}" />
                             <TextBlock
                                 Grid.Column="3"
                                 Style="{StaticResource TableHeaderTextStyle}"
-                                Text="Translation" />
+                                Text="{x:Bind ViewModel.Ui.MainTableHeaderTranslationText, Mode=OneWay}" />
                         </Grid>
                     </Border>
 
@@ -702,7 +783,7 @@
 
                     <TextBlock
                         Style="{StaticResource SectionTitleTextStyle}"
-                        Text="Row Inspector" />
+                        Text="{x:Bind ViewModel.Ui.InspectorSectionTitleText, Mode=OneWay}" />
 
                     <Grid
                         Grid.Row="1"
@@ -714,7 +795,7 @@
                         <StackPanel>
                             <TextBlock
                                 Style="{StaticResource MetricLabelTextStyle}"
-                                Text="EDID" />
+                                Text="{x:Bind ViewModel.Ui.InspectorEdidLabelText, Mode=OneWay}" />
                             <TextBlock
                                 FontFamily="Cascadia Mono"
                                 Text="{Binding InspectorRecordId}" />
@@ -722,7 +803,7 @@
                         <StackPanel Grid.Column="1">
                             <TextBlock
                                 Style="{StaticResource MetricLabelTextStyle}"
-                                Text="Field" />
+                                Text="{x:Bind ViewModel.Ui.InspectorFieldLabelText, Mode=OneWay}" />
                             <TextBlock
                                 FontFamily="Cascadia Mono"
                                 Text="{Binding InspectorField}" />
@@ -732,16 +813,23 @@
                     <TextBox
                         Grid.Row="2"
                         AcceptsReturn="True"
-                        Header="Source"
+                        Header="{x:Bind ViewModel.Ui.InspectorSourceBoxHeader, Mode=OneWay}"
                         IsReadOnly="True"
+                        MaxHeight="240"
                         MinHeight="72"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
                         Text="{Binding InspectorSourceText}" />
 
                     <StackPanel Grid.Row="3">
                         <TextBox
+                            x:Name="InspectorTranslationTextBox"
                             AcceptsReturn="True"
-                            Header="Translation"
+                            Header="{x:Bind ViewModel.Ui.InspectorTranslationBoxHeader, Mode=OneWay}"
+                            MaxHeight="260"
                             MinHeight="86"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
                             Text="{Binding InspectorTranslatedText, Mode=TwoWay}" />
                         <StackPanel
                             Margin="0,8,0,0"
@@ -749,228 +837,36 @@
                             Spacing="8">
                             <Button
                                 Command="{Binding ApplyInspectorToRowCommand}"
-                                Content="Apply"
+                                Content="{x:Bind ViewModel.Ui.InspectorApplyButtonContent, Mode=OneWay}"
                                 Style="{StaticResource PrimaryAction}" />
                             <Button
                                 Command="{Binding CopySourceToTargetCommand}"
-                                Content="Copy Source"
+                                Content="{x:Bind ViewModel.Ui.InspectorCopySourceButtonContent, Mode=OneWay}"
                                 Style="{StaticResource SubtleAction}" />
                             <Button
                                 Command="{Binding MarkSelectedValidatedCommand}"
-                                Content="Mark Validated"
+                                Content="{x:Bind ViewModel.Ui.InspectorMarkValidatedButtonContent, Mode=OneWay}"
                                 Style="{StaticResource SecondaryAction}" />
                             <Button
                                 Command="{Binding ToggleSelectedLockCommand}"
-                                Content="Toggle Lock"
+                                Content="{x:Bind ViewModel.Ui.InspectorToggleLockButtonContent, Mode=OneWay}"
                                 Style="{StaticResource SubtleAction}" />
                         </StackPanel>
                     </StackPanel>
 
-                    <ScrollViewer
+                    <TextBlock
                         Grid.Row="4"
-                        VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="8">
-                            <TextBlock
-                                Margin="0,2,0,6"
-                                Style="{StaticResource MetricLabelTextStyle}"
-                                Text="{Binding InspectorHint}" />
-                            <TextBlock
-                                Margin="0,0,0,4"
-                                Style="{StaticResource SectionTitleTextStyle}"
-                                Text="Provider Chain" />
-                            <Grid ColumnSpacing="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <ListView
-                                    Height="132"
-                                    ItemsSource="{Binding ProviderOptions}"
-                                    SelectedItem="{Binding SelectedProviderOption, Mode=TwoWay}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate x:DataType="viewModels:ProviderChainItemViewModel">
-                                            <Grid ColumnSpacing="8">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <CheckBox
-                                                    IsChecked="{Binding IsEnabled, Mode=TwoWay}"
-                                                    VerticalAlignment="Center" />
-                                                <TextBlock
-                                                    Grid.Column="1"
-                                                    FontFamily="Cascadia Mono"
-                                                    Text="{Binding ProviderId}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Spacing="6">
-                                    <Button
-                                        Command="{Binding MoveSelectedProviderUpCommand}"
-                                        Content="Up"
-                                        Style="{StaticResource SubtleAction}" />
-                                    <Button
-                                        Command="{Binding MoveSelectedProviderDownCommand}"
-                                        Content="Down"
-                                        Style="{StaticResource SubtleAction}" />
-                                    <Button
-                                        Command="{Binding SelectAllProvidersCommand}"
-                                        Content="All"
-                                        Style="{StaticResource SubtleAction}" />
-                                    <Button
-                                        Command="{Binding ClearProviderSelectionCommand}"
-                                        Content="None"
-                                        Style="{StaticResource SubtleAction}" />
-                                </StackPanel>
-                            </Grid>
-
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                Style="{StaticResource SectionTitleTextStyle}"
-                                Text="Provider Configuration" />
-                            <TextBlock
-                                FontFamily="Cascadia Mono"
-                                Opacity="0.75"
-                                Text="{Binding ProviderConfigProviderId}" />
-
-                            <Grid ColumnSpacing="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox
-                                    Header="Base Url"
-                                    Text="{Binding ProviderBaseUrl, Mode=TwoWay}" />
-                                <TextBox
-                                    Grid.Column="1"
-                                    Header="Model"
-                                    Text="{Binding ProviderModel, Mode=TwoWay}" />
-                            </Grid>
-
-                            <Grid ColumnSpacing="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox
-                                    Header="Region"
-                                    Text="{Binding ProviderRegion, Mode=TwoWay}" />
-                                <TextBox
-                                    Grid.Column="1"
-                                    Header="Organization"
-                                    Text="{Binding ProviderOrganization, Mode=TwoWay}" />
-                            </Grid>
-
-                            <Grid ColumnSpacing="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox
-                                    Header="API Key (DPAPI)"
-                                    PlaceholderText="Stored securely via DPAPI"
-                                    Text="{Binding ProviderApiKey, Mode=TwoWay}" />
-                                <TextBox
-                                    Grid.Column="1"
-                                    Header="API Secret (DPAPI)"
-                                    PlaceholderText="For Baidu/Tencent dual-key providers"
-                                    Text="{Binding ProviderApiSecret, Mode=TwoWay}" />
-                            </Grid>
-
-                            <TextBox
-                                Header="Session Token (optional, DPAPI)"
-                                Text="{Binding ProviderSessionToken, Mode=TwoWay}" />
-
-                            <TextBox
-                                AcceptsReturn="True"
-                                Header="Prompt Template"
-                                MinHeight="80"
-                                Text="{Binding ProviderPromptTemplate, Mode=TwoWay}"
-                                TextWrapping="Wrap" />
-
-                            <TextBox
-                                AcceptsReturn="True"
-                                FontFamily="Cascadia Mono"
-                                Header="Language Map (key=value per line)"
-                                MinHeight="92"
-                                Text="{Binding ProviderLanguageMap, Mode=TwoWay}"
-                                TextWrapping="Wrap" />
-
-                            <StackPanel
-                                Orientation="Horizontal"
-                                Spacing="8">
-                                <Button
-                                    Command="{Binding SaveSelectedProviderConfigurationCommand}"
-                                    Content="Save Config"
-                                    Style="{StaticResource PrimaryAction}" />
-                                <Button
-                                    Command="{Binding ReloadSelectedProviderConfigurationCommand}"
-                                    Content="Reload"
-                                    Style="{StaticResource SubtleAction}" />
-                                <Button
-                                    Command="{Binding TestSelectedProviderConnectionCommand}"
-                                    Content="Test"
-                                    Style="{StaticResource SecondaryAction}" />
-                                <Button
-                                    Click="OnImportLegacyApiTranslatorConfigClicked"
-                                    Content="Import ApiTranslator.txt"
-                                    Style="{StaticResource SubtleAction}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </ScrollViewer>
+                        Margin="0,2,0,0"
+                        Style="{StaticResource MetricLabelTextStyle}"
+                        Text="{x:Bind ViewModel.Ui.InspectorProviderMovedHintText, Mode=OneWay}"
+                        TextWrapping="WrapWholeWords" />
                 </Grid>
             </Border>
         </Grid>
 
-        <TabView
-            Grid.Row="3"
-            Background="Transparent"
-            BorderBrush="{StaticResource VsCodeBorderBrush}"
-            BorderThickness="0,1,0,0">
-            <TabViewItem Header="Logs">
-                <ListView ItemsSource="{Binding ActivityLogs}" />
-            </TabViewItem>
-            <TabViewItem Header="Batch Script">
-                <Grid Padding="10" RowSpacing="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock
-                        Style="{StaticResource SectionTitleTextStyle}"
-                        Text="Current Batch Pipeline" />
-                    <ListView
-                        Grid.Row="1"
-                        ItemsSource="{Binding ScriptHints}" />
-                </Grid>
-            </TabViewItem>
-            <TabViewItem Header="Glossary">
-                <Grid Padding="10" RowSpacing="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <ListView
-                        ItemsSource="{Binding GlossarySuggestions}"
-                        SelectedItem="{Binding SelectedGlossarySuggestion, Mode=TwoWay}" />
-                    <Button
-                        Grid.Row="1"
-                        Command="{Binding ApplySelectedGlossarySuggestionCommand}"
-                        Content="Apply Selected Suggestion"
-                        HorizontalAlignment="Left"
-                        Style="{StaticResource PrimaryAction}" />
-                </Grid>
-            </TabViewItem>
-            <TabViewItem Header="Task Queue">
-                <ListView ItemsSource="{Binding BatchQueue}" />
-            </TabViewItem>
-        </TabView>
 
         <Border
-            Grid.Row="4"
+            Grid.Row="3"
             Style="{StaticResource FluentSurfaceBorderStyle}"
             Padding="12,8">
             <Grid ColumnSpacing="10">
@@ -981,15 +877,31 @@
                 <TextBlock
                     VerticalAlignment="Center"
                     Text="{Binding StatusText}" />
-                <ProgressBar
+                <StackPanel
                     Grid.Column="1"
-                    Maximum="100"
-                    Minimum="0"
-                    Value="{Binding CompletionPercent}" />
+                    HorizontalAlignment="Stretch"
+                    Spacing="4">
+                    <TextBlock
+                        FontSize="11"
+                        Foreground="{StaticResource VsCodeSubtleTextBrush}"
+                        Text="{Binding KeyboardShortcutHint}"
+                        TextAlignment="Right"
+                        TextTrimming="CharacterEllipsis" />
+                    <ProgressBar
+                        Maximum="100"
+                        Minimum="0"
+                        Value="{Binding CompletionPercent}" />
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>
 </Page>
+
+
+
+
+
+
 
 
 

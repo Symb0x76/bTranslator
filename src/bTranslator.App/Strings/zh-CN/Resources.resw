@@ -1,0 +1,627 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="App.WindowTitle" xml:space="preserve">
+    <value>bTranslator</value>
+  </data>
+  <data name="WindowTitle.AiWorkflow" xml:space="preserve">
+    <value>AI 工作流设计器</value>
+  </data>
+  <data name="WindowTitle.ProviderConfiguration" xml:space="preserve">
+    <value>Provider 配置</value>
+  </data>
+  <data name="UiLanguage.SystemDefault" xml:space="preserve">
+    <value>跟随系统</value>
+  </data>
+  <data name="UiLanguage.English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="UiLanguage.ChineseSimplified" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="Language.English" xml:space="preserve">
+    <value>英语</value>
+  </data>
+  <data name="Language.ChineseSimplified" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="Language.Japanese" xml:space="preserve">
+    <value>日语</value>
+  </data>
+  <data name="Language.Korean" xml:space="preserve">
+    <value>韩语</value>
+  </data>
+  <data name="ListFilter.All" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="ListFilter.Strings" xml:space="preserve">
+    <value>STRINGS</value>
+  </data>
+  <data name="ListFilter.DlStrings" xml:space="preserve">
+    <value>DLSTRINGS</value>
+  </data>
+  <data name="ListFilter.IlStrings" xml:space="preserve">
+    <value>ILSTRINGS</value>
+  </data>
+  <data name="ListFilter.Record" xml:space="preserve">
+    <value>RECORD</value>
+  </data>
+  <data name="EncodingMode.AutoDetect" xml:space="preserve">
+    <value>自动检测</value>
+  </data>
+  <data name="EncodingMode.Manual" xml:space="preserve">
+    <value>手动</value>
+  </data>
+  <data name="RowQuality.Locked" xml:space="preserve">
+    <value>已锁定</value>
+  </data>
+  <data name="RowQuality.Validated" xml:space="preserve">
+    <value>已验证</value>
+  </data>
+  <data name="RowQuality.Pending" xml:space="preserve">
+    <value>待翻译</value>
+  </data>
+  <data name="RowQuality.Draft" xml:space="preserve">
+    <value>草稿</value>
+  </data>
+  <data name="WorkspaceTitle.Format" xml:space="preserve">
+    <value>{0} 工作区</value>
+  </data>
+  <data name="PluginSwitcher.CurrentPlugin" xml:space="preserve">
+    <value>当前插件</value>
+  </data>
+  <data name="Status.Ready" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="Status.MetadataRefreshed" xml:space="preserve">
+    <value>元数据已刷新。</value>
+  </data>
+  <data name="Status.PlaceholderCheckFailed" xml:space="preserve">
+    <value>占位符流程校验失败。</value>
+  </data>
+  <data name="Status.PluginPathMissing" xml:space="preserve">
+    <value>插件路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.OpenedPlugin" xml:space="preserve">
+    <value>已打开“{0}”（{1}）。</value>
+  </data>
+  <data name="Status.OpenFailed" xml:space="preserve">
+    <value>打开失败：{0}</value>
+  </data>
+  <data name="Status.NoActivePlugin" xml:space="preserve">
+    <value>当前没有活动插件文档，请先打开插件。</value>
+  </data>
+  <data name="Status.SavedWorkspace" xml:space="preserve">
+    <value>工作区已保存到“{0}”（{1}）。</value>
+  </data>
+  <data name="Status.SaveFailed" xml:space="preserve">
+    <value>保存失败：{0}</value>
+  </data>
+  <data name="Status.NoPendingRows" xml:space="preserve">
+    <value>没有待翻译条目。</value>
+  </data>
+  <data name="Status.NoAvailableProvider" xml:space="preserve">
+    <value>Provider 链中没有可用项。</value>
+  </data>
+  <data name="Status.BatchTranslationDone" xml:space="preserve">
+    <value>批量翻译完成，使用“{0}”，更新 {1} 条。</value>
+  </data>
+  <data name="Status.BatchTranslationFailed" xml:space="preserve">
+    <value>批量翻译失败：{0}</value>
+  </data>
+  <data name="Status.PluginFileNotFound" xml:space="preserve">
+    <value>未找到插件文件：“{0}”。</value>
+  </data>
+  <data name="Status.NoProviderSelected" xml:space="preserve">
+    <value>未选择 Provider。</value>
+  </data>
+  <data name="Status.UiLanguageChangedRestart" xml:space="preserve">
+    <value>UI 语言已切换为“{0}”，重启应用后可完整生效。</value>
+  </data>
+  <data name="Status.FilePickerUnavailable" xml:space="preserve">
+    <value>无法打开文件选择器：主窗口句柄不可用。</value>
+  </data>
+  <data name="Status.ProviderSettingsSaved" xml:space="preserve">
+    <value>已保存“{0}”的 Provider 配置。</value>
+  </data>
+  <data name="Status.ProviderSettingsSaveFailed" xml:space="preserve">
+    <value>保存 Provider 配置失败：{0}</value>
+  </data>
+  <data name="Status.ProviderSettingsReloaded" xml:space="preserve">
+    <value>已重载“{0}”的 Provider 配置。</value>
+  </data>
+  <data name="Status.ProviderNotRegistered" xml:space="preserve">
+    <value>Provider “{0}”未注册。</value>
+  </data>
+  <data name="Status.ProviderConnectivityOk" xml:space="preserve">
+    <value>Provider “{0}”连通性正常。</value>
+  </data>
+  <data name="Status.ProviderTestFailedWithKind" xml:space="preserve">
+    <value>Provider “{0}”测试失败（{1}）：{2}</value>
+  </data>
+  <data name="Status.ProviderTestFailed" xml:space="preserve">
+    <value>Provider “{0}”测试失败：{1}</value>
+  </data>
+  <data name="Status.ApiTranslatorPathMissing" xml:space="preserve">
+    <value>ApiTranslator 配置路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.NoProviderSettingsInApiTranslator" xml:space="preserve">
+    <value>ApiTranslator 配置中未找到 Provider 设置。</value>
+  </data>
+  <data name="Status.ApiTranslatorImported" xml:space="preserve">
+    <value>已从“{0}”导入 ApiTranslator 配置（{1} 个 Provider）。</value>
+  </data>
+  <data name="Status.ApiTranslatorImportFailed" xml:space="preserve">
+    <value>导入 ApiTranslator 配置失败：{0}</value>
+  </data>
+  <data name="Status.ProviderSettingsLoadFailed" xml:space="preserve">
+    <value>加载 Provider 配置失败：{0}</value>
+  </data>
+  <data name="InspectorHint.SelectRow" xml:space="preserve">
+    <value>选择一条记录以检查占位符与术语一致性。</value>
+  </data>
+  <data name="InspectorHint.RowLocked" xml:space="preserve">
+    <value>当前记录已锁定，写入翻译前请先解锁。</value>
+  </data>
+  <data name="InspectorHint.KeepPlaceholders" xml:space="preserve">
+    <value>翻译时请保持标签和数字占位符不变。</value>
+  </data>
+  <data name="InspectorHint.GlossaryMismatch" xml:space="preserve">
+    <value>所选术语与当前源文本不匹配。</value>
+  </data>
+  <data name="Log.AppliedManualEdit" xml:space="preserve">
+    <value>已将手动编辑应用到“{0}”。</value>
+  </data>
+  <data name="Log.CopiedSourceToTarget" xml:space="preserve">
+    <value>已将源文本复制到“{0}”的译文。</value>
+  </data>
+  <data name="Log.MarkedValidated" xml:space="preserve">
+    <value>已将“{0}”标记为已验证。</value>
+  </data>
+  <data name="Log.RowLocked" xml:space="preserve">
+    <value>已锁定“{0}”。</value>
+  </data>
+  <data name="Log.RowUnlocked" xml:space="preserve">
+    <value>已解锁“{0}”。</value>
+  </data>
+  <data name="Log.AppliedGlossarySuggestion" xml:space="preserve">
+    <value>已将术语建议“{0}”应用到“{1}”。</value>
+  </data>
+  <data name="Log.ProviderConnectivitySample" xml:space="preserve">
+    <value>{0} 示例：{1}</value>
+  </data>
+  <data name="Shortcut.Open" xml:space="preserve">
+    <value>Ctrl+O 打开</value>
+  </data>
+  <data name="Shortcut.Save" xml:space="preserve">
+    <value>Ctrl+S 保存</value>
+  </data>
+  <data name="Shortcut.AiBatch" xml:space="preserve">
+    <value>Ctrl+Shift+T 批量 AI</value>
+  </data>
+  <data name="Shortcut.Search" xml:space="preserve">
+    <value>Ctrl+F 搜索</value>
+  </data>
+  <data name="Shortcut.Apply" xml:space="preserve">
+    <value>Ctrl+Enter 应用</value>
+  </data>
+  <data name="Shortcut.ApplyNext" xml:space="preserve">
+    <value>Ctrl+Shift+Enter 应用并下一条</value>
+  </data>
+  <data name="Shortcut.CopySource" xml:space="preserve">
+    <value>Ctrl+Shift+C 复制源文</value>
+  </data>
+  <data name="Shortcut.ToggleLock" xml:space="preserve">
+    <value>Ctrl+L 切换锁定</value>
+  </data>
+  <data name="Shortcut.Validate" xml:space="preserve">
+    <value>Ctrl+M 标记验证</value>
+  </data>
+  <data name="Shortcut.NextPending" xml:space="preserve">
+    <value>F8 下一个待翻译</value>
+  </data>
+  <data name="Shortcut.PrevPending" xml:space="preserve">
+    <value>Shift+F8 上一个待翻译</value>
+  </data>
+  <data name="Shortcut.Help" xml:space="preserve">
+    <value>F1 快捷键帮助</value>
+  </data>
+  <data name="ShortcutGroup.File" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="ShortcutGroup.Translate" xml:space="preserve">
+    <value>翻译</value>
+  </data>
+  <data name="ShortcutGroup.Navigation" xml:space="preserve">
+    <value>导航</value>
+  </data>
+  <data name="ShortcutGroup.Editing" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="ShortcutHelp.DialogTitle" xml:space="preserve">
+    <value>快捷键帮助</value>
+  </data>
+  <data name="ShortcutHelp.CloseButton" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="ShortcutHelp.SearchPlaceholder" xml:space="preserve">
+    <value>按按键或说明筛选</value>
+  </data>
+  <data name="ShortcutHelp.NoResults" xml:space="preserve">
+    <value>没有匹配当前筛选的快捷键。</value>
+  </data>
+  <data name="ShortcutHelp.Open" xml:space="preserve">
+    <value>打开插件并加载工作区</value>
+  </data>
+  <data name="ShortcutHelp.Save" xml:space="preserve">
+    <value>保存当前工作区</value>
+  </data>
+  <data name="ShortcutHelp.BatchTranslate" xml:space="preserve">
+    <value>按 Provider 链执行批量翻译</value>
+  </data>
+  <data name="ShortcutHelp.Refresh" xml:space="preserve">
+    <value>重载元数据与工作区设置</value>
+  </data>
+  <data name="ShortcutHelp.FocusSearch" xml:space="preserve">
+    <value>聚焦到搜索框</value>
+  </data>
+  <data name="ShortcutHelp.ApplyInspector" xml:space="preserve">
+    <value>将检查器译文应用到当前行</value>
+  </data>
+  <data name="ShortcutHelp.ApplyAndNext" xml:space="preserve">
+    <value>应用并跳转到下一条待翻译</value>
+  </data>
+  <data name="ShortcutHelp.CopySource" xml:space="preserve">
+    <value>将源文复制到译文输入框</value>
+  </data>
+  <data name="ShortcutHelp.ToggleLock" xml:space="preserve">
+    <value>切换所选行的锁定状态</value>
+  </data>
+  <data name="ShortcutHelp.MarkValidated" xml:space="preserve">
+    <value>将所选行标记为已验证</value>
+  </data>
+  <data name="ShortcutHelp.NextPending" xml:space="preserve">
+    <value>选择下一条待翻译</value>
+  </data>
+  <data name="ShortcutHelp.PreviousPending" xml:space="preserve">
+    <value>选择上一条待翻译</value>
+  </data>
+  <data name="ShortcutHelp.ShowHelp" xml:space="preserve">
+    <value>打开此快捷键帮助弹窗</value>
+  </data>
+  <data name="MainMenuFile.Title" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="MainMenuTranslate.Title" xml:space="preserve">
+    <value>翻译</value>
+  </data>
+  <data name="MainMenuProviders.Title" xml:space="preserve">
+    <value>Providers</value>
+  </data>
+  <data name="MainMenuView.Title" xml:space="preserve">
+    <value>视图</value>
+  </data>
+  <data name="MainMenuActions.Title" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="MainMenuWorkspace.Title" xml:space="preserve">
+    <value>工作区</value>
+  </data>
+  <data name="WorkspaceMenuUiLanguage.Text" xml:space="preserve">
+    <value>界面语言</value>
+  </data>
+  <data name="WorkspaceMenuGame.Text" xml:space="preserve">
+    <value>游戏</value>
+  </data>
+  <data name="WorkspaceMenuSourceLanguage.Text" xml:space="preserve">
+    <value>源语言</value>
+  </data>
+  <data name="WorkspaceMenuTargetLanguage.Text" xml:space="preserve">
+    <value>目标语言</value>
+  </data>
+  <data name="WorkspaceMenuEncodingMode.Text" xml:space="preserve">
+    <value>编码模式</value>
+  </data>
+  <data name="WorkspaceMenuEncodingManual.Text" xml:space="preserve">
+    <value>编码（手动）</value>
+  </data>
+  <data name="PluginSwitcherTitle.Text" xml:space="preserve">
+    <value>插件切换器</value>
+  </data>
+  <data name="PluginSwitcherSearchBox.PlaceholderText" xml:space="preserve">
+    <value>按插件名称或路径搜索</value>
+  </data>
+  <data name="PluginSwitcherPinButton.ToolTipService.ToolTip" xml:space="preserve">
+    <value>固定或取消固定插件</value>
+  </data>
+  <data name="PluginSwitcherOpenButton.Content" xml:space="preserve">
+    <value>打开插件...</value>
+  </data>
+  <data name="PluginSwitcherSaveButton.Content" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="MetricsTotalRowsLabel.Text" xml:space="preserve">
+    <value>总条目</value>
+  </data>
+  <data name="MetricsTranslatedLabel.Text" xml:space="preserve">
+    <value>已翻译</value>
+  </data>
+  <data name="MetricsPendingLabel.Text" xml:space="preserve">
+    <value>待翻译</value>
+  </data>
+  <data name="MetricsCompletionLabel.Text" xml:space="preserve">
+    <value>完成率</value>
+  </data>
+  <data name="MainSearchBox.Header" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="MainSearchBox.PlaceholderText" xml:space="preserve">
+    <value>EDID / 源文 / 译文 / 字段</value>
+  </data>
+  <data name="MainListFilterBox.Header" xml:space="preserve">
+    <value>列表</value>
+  </data>
+  <data name="MainOnlyPendingToggle.Header" xml:space="preserve">
+    <value>仅待翻译</value>
+  </data>
+  <data name="MainIncludeLockedToggle.Header" xml:space="preserve">
+    <value>包含锁定</value>
+  </data>
+  <data name="MainTableHeaderEdid.Text" xml:space="preserve">
+    <value>EDID</value>
+  </data>
+  <data name="MainTableHeaderField.Text" xml:space="preserve">
+    <value>字段</value>
+  </data>
+  <data name="MainTableHeaderSource.Text" xml:space="preserve">
+    <value>源文</value>
+  </data>
+  <data name="MainTableHeaderTranslation.Text" xml:space="preserve">
+    <value>译文</value>
+  </data>
+  <data name="InspectorSectionTitle.Text" xml:space="preserve">
+    <value>行检查器</value>
+  </data>
+  <data name="InspectorEdidLabel.Text" xml:space="preserve">
+    <value>EDID</value>
+  </data>
+  <data name="InspectorFieldLabel.Text" xml:space="preserve">
+    <value>字段</value>
+  </data>
+  <data name="InspectorSourceBox.Header" xml:space="preserve">
+    <value>源文</value>
+  </data>
+  <data name="InspectorTranslationBox.Header" xml:space="preserve">
+    <value>译文</value>
+  </data>
+  <data name="InspectorApplyButton.Content" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="InspectorCopySourceButton.Content" xml:space="preserve">
+    <value>复制源文</value>
+  </data>
+  <data name="InspectorMarkValidatedButton.Content" xml:space="preserve">
+    <value>标记已验证</value>
+  </data>
+  <data name="InspectorToggleLockButton.Content" xml:space="preserve">
+    <value>切换锁定</value>
+  </data>
+  <data name="InspectorProviderMovedHint.Text" xml:space="preserve">
+    <value>Provider 配置已移动到 Actions -&gt; Provider -&gt; Configuration -&gt; Open Configuration Window。</value>
+  </data>
+  <data name="AiWorkflowPageTitle.Text" xml:space="preserve">
+    <value>AI 工作流设计器</value>
+  </data>
+  <data name="AiWorkflowChainBuilderTitle.Text" xml:space="preserve">
+    <value>Provider 链构建</value>
+  </data>
+  <data name="AiWorkflowMoveUpButton.Content" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="AiWorkflowMoveDownButton.Content" xml:space="preserve">
+    <value>下移</value>
+  </data>
+  <data name="AiWorkflowAllButton.Content" xml:space="preserve">
+    <value>全选</value>
+  </data>
+  <data name="AiWorkflowNoneButton.Content" xml:space="preserve">
+    <value>全不选</value>
+  </data>
+  <data name="AiWorkflowProfileTitle.Text" xml:space="preserve">
+    <value>工作流配置</value>
+  </data>
+  <data name="AiWorkflowSourceLanguageBox.Header" xml:space="preserve">
+    <value>源语言</value>
+  </data>
+  <data name="AiWorkflowTargetLanguageBox.Header" xml:space="preserve">
+    <value>目标语言</value>
+  </data>
+  <data name="AiWorkflowLoadStringsToggle.Header" xml:space="preserve">
+    <value>加载 STRINGS</value>
+  </data>
+  <data name="AiWorkflowLoadFieldsToggle.Header" xml:space="preserve">
+    <value>加载记录字段</value>
+  </data>
+  <data name="AiWorkflowCurrentChainBox.Header" xml:space="preserve">
+    <value>当前工作流链</value>
+  </data>
+  <data name="AiWorkflowRunButton.Content" xml:space="preserve">
+    <value>运行工作流</value>
+  </data>
+  <data name="AiWorkflowTipText.Text" xml:space="preserve">
+    <value>提示：可启用/禁用 Provider 并调整顺序来定义回退链。优先使用最前面的可用 Provider，失败会自动回退。</value>
+  </data>
+  <data name="ProviderConfigPageTitle.Text" xml:space="preserve">
+    <value>Provider 配置</value>
+  </data>
+  <data name="ProviderConfigProviderBox.Header" xml:space="preserve">
+    <value>Provider</value>
+  </data>
+  <data name="ProviderConfigSelectedProviderTitle.Text" xml:space="preserve">
+    <value>当前 Provider</value>
+  </data>
+  <data name="ProviderConfigBaseUrlBox.Header" xml:space="preserve">
+    <value>Base Url</value>
+  </data>
+  <data name="ProviderConfigModelBox.Header" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="ProviderConfigRegionBox.Header" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ProviderConfigOrganizationBox.Header" xml:space="preserve">
+    <value>Organization</value>
+  </data>
+  <data name="ProviderConfigApiKeyBox.Header" xml:space="preserve">
+    <value>API Key（DPAPI）</value>
+  </data>
+  <data name="ProviderConfigApiKeyBox.PlaceholderText" xml:space="preserve">
+    <value>通过 DPAPI 安全存储</value>
+  </data>
+  <data name="ProviderConfigApiSecretBox.Header" xml:space="preserve">
+    <value>API Secret（DPAPI）</value>
+  </data>
+  <data name="ProviderConfigApiSecretBox.PlaceholderText" xml:space="preserve">
+    <value>用于 Baidu/Tencent 双密钥 Provider</value>
+  </data>
+  <data name="ProviderConfigSessionTokenBox.Header" xml:space="preserve">
+    <value>Session Token（可选，DPAPI）</value>
+  </data>
+  <data name="ProviderConfigPromptTemplateBox.Header" xml:space="preserve">
+    <value>Prompt 模板</value>
+  </data>
+  <data name="ProviderConfigLanguageMapBox.Header" xml:space="preserve">
+    <value>语言映射（每行 key=value）</value>
+  </data>
+  <data name="ProviderConfigSaveButton.Content" xml:space="preserve">
+    <value>保存配置</value>
+  </data>
+  <data name="ProviderConfigReloadButton.Content" xml:space="preserve">
+    <value>重载</value>
+  </data>
+  <data name="ProviderConfigTestButton.Content" xml:space="preserve">
+    <value>测试</value>
+  </data>
+  <data name="ProviderConfigImportButton.Content" xml:space="preserve">
+    <value>导入 ApiTranslator.txt</value>
+  </data>
+  <data name="Status.UiLanguageChanged" xml:space="preserve">
+    <value>UI 语言已切换为“{0}”。</value>
+  </data>
+  <data name="Menu.OpenPlugin" xml:space="preserve">
+    <value>打开插件...</value>
+  </data>
+  <data name="Menu.Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Menu.OpenAndAutoTranslate" xml:space="preserve">
+    <value>打开并自动翻译</value>
+  </data>
+  <data name="Menu.Paths" xml:space="preserve">
+    <value>路径</value>
+  </data>
+  <data name="Menu.Optional" xml:space="preserve">
+    <value>可选</value>
+  </data>
+  <data name="Menu.PluginPath" xml:space="preserve">
+    <value>插件路径...</value>
+  </data>
+  <data name="Menu.OutputPath" xml:space="preserve">
+    <value>输出路径...</value>
+  </data>
+  <data name="Menu.StringsDirectory" xml:space="preserve">
+    <value>Strings 目录...</value>
+  </data>
+  <data name="Menu.RecordDefsPath" xml:space="preserve">
+    <value>RecordDefs 路径...</value>
+  </data>
+  <data name="Menu.RunBatchTranslation" xml:space="preserve">
+    <value>运行批量翻译</value>
+  </data>
+  <data name="Menu.Scope" xml:space="preserve">
+    <value>范围</value>
+  </data>
+  <data name="Menu.Selection" xml:space="preserve">
+    <value>选中项</value>
+  </data>
+  <data name="Menu.LoadStrings" xml:space="preserve">
+    <value>加载 STRINGS</value>
+  </data>
+  <data name="Menu.LoadRecordFields" xml:space="preserve">
+    <value>加载记录字段</value>
+  </data>
+  <data name="Menu.OnlyPendingRows" xml:space="preserve">
+    <value>仅待翻译行</value>
+  </data>
+  <data name="Menu.IncludeLockedRows" xml:space="preserve">
+    <value>包含锁定行</value>
+  </data>
+  <data name="Menu.CopySourceToTranslation" xml:space="preserve">
+    <value>复制源文到译文</value>
+  </data>
+  <data name="Menu.ApplyInspectorEdit" xml:space="preserve">
+    <value>应用检查器编辑</value>
+  </data>
+  <data name="Menu.MarkSelectedValidated" xml:space="preserve">
+    <value>标记选中为已验证</value>
+  </data>
+  <data name="Menu.ToggleLock" xml:space="preserve">
+    <value>切换锁定</value>
+  </data>
+  <data name="Menu.ReloadMetadata" xml:space="preserve">
+    <value>重载元数据</value>
+  </data>
+  <data name="Menu.AiWorkflow" xml:space="preserve">
+    <value>AI 工作流</value>
+  </data>
+  <data name="Menu.OpenWorkflowDesigner" xml:space="preserve">
+    <value>打开工作流设计器</value>
+  </data>
+  <data name="Menu.Chain" xml:space="preserve">
+    <value>链路</value>
+  </data>
+  <data name="Menu.MoveSelectedUp" xml:space="preserve">
+    <value>上移选中项</value>
+  </data>
+  <data name="Menu.MoveSelectedDown" xml:space="preserve">
+    <value>下移选中项</value>
+  </data>
+  <data name="Menu.EnableAll" xml:space="preserve">
+    <value>全部启用</value>
+  </data>
+  <data name="Menu.DisableAll" xml:space="preserve">
+    <value>全部禁用</value>
+  </data>
+  <data name="Menu.CurrentChain" xml:space="preserve">
+    <value>当前链路</value>
+  </data>
+  <data name="Menu.Configuration" xml:space="preserve">
+    <value>配置</value>
+  </data>
+  <data name="Menu.OpenConfigurationWindow" xml:space="preserve">
+    <value>打开配置窗口</value>
+  </data>
+  <data name="Menu.SaveSelectedProvider" xml:space="preserve">
+    <value>保存当前 Provider</value>
+  </data>
+  <data name="Menu.ReloadSelectedProvider" xml:space="preserve">
+    <value>重载当前 Provider</value>
+  </data>
+  <data name="Menu.TestSelectedProvider" xml:space="preserve">
+    <value>测试当前 Provider</value>
+  </data>
+  <data name="Menu.ImportApiTranslator" xml:space="preserve">
+    <value>导入 ApiTranslator.txt...</value>
+  </data>
+  <data name="Menu.RefreshWorkspace" xml:space="preserve">
+    <value>刷新工作区</value>
+  </data>
+  <data name="Menu.Filter" xml:space="preserve">
+    <value>筛选</value>
+  </data>
+  <data name="Menu.ShowLockedRows" xml:space="preserve">
+    <value>显示锁定行</value>
+  </data>
+  <data name="Status.UiLanguageChangeFailed" xml:space="preserve">
+    <value>UI 语言切换失败：{0}</value>
+  </data>
+</root>

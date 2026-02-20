@@ -28,7 +28,7 @@
                     FontFamily="Segoe UI Variable Display Semibold"
                     FontSize="20"
                     Foreground="{StaticResource VsCodeTextBrush}"
-                    Text="AI Workflow Designer" />
+                    Text="{Binding Ui.AiWorkflowPageTitleText}" />
                 <TextBlock
                     Margin="0,28,0,0"
                     FontFamily="Cascadia Mono"
@@ -56,7 +56,7 @@
 
                     <TextBlock
                         Style="{StaticResource SectionTitleTextStyle}"
-                        Text="Provider Chain Builder" />
+                        Text="{Binding Ui.AiWorkflowChainBuilderTitleText}" />
 
                     <Grid
                         Grid.Row="1"
@@ -93,19 +93,19 @@
                             Spacing="6">
                             <Button
                                 Command="{Binding MoveSelectedProviderUpCommand}"
-                                Content="Up"
+                                Content="{Binding Ui.AiWorkflowMoveUpButtonContent}"
                                 Style="{StaticResource SubtleAction}" />
                             <Button
                                 Command="{Binding MoveSelectedProviderDownCommand}"
-                                Content="Down"
+                                Content="{Binding Ui.AiWorkflowMoveDownButtonContent}"
                                 Style="{StaticResource SubtleAction}" />
                             <Button
                                 Command="{Binding SelectAllProvidersCommand}"
-                                Content="All"
+                                Content="{Binding Ui.AiWorkflowAllButtonContent}"
                                 Style="{StaticResource SubtleAction}" />
                             <Button
                                 Command="{Binding ClearProviderSelectionCommand}"
-                                Content="None"
+                                Content="{Binding Ui.AiWorkflowNoneButtonContent}"
                                 Style="{StaticResource SubtleAction}" />
                         </StackPanel>
                     </Grid>
@@ -126,7 +126,7 @@
 
                     <TextBlock
                         Style="{StaticResource SectionTitleTextStyle}"
-                        Text="Workflow Profile" />
+                        Text="{Binding Ui.AiWorkflowProfileTitleText}" />
 
                     <Grid
                         Grid.Row="1"
@@ -136,14 +136,18 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ComboBox
-                            Header="Source Language"
-                            ItemsSource="{Binding AvailableLanguages}"
-                            SelectedItem="{Binding SourceLanguage, Mode=TwoWay}" />
+                            Header="{Binding Ui.AiWorkflowSourceLanguageBoxHeader}"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding AvailableLanguageOptions}"
+                            SelectedValue="{Binding SourceLanguage, Mode=TwoWay}"
+                            SelectedValuePath="Value" />
                         <ComboBox
                             Grid.Column="1"
-                            Header="Target Language"
-                            ItemsSource="{Binding AvailableLanguages}"
-                            SelectedItem="{Binding TargetLanguage, Mode=TwoWay}" />
+                            Header="{Binding Ui.AiWorkflowTargetLanguageBoxHeader}"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding AvailableLanguageOptions}"
+                            SelectedValue="{Binding TargetLanguage, Mode=TwoWay}"
+                            SelectedValuePath="Value" />
                     </Grid>
 
                     <Grid
@@ -154,17 +158,17 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ToggleSwitch
-                            Header="Load STRINGS"
+                            Header="{Binding Ui.AiWorkflowLoadStringsToggleHeader}"
                             IsOn="{Binding LoadStrings, Mode=TwoWay}" />
                         <ToggleSwitch
                             Grid.Column="1"
-                            Header="Load Record Fields"
+                            Header="{Binding Ui.AiWorkflowLoadFieldsToggleHeader}"
                             IsOn="{Binding LoadRecordFields, Mode=TwoWay}" />
                     </Grid>
 
                     <TextBox
                         Grid.Row="3"
-                        Header="Current Workflow Chain"
+                        Header="{Binding Ui.AiWorkflowCurrentChainBoxHeader}"
                         IsReadOnly="True"
                         Text="{Binding ProviderChainPreview}" />
 
@@ -173,11 +177,11 @@
                         Spacing="8">
                         <Button
                             Command="{Binding RunBatchTranslationCommand}"
-                            Content="Run Workflow"
+                            Content="{Binding Ui.AiWorkflowRunButtonContent}"
                             Style="{StaticResource PrimaryAction}" />
                         <TextBlock
                             Opacity="0.72"
-                            Text="Tip: Enable/disable providers and reorder them to define fallback sequence. The first available provider runs first, failures fall through automatically." />
+                            Text="{Binding Ui.AiWorkflowTipTextText}" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -191,5 +195,7 @@
         </Border>
     </Grid>
 </Page>
+
+
 
 

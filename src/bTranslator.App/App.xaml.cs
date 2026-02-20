@@ -1,6 +1,8 @@
 using bTranslator.App.ViewModels;
 using bTranslator.App.Views;
+using bTranslator.App.Localization;
 using bTranslator.Automation;
+using bTranslator.Application.Abstractions;
 using bTranslator.Infrastructure.Bethesda;
 using bTranslator.Infrastructure.Persistence;
 using bTranslator.Infrastructure.Security;
@@ -17,12 +19,15 @@ public partial class App : Microsoft.UI.Xaml.Application
 {
     private readonly IHost _host;
     private Window? _window;
+    private bool _uiLanguageApplied;
 
     public Window? MainWindow => _window;
 
     public App()
     {
         InitializeComponent();
+        UnhandledException += OnUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
 
         _host = Host
             .CreateDefaultBuilder()
@@ -37,6 +42,7 @@ public partial class App : Microsoft.UI.Xaml.Application
                 services.AddbTranslatorSecurity();
                 services.AddbTranslatorPersistence();
                 services.AddbTranslatorAutomation();
+                services.AddSingleton<IAppLocalizationService, AppLocalizationService>();
                 services.AddbTranslatorTranslation(options =>
                 {
                     options.Providers[OpenAiCompatibleTranslationProvider.DefaultProviderId] = new ProviderEndpointOptions
@@ -94,14 +100,69 @@ public partial class App : Microsoft.UI.Xaml.Application
             .Build();
     }
 
+    private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        try
+        {
+            Directory.CreateDirectory("logs");
+            File.AppendAllText(
+                Path.Combine("logs", "startup-exception.log"),
+                $"[XAML] {DateTimeOffset.Now:O}\n{e.Exception}\n\n");
+        }
+        catch
+        {
+            // Ignore logging failures.
+        }
+    }
+
+    private void OnDomainUnhandledException(object? sender, System.UnhandledExceptionEventArgs e)
+    {
+        try
+        {
+            Directory.CreateDirectory("logs");
+            File.AppendAllText(
+                Path.Combine("logs", "startup-exception.log"),
+                $"[DOMAIN] {DateTimeOffset.Now:O}\n{e.ExceptionObject}\n\n");
+        }
+        catch
+        {
+            // Ignore logging failures.
+        }
+    }
+
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
+        ApplyConfiguredUiLanguage();
+
         _window ??= new Window
         {
             Content = _host.Services.GetRequiredService<MainPage>()
         };
 
         _window.Activate();
+    }
+
+    private void ApplyConfiguredUiLanguage()
+    {
+        if (_uiLanguageApplied)
+        {
+            return;
+        }
+
+        try
+        {
+            var localizer = _host.Services.GetRequiredService<IAppLocalizationService>();
+            var settings = _host.Services.GetRequiredService<ISettingsStore>();
+            var configuredLanguage =
+                settings.GetAsync(AppLocalizationService.UiLanguageSettingKey).GetAwaiter().GetResult();
+            localizer.ApplyLanguage(configuredLanguage ?? string.Empty);
+        }
+        catch
+        {
+            // Fall back to system language if settings are unavailable.
+        }
+
+        _uiLanguageApplied = true;
     }
 }
 

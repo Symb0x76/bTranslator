@@ -7,51 +7,51 @@ namespace bTranslator.App.ViewModels;
 
 public partial class TranslationRowViewModel : ObservableObject
 {
+    private QualityLabelSet _qualityLabels = QualityLabelSet.Default;
+
     public string RowKey { get; init; } = Guid.NewGuid().ToString("N");
 
     [ObservableProperty]
-    private string editorId = string.Empty;
+    public partial string EditorId { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string fieldSignature = string.Empty;
+    public partial string FieldSignature { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string sourceText = string.Empty;
+    public partial string SourceText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string translatedText = string.Empty;
+    public partial string TranslatedText { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string listKind = "STRINGS";
+    public partial string ListKind { get; set; } = "STRINGS";
 
     [ObservableProperty]
-    private double ldScore;
+    public partial double LdScore { get; set; }
 
     [ObservableProperty]
-    private bool isLocked;
+    public partial bool IsLocked { get; set; }
 
     [ObservableProperty]
-    private bool isValidated;
+    public partial bool IsValidated { get; set; }
 
     public bool IsUntranslated =>
         string.IsNullOrWhiteSpace(TranslatedText) ||
         string.Equals(SourceText, TranslatedText, StringComparison.Ordinal);
 
+    public QualityStateKey QualityState => ResolveQualityState();
+
     public string QualityLabel
     {
         get
         {
-            if (IsLocked)
+            return ResolveQualityState() switch
             {
-                return "Locked";
-            }
-
-            if (IsValidated)
-            {
-                return "Validated";
-            }
-
-            return IsUntranslated ? "Pending" : "Draft";
+                QualityStateKey.Locked => _qualityLabels.Locked,
+                QualityStateKey.Validated => _qualityLabels.Validated,
+                QualityStateKey.Pending => _qualityLabels.Pending,
+                _ => _qualityLabels.Draft
+            };
         }
     }
 
@@ -59,21 +59,30 @@ public partial class TranslationRowViewModel : ObservableObject
 
     public SolidColorBrush StatusBrush => new(GetStatusColor());
 
+    public void ApplyQualityLabels(QualityLabelSet labels)
+    {
+        _qualityLabels = labels;
+        OnPropertyChanged(nameof(QualityLabel));
+    }
+
     partial void OnTranslatedTextChanged(string value)
     {
         OnPropertyChanged(nameof(IsUntranslated));
+        OnPropertyChanged(nameof(QualityState));
         OnPropertyChanged(nameof(QualityLabel));
         OnPropertyChanged(nameof(StatusBrush));
     }
 
     partial void OnIsLockedChanged(bool value)
     {
+        OnPropertyChanged(nameof(QualityState));
         OnPropertyChanged(nameof(QualityLabel));
         OnPropertyChanged(nameof(StatusBrush));
     }
 
     partial void OnIsValidatedChanged(bool value)
     {
+        OnPropertyChanged(nameof(QualityState));
         OnPropertyChanged(nameof(QualityLabel));
         OnPropertyChanged(nameof(StatusBrush));
     }
@@ -101,6 +110,42 @@ public partial class TranslationRowViewModel : ObservableObject
         }
 
         return ColorHelper.FromArgb(0xFF, 0x38, 0xBD, 0xF8);
+    }
+
+    private QualityStateKey ResolveQualityState()
+    {
+        if (IsLocked)
+        {
+            return QualityStateKey.Locked;
+        }
+
+        if (IsValidated)
+        {
+            return QualityStateKey.Validated;
+        }
+
+        return IsUntranslated ? QualityStateKey.Pending : QualityStateKey.Draft;
+    }
+
+    public enum QualityStateKey
+    {
+        Locked,
+        Validated,
+        Pending,
+        Draft
+    }
+
+    public readonly record struct QualityLabelSet(
+        string Locked,
+        string Validated,
+        string Pending,
+        string Draft)
+    {
+        public static QualityLabelSet Default { get; } = new(
+            Locked: "Locked",
+            Validated: "Validated",
+            Pending: "Pending",
+            Draft: "Draft");
     }
 }
 

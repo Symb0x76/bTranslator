@@ -5,9 +5,9 @@ namespace bTranslator.App.ViewModels;
 public partial class ProviderChainItemViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string providerId = string.Empty;
+    public partial string ProviderId { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private bool isEnabled = true;
+    public partial bool IsEnabled { get; set; } = true;
 }
 
