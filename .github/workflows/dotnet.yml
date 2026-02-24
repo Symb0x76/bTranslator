@@ -2,22 +2,161 @@ name: dotnet-ci
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
+    tags: ["*"]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      runtime_identifiers:
+        description: "Runtime IDs (comma separated)"
+        required: false
+        default: "win-x64,win-arm64"
+        type: string
+      release_tag:
+        description: "Release tag (manual trigger only, optional)"
+        required: false
+        default: ""
+        type: string
+      release_name:
+        description: "Release title (optional)"
+        required: false
+        default: ""
+        type: string
+      publish_release:
+        description: "Publish GitHub release"
+        required: false
+        default: true
+        type: boolean
+      prerelease:
+        description: "Mark as prerelease"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dotnet-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-test:
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' &&
+       (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            8.0.x
+          dotnet-version: 8.0.x
+          cache: true
+          cache-dependency-path: |
+            **/*.csproj
+            **/packages.lock.json
+
       - name: Restore
-        run: dotnet restore BTranslator.slnx
+        run: dotnet restore bTranslator.sln
+
       - name: Build
-        run: dotnet build BTranslator.slnx --configuration Release --no-restore
+        run: dotnet build bTranslator.sln -c Release --no-restore -v minimal
+
       - name: Test
-        run: dotnet test BTranslator.slnx --configuration Release --no-build
+        run: dotnet test bTranslator.sln -c Release --no-build -v minimal --logger "trx;LogFilePrefix=test-results"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/TestResults/*.trx"
+          if-no-files-found: ignore
+
+  package-release:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+          cache: true
+          cache-dependency-path: |
+            **/*.csproj
+            **/packages.lock.json
+
+      - name: Resolve release metadata
+        id: meta
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $tag = "${{ inputs.release_tag }}".Trim()
+            if ([string]::IsNullOrWhiteSpace($tag)) {
+              $tag = "manual-${{ github.run_number }}"
+            }
+            $name = "${{ inputs.release_name }}".Trim()
+            if ([string]::IsNullOrWhiteSpace($name)) {
+              $name = $tag
+            }
+            $runtimeIds = "${{ inputs.runtime_identifiers }}".Trim()
+            if ([string]::IsNullOrWhiteSpace($runtimeIds)) {
+              $runtimeIds = "win-x64,win-arm64"
+            }
+          }
+          else {
+            $tag = "${{ github.ref_name }}"
+            $name = $tag
+            $runtimeIds = "win-x64,win-arm64"
+          }
+
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "name=$name" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "runtime_ids=$runtimeIds" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Build package
+        shell: pwsh
+        run: |
+          $runtimeIds = "${{ steps.meta.outputs.runtime_ids }}".Split(',', [System.StringSplitOptions]::RemoveEmptyEntries) |
+            ForEach-Object { $_.Trim() } |
+            Where-Object { $_ -ne "" }
+          & ./Build.ps1 -Configuration Release -RuntimeIdentifiers $runtimeIds -SkipTests
+
+      - name: Archive package
+        id: bundle
+        shell: pwsh
+        run: |
+          $zipName = "bTranslator-${{ steps.meta.outputs.tag }}.zip"
+          if (Test-Path $zipName) {
+            Remove-Item $zipName -Force
+          }
+          Compress-Archive -Path Package\* -DestinationPath $zipName -Force
+          "zip=$zipName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bTranslator-package
+          path: Package/**
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: github.event_name == 'push' || inputs.publish_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.name }}
+          target_commitish: ${{ github.sha }}
+          draft: false
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease }}
+          files: ${{ steps.bundle.outputs.zip }}
