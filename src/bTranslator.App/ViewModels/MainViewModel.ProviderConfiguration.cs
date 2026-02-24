@@ -47,6 +47,7 @@ public partial class MainViewModel
 
     partial void OnSelectedProviderOptionChanged(ProviderChainItemViewModel? value)
     {
+        UpdateProviderChainPreview();
         _ = LoadSelectedProviderConfigurationAsync();
     }
 
@@ -56,7 +57,7 @@ public partial class MainViewModel
         var providerId = SelectedProviderOption?.ProviderId;
         if (string.IsNullOrWhiteSpace(providerId))
         {
-            StatusText = L("Status.NoProviderSelected", "No provider selected.");
+            StatusText = L("Status.NoProviderSelected", "No model selected.");
             AddLog(StatusText);
             return;
         }
@@ -67,6 +68,8 @@ public partial class MainViewModel
             var updated = BuildProviderOptionsFromEditor(existing);
             _translationProviderOptions.Providers[providerId] = updated;
             await PersistProviderSettingsAsync(providerId, updated, persistSecrets: true).ConfigureAwait(false);
+            RefreshProviderModelOptions();
+            UpdateProviderChainPreview();
 
             StatusText = Lf(
                 "Status.ProviderSettingsSaved",
@@ -85,6 +88,8 @@ public partial class MainViewModel
     private async Task ReloadSelectedProviderConfigurationAsync()
     {
         await LoadSelectedProviderConfigurationAsync().ConfigureAwait(false);
+        RefreshProviderModelOptions();
+        UpdateProviderChainPreview();
         StatusText = Lf(
             "Status.ProviderSettingsReloaded",
             "Reloaded provider settings for '{0}'.",
@@ -98,7 +103,7 @@ public partial class MainViewModel
         var providerId = SelectedProviderOption?.ProviderId;
         if (string.IsNullOrWhiteSpace(providerId))
         {
-            StatusText = L("Status.NoProviderSelected", "No provider selected.");
+            StatusText = L("Status.NoProviderSelected", "No model selected.");
             AddLog(StatusText);
             return;
         }
@@ -189,6 +194,7 @@ public partial class MainViewModel
                 applied++;
             }
 
+            RefreshProviderModelOptions();
             await LoadSelectedProviderConfigurationAsync().ConfigureAwait(false);
             StatusText = Lf(
                 "Status.ApiTranslatorImported",
@@ -251,6 +257,8 @@ public partial class MainViewModel
                 Capabilities = capabilities
             };
         }
+
+        RefreshProviderModelOptions();
     }
 
     private async Task LoadSelectedProviderConfigurationAsync()

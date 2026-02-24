@@ -44,7 +44,7 @@
                             <DataTemplate x:DataType="viewModels:ProviderChainItemViewModel">
                                 <TextBlock
                                     FontFamily="Cascadia Mono"
-                                    Text="{Binding ProviderId}" />
+                                    Text="{Binding DisplayText}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>

@@ -69,6 +69,22 @@
             Key="F"
             Modifiers="Control" />
         <KeyboardAccelerator
+            Invoked="OnFocusRowsAcceleratorInvoked"
+            Key="G"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnFocusInspectorAcceleratorInvoked"
+            Key="I"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnFocusAiInputAcceleratorInvoked"
+            Key="K"
+            Modifiers="Control" />
+        <KeyboardAccelerator
+            Invoked="OnFocusModelAcceleratorInvoked"
+            Key="M"
+            Modifiers="Control,Shift" />
+        <KeyboardAccelerator
             Invoked="OnApplyInspectorAcceleratorInvoked"
             Key="Enter"
             Modifiers="Control" />
@@ -238,29 +254,10 @@
                             <MenuFlyoutItem
                                 Command="{Binding RefreshCommand}"
                                 Text="{x:Bind ViewModel.Ui.MenuReloadMetadata, Mode=OneWay}" />
-                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuAiWorkflow, Mode=OneWay}">
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuChain, Mode=OneWay}">
                                 <MenuFlyoutItem
-                                    Click="OnOpenAiWorkflowPageClicked"
-                                    Text="{x:Bind ViewModel.Ui.MenuOpenWorkflowDesigner, Mode=OneWay}" />
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuChain, Mode=OneWay}">
-                                    <MenuFlyoutItem
-                                        Command="{Binding MoveSelectedProviderUpCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuMoveSelectedUp, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding MoveSelectedProviderDownCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuMoveSelectedDown, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding SelectAllProvidersCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuEnableAll, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding ClearProviderSelectionCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuDisableAll, Mode=OneWay}" />
-                                </MenuFlyoutSubItem>
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCurrentChain, Mode=OneWay}">
-                                    <MenuFlyoutItem
-                                        IsEnabled="False"
-                                        Text="{Binding ProviderChainPreview}" />
-                                </MenuFlyoutSubItem>
+                                    IsEnabled="False"
+                                    Text="{Binding ProviderChainPreview}" />
                             </MenuFlyoutSubItem>
                             <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuConfiguration, Mode=OneWay}">
                                 <MenuFlyoutItem
@@ -366,29 +363,10 @@
                                 <MenuFlyoutItem
                                     Command="{Binding RefreshCommand}"
                                     Text="{x:Bind ViewModel.Ui.MenuReloadMetadata, Mode=OneWay}" />
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuAiWorkflow, Mode=OneWay}">
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuChain, Mode=OneWay}">
                                     <MenuFlyoutItem
-                                        Click="OnOpenAiWorkflowPageClicked"
-                                        Text="{x:Bind ViewModel.Ui.MenuOpenWorkflowDesigner, Mode=OneWay}" />
-                                    <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuChain, Mode=OneWay}">
-                                        <MenuFlyoutItem
-                                            Command="{Binding MoveSelectedProviderUpCommand}"
-                                            Text="{x:Bind ViewModel.Ui.MenuMoveSelectedUp, Mode=OneWay}" />
-                                        <MenuFlyoutItem
-                                            Command="{Binding MoveSelectedProviderDownCommand}"
-                                            Text="{x:Bind ViewModel.Ui.MenuMoveSelectedDown, Mode=OneWay}" />
-                                        <MenuFlyoutItem
-                                            Command="{Binding SelectAllProvidersCommand}"
-                                            Text="{x:Bind ViewModel.Ui.MenuEnableAll, Mode=OneWay}" />
-                                        <MenuFlyoutItem
-                                            Command="{Binding ClearProviderSelectionCommand}"
-                                            Text="{x:Bind ViewModel.Ui.MenuDisableAll, Mode=OneWay}" />
-                                    </MenuFlyoutSubItem>
-                                    <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCurrentChain, Mode=OneWay}">
-                                        <MenuFlyoutItem
-                                            IsEnabled="False"
-                                            Text="{Binding ProviderChainPreview}" />
-                                    </MenuFlyoutSubItem>
+                                        IsEnabled="False"
+                                        Text="{Binding ProviderChainPreview}" />
                                 </MenuFlyoutSubItem>
                                 <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuConfiguration, Mode=OneWay}">
                                     <MenuFlyoutItem
@@ -675,13 +653,19 @@
 
         <Grid
             Grid.Row="2"
-            ColumnSpacing="10">
+            ColumnSpacing="10"
+            RowSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*" />
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2.2*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
 
             <Border
+                Grid.Row="0"
                 Grid.Column="0"
                 Style="{StaticResource PanelCardBorderStyle}">
                 <Grid RowSpacing="8">
@@ -702,7 +686,9 @@
                             x:Name="SearchTextBox"
                             Grid.Column="0"
                             Header="{x:Bind ViewModel.Ui.MainSearchBoxHeader, Mode=OneWay}"
+                            KeyDown="OnSearchTextBoxKeyDown"
                             PlaceholderText="{x:Bind ViewModel.Ui.MainSearchBoxPlaceholderText, Mode=OneWay}"
+                            TabIndex="0"
                             Text="{Binding SearchText, Mode=TwoWay}" />
                         <ComboBox
                             Grid.Column="1"
@@ -710,15 +696,18 @@
                             DisplayMemberPath="DisplayName"
                             ItemsSource="{Binding ListFilterOptions}"
                             SelectedValue="{Binding SelectedListFilter, Mode=TwoWay}"
-                            SelectedValuePath="Value" />
+                            SelectedValuePath="Value"
+                            TabIndex="1" />
                         <ToggleSwitch
                             Grid.Column="2"
                             Header="{x:Bind ViewModel.Ui.MainOnlyPendingToggleHeader, Mode=OneWay}"
-                            IsOn="{Binding ShowUntranslatedOnly, Mode=TwoWay}" />
+                            IsOn="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
+                            TabIndex="2" />
                         <ToggleSwitch
                             Grid.Column="3"
                             Header="{x:Bind ViewModel.Ui.MainIncludeLockedToggleHeader, Mode=OneWay}"
-                            IsOn="{Binding ShowLocked, Mode=TwoWay}" />
+                            IsOn="{Binding ShowLocked, Mode=TwoWay}"
+                            TabIndex="3" />
                     </Grid>
 
                     <Border
@@ -755,10 +744,13 @@
                     </Border>
 
                     <ListView
+                        x:Name="RowsListView"
                         Grid.Row="2"
+                        KeyDown="OnRowsListViewKeyDown"
                         ItemsSource="{Binding Rows}"
                         SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
-                        SelectionMode="Single">
+                        SelectionMode="Single"
+                        TabIndex="4">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:TranslationRowViewModel">
                                 <Border
@@ -829,100 +821,242 @@
             </Border>
 
             <Border
+                Grid.Row="0"
+                Grid.RowSpan="2"
                 Grid.Column="1"
                 Style="{StaticResource PanelCardBorderStyle}">
-                <Grid RowSpacing="10">
+                <Grid RowSpacing="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <TextBlock
                         Style="{StaticResource SectionTitleTextStyle}"
-                        Text="{x:Bind ViewModel.Ui.InspectorSectionTitleText, Mode=OneWay}" />
+                        Text="{x:Bind ViewModel.Ui.AiCopilotSectionTitleText, Mode=OneWay}" />
 
-                    <Grid
+                    <StackPanel
                         Grid.Row="1"
-                        ColumnSpacing="8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel>
-                            <TextBlock
-                                Style="{StaticResource MetricLabelTextStyle}"
-                                Text="{x:Bind ViewModel.Ui.InspectorEdidLabelText, Mode=OneWay}" />
-                            <TextBlock
-                                FontFamily="Cascadia Mono"
-                                Text="{Binding InspectorRecordId}" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1">
-                            <TextBlock
-                                Style="{StaticResource MetricLabelTextStyle}"
-                                Text="{x:Bind ViewModel.Ui.InspectorFieldLabelText, Mode=OneWay}" />
-                            <TextBlock
-                                FontFamily="Cascadia Mono"
-                                Text="{Binding InspectorField}" />
-                        </StackPanel>
-                    </Grid>
-
-                    <TextBox
-                        Grid.Row="2"
-                        AcceptsReturn="True"
-                        Header="{x:Bind ViewModel.Ui.InspectorSourceBoxHeader, Mode=OneWay}"
-                        IsReadOnly="True"
-                        MaxHeight="240"
-                        MinHeight="72"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"
-                        Text="{Binding InspectorSourceText}" />
-
-                    <StackPanel Grid.Row="3">
-                        <TextBox
-                            x:Name="InspectorTranslationTextBox"
-                            AcceptsReturn="True"
-                            Header="{x:Bind ViewModel.Ui.InspectorTranslationBoxHeader, Mode=OneWay}"
-                            MaxHeight="260"
-                            MinHeight="86"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ScrollViewer.VerticalScrollBarVisibility="Auto"
-                            Text="{Binding InspectorTranslatedText, Mode=TwoWay}" />
-                        <StackPanel
-                            Margin="0,8,0,0"
-                            Orientation="Horizontal"
-                            Spacing="8">
-                            <Button
-                                Command="{Binding ApplyInspectorToRowCommand}"
-                                Content="{x:Bind ViewModel.Ui.InspectorApplyButtonContent, Mode=OneWay}"
-                                Style="{StaticResource PrimaryAction}" />
-                            <Button
-                                Command="{Binding CopySourceToTargetCommand}"
-                                Content="{x:Bind ViewModel.Ui.InspectorCopySourceButtonContent, Mode=OneWay}"
-                                Style="{StaticResource SubtleAction}" />
-                            <Button
-                                Command="{Binding MarkSelectedValidatedCommand}"
-                                Content="{x:Bind ViewModel.Ui.InspectorMarkValidatedButtonContent, Mode=OneWay}"
-                                Style="{StaticResource SecondaryAction}" />
-                            <Button
-                                Command="{Binding ToggleSelectedLockCommand}"
-                                Content="{x:Bind ViewModel.Ui.InspectorToggleLockButtonContent, Mode=OneWay}"
-                                Style="{StaticResource SubtleAction}" />
-                            <Button
-                                Command="{Binding AddScopedDictionaryEntryFromSelectedRowCommand}"
-                                Content="{x:Bind ViewModel.Ui.InspectorAddToDictionaryButtonContent, Mode=OneWay}"
-                                Style="{StaticResource SecondaryAction}" />
-                        </StackPanel>
+                        Spacing="4">
+                        <TextBlock
+                            Style="{StaticResource MetricLabelTextStyle}"
+                            Text="{x:Bind ViewModel.Ui.AiCopilotProviderChainHeaderText, Mode=OneWay}" />
+                        <ComboBox
+                            x:Name="ModelSelectorComboBox"
+                            ItemsSource="{Binding ProviderOptions}"
+                            SelectedItem="{Binding SelectedProviderOption, Mode=TwoWay}"
+                            TabIndex="9">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="viewModels:ProviderChainItemViewModel">
+                                    <TextBlock
+                                        FontFamily="Cascadia Mono"
+                                        Text="{Binding DisplayText}"
+                                        TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
 
                     <TextBlock
-                        Grid.Row="4"
-                        Margin="0,2,0,0"
+                        Grid.Row="2"
                         Style="{StaticResource MetricLabelTextStyle}"
-                        Text="{x:Bind ViewModel.Ui.InspectorProviderMovedHintText, Mode=OneWay}"
+                        Text="{x:Bind ViewModel.Ui.AiCopilotMcpHintText, Mode=OneWay}"
                         TextWrapping="WrapWholeWords" />
+
+                    <ListView
+                        x:Name="AiChatMessagesListView"
+                        Grid.Row="3"
+                        IsItemClickEnabled="False"
+                        ItemsSource="{Binding AiChatMessages}"
+                        SelectionMode="None"
+                        IsTabStop="False">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:AiChatMessageViewModel">
+                                <StackPanel Margin="0,0,0,8">
+                                    <StackPanel
+                                        HorizontalAlignment="{Binding BubbleAlignment}"
+                                        Orientation="Horizontal"
+                                        Spacing="8">
+                                        <TextBlock
+                                            Style="{StaticResource MetricLabelTextStyle}"
+                                            Text="{Binding RoleDisplayName}" />
+                                        <TextBlock
+                                            Style="{StaticResource MetricLabelTextStyle}"
+                                            Text="{Binding TimestampText}" />
+                                    </StackPanel>
+                                    <Border
+                                        HorizontalAlignment="{Binding BubbleAlignment}"
+                                        MaxWidth="460"
+                                        Background="{Binding BubbleBrush}"
+                                        CornerRadius="8"
+                                        Padding="10">
+                                        <TextBlock
+                                            Text="{Binding MessageText}"
+                                            TextWrapping="WrapWholeWords" />
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Grid
+                        Grid.Row="4"
+                        ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel
+                            Grid.Column="0"
+                            Spacing="4">
+                            <TextBox
+                                x:Name="AiChatInputTextBox"
+                                AcceptsReturn="True"
+                                KeyDown="OnAiChatInputKeyDown"
+                                MaxHeight="180"
+                                MinHeight="78"
+                                PlaceholderText="{x:Bind ViewModel.Ui.AiCopilotInputBoxPlaceholderText, Mode=OneWay}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                TabIndex="10"
+                                Text="{Binding AiChatInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Spacing="6">
+                                <ProgressRing
+                                    Height="14"
+                                    IsActive="{Binding IsAiChatBusy}"
+                                    Width="14" />
+                                <TextBlock
+                                    Style="{StaticResource MetricLabelTextStyle}"
+                                    Text="{x:Bind ViewModel.Ui.AiCopilotBusyText, Mode=OneWay}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding SendAiChatMessageCommand}"
+                            Content="{x:Bind ViewModel.Ui.AiCopilotSendButtonContent, Mode=OneWay}"
+                            TabIndex="11"
+                            Style="{StaticResource PrimaryAction}" />
+                        <Button
+                            Grid.Column="2"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding ClearAiChatHistoryCommand}"
+                            Content="{x:Bind ViewModel.Ui.AiCopilotClearButtonContent, Mode=OneWay}"
+                            TabIndex="12"
+                            Style="{StaticResource SubtleAction}" />
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border
+                Grid.Row="1"
+                Grid.Column="0"
+                Style="{StaticResource PanelCardBorderStyle}">
+                <Grid RowSpacing="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1.6*" />
+                            <ColumnDefinition Width="1.6*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel
+                            Grid.Column="0"
+                            Spacing="6">
+                            <TextBlock
+                                Style="{StaticResource SectionTitleTextStyle}"
+                                Text="{x:Bind ViewModel.Ui.InspectorSectionTitleText, Mode=OneWay}" />
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock
+                                        Style="{StaticResource MetricLabelTextStyle}"
+                                        Text="{x:Bind ViewModel.Ui.InspectorEdidLabelText, Mode=OneWay}" />
+                                    <TextBlock
+                                        FontFamily="Cascadia Mono"
+                                        Text="{Binding InspectorRecordId}"
+                                        TextWrapping="WrapWholeWords" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock
+                                        Style="{StaticResource MetricLabelTextStyle}"
+                                        Text="{x:Bind ViewModel.Ui.InspectorFieldLabelText, Mode=OneWay}" />
+                                    <TextBlock
+                                        FontFamily="Cascadia Mono"
+                                        Text="{Binding InspectorField}"
+                                        TextWrapping="WrapWholeWords" />
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock
+                                Style="{StaticResource MetricLabelTextStyle}"
+                                Text="{Binding InspectorHint}"
+                                TextWrapping="WrapWholeWords" />
+                            <TextBlock
+                                Style="{StaticResource MetricLabelTextStyle}"
+                                Text="{x:Bind ViewModel.Ui.InspectorProviderMovedHintText, Mode=OneWay}"
+                                TextWrapping="WrapWholeWords" />
+                        </StackPanel>
+                        <TextBox
+                            Grid.Column="1"
+                            AcceptsReturn="True"
+                            Header="{x:Bind ViewModel.Ui.InspectorSourceBoxHeader, Mode=OneWay}"
+                            IsReadOnly="True"
+                            MaxHeight="180"
+                            MinHeight="72"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            Text="{Binding InspectorSourceText}" />
+                        <TextBox
+                            x:Name="InspectorTranslationTextBox"
+                            Grid.Column="2"
+                            AcceptsReturn="True"
+                            Header="{x:Bind ViewModel.Ui.InspectorTranslationBoxHeader, Mode=OneWay}"
+                            MaxHeight="180"
+                            MinHeight="72"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            TabIndex="5"
+                            Text="{Binding InspectorTranslatedText, Mode=TwoWay}" />
+                    </Grid>
+                    <StackPanel
+                        Grid.Row="1"
+                        Orientation="Horizontal"
+                        Spacing="6">
+                        <Button
+                            Command="{Binding ApplyInspectorToRowCommand}"
+                            Content="{x:Bind ViewModel.Ui.InspectorApplyButtonContent, Mode=OneWay}"
+                            TabIndex="6"
+                            Style="{StaticResource PrimaryAction}" />
+                        <Button
+                            Command="{Binding CopySourceToTargetCommand}"
+                            Content="{x:Bind ViewModel.Ui.InspectorCopySourceButtonContent, Mode=OneWay}"
+                            TabIndex="7"
+                            Style="{StaticResource SubtleAction}" />
+                        <Button
+                            Command="{Binding MarkSelectedValidatedCommand}"
+                            Content="{x:Bind ViewModel.Ui.InspectorMarkValidatedButtonContent, Mode=OneWay}"
+                            TabIndex="8"
+                            Style="{StaticResource SecondaryAction}" />
+                        <Button
+                            Command="{Binding ToggleSelectedLockCommand}"
+                            Content="{x:Bind ViewModel.Ui.InspectorToggleLockButtonContent, Mode=OneWay}"
+                            Style="{StaticResource SubtleAction}" />
+                        <Button
+                            Command="{Binding AddScopedDictionaryEntryFromSelectedRowCommand}"
+                            Content="{x:Bind ViewModel.Ui.InspectorAddToDictionaryButtonContent, Mode=OneWay}"
+                            Style="{StaticResource SecondaryAction}" />
+                    </StackPanel>
                 </Grid>
             </Border>
         </Grid>

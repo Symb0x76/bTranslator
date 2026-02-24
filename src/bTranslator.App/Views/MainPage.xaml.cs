@@ -1,7 +1,11 @@
 using bTranslator.App.Localization;
 using bTranslator.App.ViewModels;
 using System.ComponentModel;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
+using Windows.UI.Core;
+using Windows.System;
 using Windows.Storage.Pickers;
 using WinRT.Interop;
 
@@ -9,7 +13,6 @@ namespace bTranslator.App.Views;
 
 public partial class MainPage : Page
 {
-    private Window? _workflowWindow;
     private Window? _providerConfigurationWindow;
     private bool _titleBarConfigured;
     private bool _workspaceMenusInitialized;
@@ -230,6 +233,11 @@ public partial class MainPage : Page
                 "WorkspaceEncodingModeGroup",
                 value => ViewModel.SelectedEncodingMode = value);
             SyncWorkspaceMenuChecks();
+        }
+
+        if (e.PropertyName == nameof(MainViewModel.SelectedRow) && ViewModel.SelectedRow is not null)
+        {
+            RowsListView.ScrollIntoView(ViewModel.SelectedRow);
         }
     }
 
@@ -839,23 +847,6 @@ public partial class MainPage : Page
         }
     }
 
-    private void OnOpenAiWorkflowPageClicked(object sender, RoutedEventArgs e)
-    {
-        if (_workflowWindow is not null)
-        {
-            _workflowWindow.Activate();
-            return;
-        }
-
-        _workflowWindow = new Window
-        {
-            Title = ViewModel.GetLocalizedString("WindowTitle.AiWorkflow", "AI Workflow Designer"),
-            Content = new AiWorkflowPage(ViewModel)
-        };
-        _workflowWindow.Closed += (_, _) => _workflowWindow = null;
-        _workflowWindow.Activate();
-    }
-
     private void OnOpenProviderConfigurationPageClicked(object sender, RoutedEventArgs e)
     {
         if (_providerConfigurationWindow is not null)
@@ -884,6 +875,79 @@ public partial class MainPage : Page
         {
             await ViewModel.OpenWorkspaceCommand.ExecuteAsync(null).ConfigureAwait(true);
         }
+    }
+
+    private void FocusSearchBox(bool selectAll)
+    {
+        _ = SearchTextBox.Focus(FocusState.Keyboard);
+        if (selectAll)
+        {
+            SearchTextBox.SelectAll();
+        }
+    }
+
+    private void FocusRowsView(bool ensureSelection)
+    {
+        if (ensureSelection && ViewModel.SelectedRow is null && ViewModel.Rows.Count > 0)
+        {
+            ViewModel.SelectedRow = ViewModel.Rows[0];
+        }
+
+        if (ViewModel.SelectedRow is not null)
+        {
+            RowsListView.ScrollIntoView(ViewModel.SelectedRow);
+        }
+
+        _ = RowsListView.Focus(FocusState.Keyboard);
+    }
+
+    private void FocusInspectorEditor(bool selectAll)
+    {
+        _ = InspectorTranslationTextBox.Focus(FocusState.Keyboard);
+        if (selectAll)
+        {
+            InspectorTranslationTextBox.SelectAll();
+        }
+    }
+
+    private void FocusAiInput(bool selectAll)
+    {
+        _ = AiChatInputTextBox.Focus(FocusState.Keyboard);
+        if (selectAll && !string.IsNullOrWhiteSpace(AiChatInputTextBox.Text))
+        {
+            AiChatInputTextBox.SelectAll();
+        }
+    }
+
+    private void FocusModelSelector()
+    {
+        _ = ModelSelectorComboBox.Focus(FocusState.Keyboard);
+    }
+
+    private bool IsElementOrDescendantFocused(DependencyObject element)
+    {
+        var focused = FocusManager.GetFocusedElement(XamlRoot) as DependencyObject;
+        while (focused is not null)
+        {
+            if (ReferenceEquals(focused, element))
+            {
+                return true;
+            }
+
+            focused = VisualTreeHelper.GetParent(focused);
+        }
+
+        return false;
+    }
+
+    private bool IsAiInputFocused()
+    {
+        return IsElementOrDescendantFocused(AiChatInputTextBox);
+    }
+
+    private static bool IsShiftPressed()
+    {
+        return (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
     }
 
     private async void OnOpenWorkspaceAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -919,15 +983,104 @@ public partial class MainPage : Page
         }
     }
 
+    private async void OnAiChatInputKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == VirtualKey.Escape)
+        {
+            e.Handled = true;
+            FocusRowsView(ensureSelection: true);
+            return;
+        }
+
+        if (e.Key != VirtualKey.Enter)
+        {
+            return;
+        }
+
+        // Keep multiline editing: Shift+Enter inserts a new line.
+        if (IsShiftPressed())
+        {
+            return;
+        }
+
+        e.Handled = true;
+        if (ViewModel.SendAiChatMessageCommand.CanExecute(null))
+        {
+            await ViewModel.SendAiChatMessageCommand.ExecuteAsync(null).ConfigureAwait(true);
+        }
+    }
+
+    private void OnSearchTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == VirtualKey.Enter)
+        {
+            e.Handled = true;
+            FocusRowsView(ensureSelection: true);
+            return;
+        }
+
+        if (e.Key == VirtualKey.Escape && !string.IsNullOrWhiteSpace(SearchTextBox.Text))
+        {
+            e.Handled = true;
+            SearchTextBox.Text = string.Empty;
+            ViewModel.SearchText = string.Empty;
+        }
+    }
+
+    private void OnRowsListViewKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key != VirtualKey.Enter)
+        {
+            return;
+        }
+
+        e.Handled = true;
+        FocusInspectorEditor(selectAll: true);
+    }
+
     private void OnFocusSearchAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
         args.Handled = true;
-        _ = SearchTextBox.Focus(FocusState.Keyboard);
-        SearchTextBox.SelectAll();
+        FocusSearchBox(selectAll: true);
     }
 
-    private void OnApplyInspectorAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    private void OnFocusRowsAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
+        args.Handled = true;
+        FocusRowsView(ensureSelection: true);
+    }
+
+    private void OnFocusInspectorAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        FocusInspectorEditor(selectAll: true);
+    }
+
+    private void OnFocusAiInputAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        FocusAiInput(selectAll: false);
+    }
+
+    private void OnFocusModelAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        FocusModelSelector();
+    }
+
+    private async void OnApplyInspectorAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        if (IsAiInputFocused())
+        {
+            args.Handled = true;
+            if (ViewModel.SendAiChatMessageCommand.CanExecute(null))
+            {
+                await ViewModel.SendAiChatMessageCommand.ExecuteAsync(null).ConfigureAwait(true);
+            }
+
+            return;
+        }
+
         args.Handled = true;
         if (ViewModel.ApplyInspectorToRowCommand.CanExecute(null))
         {
@@ -937,15 +1090,26 @@ public partial class MainPage : Page
 
     private void OnApplyAndNextAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
+        if (IsAiInputFocused())
+        {
+            return;
+        }
+
         args.Handled = true;
         if (ViewModel.ApplyInspectorAndSelectNextPendingCommand.CanExecute(null))
         {
             ViewModel.ApplyInspectorAndSelectNextPendingCommand.Execute(null);
+            FocusRowsView(ensureSelection: false);
         }
     }
 
     private void OnCopySourceAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
+        if (IsAiInputFocused())
+        {
+            return;
+        }
+
         args.Handled = true;
         if (ViewModel.CopySourceToTargetCommand.CanExecute(null))
         {
@@ -955,6 +1119,11 @@ public partial class MainPage : Page
 
     private void OnToggleLockAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
+        if (IsAiInputFocused())
+        {
+            return;
+        }
+
         args.Handled = true;
         if (ViewModel.ToggleSelectedLockCommand.CanExecute(null))
         {
@@ -964,6 +1133,11 @@ public partial class MainPage : Page
 
     private void OnMarkValidatedAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
+        if (IsAiInputFocused())
+        {
+            return;
+        }
+
         args.Handled = true;
         if (ViewModel.MarkSelectedValidatedCommand.CanExecute(null))
         {
@@ -977,6 +1151,7 @@ public partial class MainPage : Page
         if (ViewModel.SelectNextPendingRowCommand.CanExecute(null))
         {
             ViewModel.SelectNextPendingRowCommand.Execute(null);
+            FocusRowsView(ensureSelection: false);
         }
     }
 
@@ -986,6 +1161,7 @@ public partial class MainPage : Page
         if (ViewModel.SelectPreviousPendingRowCommand.CanExecute(null))
         {
             ViewModel.SelectPreviousPendingRowCommand.Execute(null);
+            FocusRowsView(ensureSelection: false);
         }
     }
 

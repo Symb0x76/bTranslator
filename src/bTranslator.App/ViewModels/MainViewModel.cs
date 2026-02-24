@@ -129,7 +129,7 @@ public partial class MainViewModel : ObservableObject
 
         BatchQueue.Add("Open plugin and index rows");
         BatchQueue.Add("Filter untranslated + unlockable rows");
-        BatchQueue.Add("Execute provider chain");
+        BatchQueue.Add("Execute selected model");
         BatchQueue.Add("Write back records and strings");
 
         ScriptHints.Add("Scope respects current search and list filter.");
@@ -151,11 +151,12 @@ public partial class MainViewModel : ObservableObject
 
         WorkspaceTitle = Lf("WorkspaceTitle.Format", "{0} Workspace", SelectedGame);
         ActivePluginName = L("PluginSwitcher.CurrentPlugin", "Current Plugin");
-        ProviderChainPreview = L("Status.NoProviderSelected", "No provider selected.");
+        ProviderChainPreview = L("Status.NoProviderSelected", "No model selected.");
         StatusText = L("Status.Ready", "Ready");
         InspectorHint = L("InspectorHint.SelectRow", "Select a row to review placeholders and terminology consistency.");
 
         UpdateKeyboardShortcutHint();
+        InitializeAiCopilot();
     }
 
     public ObservableCollection<TranslationRowViewModel> Rows { get; } = [];
@@ -164,7 +165,6 @@ public partial class MainViewModel : ObservableObject
     public ObservableCollection<string> ListFilters { get; }
     public ObservableCollection<OptionItem> AvailableLanguageOptions { get; }
     public ObservableCollection<OptionItem> ListFilterOptions { get; }
-    public ObservableCollection<string> ProviderChain { get; } = [];
     public ObservableCollection<ProviderChainItemViewModel> ProviderOptions { get; } = [];
     public ObservableCollection<string> RegisteredProviders { get; } = [];
     public ObservableCollection<string> ActivityLogs { get; } = [];
@@ -532,7 +532,7 @@ public partial class MainViewModel : ObservableObject
         var chain = BuildProviderChain();
         if (chain.Count == 0)
         {
-            StatusText = L("Status.NoAvailableProvider", "No available provider in chain.");
+            StatusText = L("Status.NoAvailableProvider", "No model selected or provider unavailable.");
             AddLog(StatusText);
             return;
         }
@@ -766,66 +766,6 @@ public partial class MainViewModel : ObservableObject
             "Selected glossary term does not match current source text.");
     }
 
-    [RelayCommand]
-    private void MoveSelectedProviderUp()
-    {
-        if (SelectedProviderOption is null)
-        {
-            return;
-        }
-
-        var index = ProviderOptions.IndexOf(SelectedProviderOption);
-        if (index <= 0)
-        {
-            return;
-        }
-
-        ProviderOptions.Move(index, index - 1);
-        SyncProviderChainOrderFromOptions();
-        UpdateProviderChainPreview();
-    }
-
-    [RelayCommand]
-    private void MoveSelectedProviderDown()
-    {
-        if (SelectedProviderOption is null)
-        {
-            return;
-        }
-
-        var index = ProviderOptions.IndexOf(SelectedProviderOption);
-        if (index < 0 || index >= ProviderOptions.Count - 1)
-        {
-            return;
-        }
-
-        ProviderOptions.Move(index, index + 1);
-        SyncProviderChainOrderFromOptions();
-        UpdateProviderChainPreview();
-    }
-
-    [RelayCommand]
-    private void SelectAllProviders()
-    {
-        foreach (var option in ProviderOptions)
-        {
-            option.IsEnabled = true;
-        }
-
-        UpdateProviderChainPreview();
-    }
-
-    [RelayCommand]
-    private void ClearProviderSelection()
-    {
-        foreach (var option in ProviderOptions)
-        {
-            option.IsEnabled = false;
-        }
-
-        UpdateProviderChainPreview();
-    }
-
     private async Task LoadWorkspaceSettingsAsync()
     {
         _isLoadingWorkspaceSettings = true;
@@ -885,13 +825,7 @@ public partial class MainViewModel : ObservableObject
 
     private void LoadProviders()
     {
-        foreach (var option in ProviderOptions)
-        {
-            option.PropertyChanged -= OnProviderOptionChanged;
-        }
-
         RegisteredProviders.Clear();
-        ProviderChain.Clear();
         ProviderOptions.Clear();
 
         var orderedProviderIds = _providers
@@ -914,16 +848,14 @@ public partial class MainViewModel : ObservableObject
         foreach (var providerId in orderedProviderIds)
         {
             RegisteredProviders.Add(providerId);
-            ProviderChain.Add(providerId);
             var option = new ProviderChainItemViewModel
             {
-                ProviderId = providerId,
-                IsEnabled = true
+                ProviderId = providerId
             };
-            option.PropertyChanged += OnProviderOptionChanged;
             ProviderOptions.Add(option);
         }
 
+        RefreshProviderModelOptions();
         SelectedProviderOption = ProviderOptions.FirstOrDefault();
         UpdateProviderChainPreview();
     }
@@ -1037,14 +969,6 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private void OnProviderOptionChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName is nameof(ProviderChainItemViewModel.IsEnabled))
-        {
-            UpdateProviderChainPreview();
-        }
-    }
-
     private void ApplyFilters()
     {
         var filtered = _allRows.Where(static _ => true);
@@ -1126,31 +1050,34 @@ public partial class MainViewModel : ObservableObject
             : L("InspectorHint.KeepPlaceholders", "Keep tags and number placeholders unchanged during translation.");
     }
 
-    private List<string> BuildProviderChain() =>
-        ProviderOptions
-            .Where(static option => option.IsEnabled)
-            .Select(static option => option.ProviderId)
-            .ToList();
-
-    private void SyncProviderChainOrderFromOptions()
+    private List<string> BuildProviderChain()
     {
-        ProviderChain.Clear();
-        foreach (var option in ProviderOptions)
+        var selectedProviderId = SelectedProviderOption?.ProviderId;
+        if (string.IsNullOrWhiteSpace(selectedProviderId))
         {
-            ProviderChain.Add(option.ProviderId);
+            selectedProviderId = ProviderOptions.FirstOrDefault()?.ProviderId;
         }
+
+        return string.IsNullOrWhiteSpace(selectedProviderId)
+            ? []
+            : [selectedProviderId];
     }
 
     private void UpdateProviderChainPreview()
     {
-        var enabled = ProviderOptions
-            .Where(static option => option.IsEnabled)
-            .Select(static option => option.ProviderId)
-            .ToList();
+        var selected = SelectedProviderOption ?? ProviderOptions.FirstOrDefault();
+        ProviderChainPreview = selected is null
+            ? L("Status.NoProviderSelected", "No model selected.")
+            : selected.DisplayText;
+    }
 
-        ProviderChainPreview = enabled.Count == 0
-            ? L("Status.NoProviderSelected", "No provider selected.")
-            : string.Join(" -> ", enabled);
+    private void RefreshProviderModelOptions()
+    {
+        foreach (var option in ProviderOptions)
+        {
+            var endpoint = GetOrCreateProviderOptions(option.ProviderId);
+            option.ModelName = endpoint.Model ?? string.Empty;
+        }
     }
 
     private void SelectPendingRow(bool forward)
@@ -1194,16 +1121,24 @@ public partial class MainViewModel : ObservableObject
             L("Shortcut.Save", "Ctrl+S Save"),
             L("Shortcut.AiBatch", "Ctrl+Shift+T AI Batch"),
             L("Shortcut.Search", "Ctrl+F Search"),
+            L("Shortcut.FocusRows", "Ctrl+G Rows"),
+            L("Shortcut.FocusAiInput", "Ctrl+K Copilot"),
             L("Shortcut.Help", "F1 Help")
         };
 
         if (SelectedRow is not null)
         {
+            hints.Add(L("Shortcut.FocusInspector", "Ctrl+I Inspector"));
             hints.Add(L("Shortcut.Apply", "Ctrl+Enter Apply"));
             hints.Add(L("Shortcut.ApplyNext", "Ctrl+Shift+Enter Apply+Next"));
             hints.Add(L("Shortcut.CopySource", "Ctrl+Shift+C CopySource"));
             hints.Add(L("Shortcut.ToggleLock", "Ctrl+L Lock"));
             hints.Add(L("Shortcut.Validate", "Ctrl+M Validate"));
+        }
+
+        if (ProviderOptions.Count > 0)
+        {
+            hints.Add(L("Shortcut.FocusModel", "Ctrl+Shift+M Model"));
         }
 
         if (_allRows.Any(static row => !row.IsLocked && row.IsUntranslated))
@@ -1230,7 +1165,7 @@ public partial class MainViewModel : ObservableObject
             new(
                 L("ShortcutGroup.Translate", "Translate"),
                 "Ctrl+Shift+T",
-                L("ShortcutHelp.BatchTranslate", "Run batch translation via provider chain")),
+                L("ShortcutHelp.BatchTranslate", "Run batch translation via selected model")),
             new(
                 L("ShortcutGroup.Navigation", "Navigation"),
                 "Ctrl+R",
@@ -1239,6 +1174,22 @@ public partial class MainViewModel : ObservableObject
                 L("ShortcutGroup.Navigation", "Navigation"),
                 "Ctrl+F",
                 L("ShortcutHelp.FocusSearch", "Focus search box")),
+            new(
+                L("ShortcutGroup.Navigation", "Navigation"),
+                "Ctrl+G",
+                L("ShortcutHelp.FocusRows", "Focus translation rows list")),
+            new(
+                L("ShortcutGroup.Navigation", "Navigation"),
+                "Ctrl+I",
+                L("ShortcutHelp.FocusInspector", "Focus inspector translation editor")),
+            new(
+                L("ShortcutGroup.Navigation", "Navigation"),
+                "Ctrl+K",
+                L("ShortcutHelp.FocusAiInput", "Focus AI chat input")),
+            new(
+                L("ShortcutGroup.Navigation", "Navigation"),
+                "Ctrl+Shift+M",
+                L("ShortcutHelp.FocusModel", "Focus model selector")),
             new(
                 L("ShortcutGroup.Editing", "Editing"),
                 "Ctrl+Enter",
@@ -1259,6 +1210,14 @@ public partial class MainViewModel : ObservableObject
                 L("ShortcutGroup.Editing", "Editing"),
                 "Ctrl+M",
                 L("ShortcutHelp.MarkValidated", "Mark selected row as validated")),
+            new(
+                L("ShortcutGroup.Editing", "Editing"),
+                "Enter (in AI input)",
+                L("ShortcutHelp.AiSend", "Send message from AI input")),
+            new(
+                L("ShortcutGroup.Editing", "Editing"),
+                "Shift+Enter (in AI input)",
+                L("ShortcutHelp.AiNewLine", "Insert new line in AI input")),
             new(
                 L("ShortcutGroup.Navigation", "Navigation"),
                 "F8",

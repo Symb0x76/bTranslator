@@ -1,10 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <data name="App.WindowTitle" xml:space="preserve">
     <value>bTranslator</value>
-  </data>
-  <data name="WindowTitle.AiWorkflow" xml:space="preserve">
-    <value>AI Workflow Designer</value>
   </data>
   <data name="WindowTitle.ProviderConfiguration" xml:space="preserve">
     <value>Provider Configuration</value>
@@ -115,7 +112,7 @@
     <value>No pending rows to translate.</value>
   </data>
   <data name="Status.NoAvailableProvider" xml:space="preserve">
-    <value>No available provider in chain.</value>
+    <value>No model selected or provider unavailable.</value>
   </data>
   <data name="Status.BatchTranslationDone" xml:space="preserve">
     <value>Batch translation done by '{0}', updated {1} rows.</value>
@@ -127,7 +124,7 @@
     <value>Plugin file not found: '{0}'.</value>
   </data>
   <data name="Status.NoProviderSelected" xml:space="preserve">
-    <value>No provider selected.</value>
+    <value>No model selected.</value>
   </data>
   <data name="Status.UiLanguageChangedRestart" xml:space="preserve">
     <value>UI language switched to '{0}'. Restart the app to apply all texts.</value>
@@ -345,6 +342,18 @@
   <data name="Shortcut.Search" xml:space="preserve">
     <value>Ctrl+F Search</value>
   </data>
+  <data name="Shortcut.FocusRows" xml:space="preserve">
+    <value>Ctrl+G Rows</value>
+  </data>
+  <data name="Shortcut.FocusInspector" xml:space="preserve">
+    <value>Ctrl+I Inspector</value>
+  </data>
+  <data name="Shortcut.FocusAiInput" xml:space="preserve">
+    <value>Ctrl+K Copilot</value>
+  </data>
+  <data name="Shortcut.FocusModel" xml:space="preserve">
+    <value>Ctrl+Shift+M Model</value>
+  </data>
   <data name="Shortcut.Apply" xml:space="preserve">
     <value>Ctrl+Enter Apply</value>
   </data>
@@ -400,13 +409,25 @@
     <value>Save current workspace</value>
   </data>
   <data name="ShortcutHelp.BatchTranslate" xml:space="preserve">
-    <value>Run batch translation via provider chain</value>
+    <value>Run batch translation via selected model</value>
   </data>
   <data name="ShortcutHelp.Refresh" xml:space="preserve">
     <value>Reload metadata and workspace settings</value>
   </data>
   <data name="ShortcutHelp.FocusSearch" xml:space="preserve">
     <value>Focus search box</value>
+  </data>
+  <data name="ShortcutHelp.FocusRows" xml:space="preserve">
+    <value>Focus translation rows list</value>
+  </data>
+  <data name="ShortcutHelp.FocusInspector" xml:space="preserve">
+    <value>Focus inspector translation editor</value>
+  </data>
+  <data name="ShortcutHelp.FocusAiInput" xml:space="preserve">
+    <value>Focus AI chat input</value>
+  </data>
+  <data name="ShortcutHelp.FocusModel" xml:space="preserve">
+    <value>Focus model selector</value>
   </data>
   <data name="ShortcutHelp.ApplyInspector" xml:space="preserve">
     <value>Apply inspector translation to current row</value>
@@ -422,6 +443,12 @@
   </data>
   <data name="ShortcutHelp.MarkValidated" xml:space="preserve">
     <value>Mark selected row as validated</value>
+  </data>
+  <data name="ShortcutHelp.AiSend" xml:space="preserve">
+    <value>Send message from AI input</value>
+  </data>
+  <data name="ShortcutHelp.AiNewLine" xml:space="preserve">
+    <value>Insert new line in AI input</value>
   </data>
   <data name="ShortcutHelp.NextPending" xml:space="preserve">
     <value>Select next pending row</value>
@@ -558,53 +585,11 @@
   <data name="InspectorProviderMovedHint.Text" xml:space="preserve">
     <value>Provider configuration has moved to Actions -&gt; Provider -&gt; Configuration -&gt; Open Configuration Window.</value>
   </data>
-  <data name="AiWorkflowPageTitle.Text" xml:space="preserve">
-    <value>AI Workflow Designer</value>
-  </data>
-  <data name="AiWorkflowChainBuilderTitle.Text" xml:space="preserve">
-    <value>Provider Chain Builder</value>
-  </data>
-  <data name="AiWorkflowMoveUpButton.Content" xml:space="preserve">
-    <value>Up</value>
-  </data>
-  <data name="AiWorkflowMoveDownButton.Content" xml:space="preserve">
-    <value>Down</value>
-  </data>
-  <data name="AiWorkflowAllButton.Content" xml:space="preserve">
-    <value>All</value>
-  </data>
-  <data name="AiWorkflowNoneButton.Content" xml:space="preserve">
-    <value>None</value>
-  </data>
-  <data name="AiWorkflowProfileTitle.Text" xml:space="preserve">
-    <value>Workflow Profile</value>
-  </data>
-  <data name="AiWorkflowSourceLanguageBox.Header" xml:space="preserve">
-    <value>Source Language</value>
-  </data>
-  <data name="AiWorkflowTargetLanguageBox.Header" xml:space="preserve">
-    <value>Target Language</value>
-  </data>
-  <data name="AiWorkflowLoadStringsToggle.Header" xml:space="preserve">
-    <value>Load STRINGS</value>
-  </data>
-  <data name="AiWorkflowLoadFieldsToggle.Header" xml:space="preserve">
-    <value>Load Record Fields</value>
-  </data>
-  <data name="AiWorkflowCurrentChainBox.Header" xml:space="preserve">
-    <value>Current Workflow Chain</value>
-  </data>
-  <data name="AiWorkflowRunButton.Content" xml:space="preserve">
-    <value>Run Workflow</value>
-  </data>
-  <data name="AiWorkflowTipText.Text" xml:space="preserve">
-    <value>Tip: Enable/disable providers and reorder them to define fallback sequence. The first available provider runs first, failures fall through automatically.</value>
-  </data>
   <data name="ProviderConfigPageTitle.Text" xml:space="preserve">
     <value>Provider Configuration</value>
   </data>
   <data name="ProviderConfigProviderBox.Header" xml:space="preserve">
-    <value>Provider</value>
+    <value>Model</value>
   </data>
   <data name="ProviderConfigSelectedProviderTitle.Text" xml:space="preserve">
     <value>Selected Provider</value>
@@ -720,14 +705,8 @@
   <data name="Menu.ReloadMetadata" xml:space="preserve">
     <value>Reload Metadata</value>
   </data>
-  <data name="Menu.AiWorkflow" xml:space="preserve">
-    <value>AI Workflow</value>
-  </data>
-  <data name="Menu.OpenWorkflowDesigner" xml:space="preserve">
-    <value>Open Workflow Designer</value>
-  </data>
   <data name="Menu.Chain" xml:space="preserve">
-    <value>Chain</value>
+    <value>Model</value>
   </data>
   <data name="Menu.MoveSelectedUp" xml:space="preserve">
     <value>Move Selected Up</value>
@@ -742,7 +721,7 @@
     <value>Disable All</value>
   </data>
   <data name="Menu.CurrentChain" xml:space="preserve">
-    <value>Current Chain</value>
+    <value>Current Model</value>
   </data>
   <data name="Menu.Configuration" xml:space="preserve">
     <value>Configuration</value>
@@ -912,4 +891,95 @@
   <data name="Status.UiLanguageChangeFailed" xml:space="preserve">
     <value>UI language switch failed: {0}</value>
   </data>
+  <data name="AiCopilotSectionTitle.Text" xml:space="preserve">
+    <value>AI Copilot</value>
+  </data>
+  <data name="AiCopilotProviderChainHeader.Text" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="AiCopilotMcpHint.Text" xml:space="preserve">
+    <value>Tip: /mcp translate-mod --save to localize and save quickly.</value>
+  </data>
+  <data name="AiCopilotInputBox.PlaceholderText" xml:space="preserve">
+    <value>Ask for translation help or run /mcp commands...</value>
+  </data>
+  <data name="AiCopilotSendButton.Content" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="AiCopilotClearButton.Content" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="AiCopilotBusy.Text" xml:space="preserve">
+    <value>Thinking...</value>
+  </data>
+  <data name="AiCopilot.WelcomeMessage" xml:space="preserve">
+    <value>Copilot is ready. Use /mcp help to view tool commands for direct mod localization.</value>
+  </data>
+  <data name="AiCopilot.UserRoleLabelText" xml:space="preserve">
+    <value>You</value>
+  </data>
+  <data name="AiCopilot.AssistantRoleLabelText" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="AiCopilot.McpTranslateRowFailed" xml:space="preserve">
+    <value>MCP translate-row failed. Check status panel for details.</value>
+  </data>
+  <data name="AiCopilot.McpNextPendingDone" xml:space="preserve">
+    <value>Moved selection to next pending row.</value>
+  </data>
+  <data name="AiCopilot.McpLocalizeAndSaveDone" xml:space="preserve">
+    <value>MCP localized {0} rows and saved workspace.</value>
+  </data>
+  <data name="AiCopilot.McpLocalizeDone" xml:space="preserve">
+    <value>MCP localized {0} rows. Run /mcp save to persist output.</value>
+  </data>
+  <data name="AiCopilot.McpUnknownCommand" xml:space="preserve">
+    <value>Unknown MCP command: '{0}'. Use /mcp help.</value>
+  </data>
+  <data name="AiCopilot.McpOpenUsage" xml:space="preserve">
+    <value>Usage: /mcp open &lt;plugin-path&gt;</value>
+  </data>
+  <data name="AiCopilot.McpOpenPathMissing" xml:space="preserve">
+    <value>Plugin path not found: {0}</value>
+  </data>
+  <data name="AiCopilot.NoProviderAvailable" xml:space="preserve">
+    <value>No model selected. Choose one from the model selector.</value>
+  </data>
+  <data name="AiCopilot.EmptyReply" xml:space="preserve">
+    <value>Provider returned an empty reply. Check provider model/prompt settings.</value>
+  </data>
+  <data name="AiCopilot.McpStatusSummary" xml:space="preserve">
+    <value>Workspace={0}; Rows total={1}, pending={2}; Selected={3}; Model={4}.</value>
+  </data>
+  <data name="AiCopilot.McpHelpText" xml:space="preserve">
+    <value>MCP commands:
+/mcp status
+/mcp open &lt;plugin-path&gt;
+/mcp translate-row
+/mcp translate-mod [--save]
+/mcp save
+/mcp next</value>
+  </data>
+  <data name="Status.AiCopilotError" xml:space="preserve">
+    <value>Copilot request failed: {0}</value>
+  </data>
+  <data name="Status.AiCopilotLlmFailed" xml:space="preserve">
+    <value>LLM chat failed: {0}</value>
+  </data>
+  <data name="Status.NoSelectedRow" xml:space="preserve">
+    <value>No selected row.</value>
+  </data>
+  <data name="Status.RowLockedCannotTranslate" xml:space="preserve">
+    <value>Selected row is locked. Unlock it before AI translation.</value>
+  </data>
+  <data name="Status.RowTranslationDone" xml:space="preserve">
+    <value>Translated selected row '{0}' via '{1}'.</value>
+  </data>
+  <data name="Status.RowTranslationFailed" xml:space="preserve">
+    <value>Selected row translation failed: {0}</value>
+  </data>
+  <data name="Log.AiCopilotProviderReply" xml:space="preserve">
+    <value>Copilot response generated via '{0}'.</value>
+  </data>
 </root>
+

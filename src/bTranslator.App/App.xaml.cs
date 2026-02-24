@@ -11,7 +11,11 @@ using bTranslator.Infrastructure.Translation.Options;
 using bTranslator.Infrastructure.Translation.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Controls;
 using Serilog;
+using Windows.Graphics;
+using WinRT.Interop;
 
 namespace bTranslator.App;
 
@@ -102,27 +106,114 @@ public partial class App : Microsoft.UI.Xaml.Application
 
     private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
     {
-        try
-        {
-            Directory.CreateDirectory("logs");
-            File.AppendAllText(
-                Path.Combine("logs", "startup-exception.log"),
-                $"[XAML] {DateTimeOffset.Now:O}\n{e.Exception}\n\n");
-        }
-        catch
-        {
-            // Ignore logging failures.
-        }
+        LogStartupException("XAML", e.Exception);
     }
 
     private void OnDomainUnhandledException(object? sender, System.UnhandledExceptionEventArgs e)
     {
+        LogStartupException("DOMAIN", e.ExceptionObject);
+    }
+
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        try
+        {
+            ApplyConfiguredUiLanguage();
+
+            _window ??= new Window();
+            _window.Content ??= _host.Services.GetRequiredService<MainPage>();
+            _window.Activate();
+            EnsureWindowVisible(_window);
+        }
+        catch (Exception ex)
+        {
+            LogStartupException("LAUNCH", ex);
+
+            _window ??= new Window();
+            _window.Content = BuildStartupErrorView(ex);
+            _window.Activate();
+        }
+    }
+
+    private static void EnsureWindowVisible(Window window)
+    {
+        try
+        {
+            var hwnd = WindowNative.GetWindowHandle(window);
+            if (hwnd == IntPtr.Zero)
+            {
+                return;
+            }
+
+            var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
+            var appWindow = AppWindow.GetFromWindowId(windowId);
+            var displayArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
+            var workArea = displayArea.WorkArea;
+
+            if (appWindow.Presenter is OverlappedPresenter presenter)
+            {
+                presenter.Restore();
+            }
+
+            var currentRect = new RectInt32(
+                appWindow.Position.X,
+                appWindow.Position.Y,
+                appWindow.Size.Width,
+                appWindow.Size.Height);
+
+            var intersects = RectanglesIntersect(currentRect, workArea);
+            if (intersects && currentRect.Width > 0 && currentRect.Height > 0)
+            {
+                return;
+            }
+
+            const int preferredWidth = 1440;
+            const int preferredHeight = 900;
+            var targetWidth = Math.Min(preferredWidth, workArea.Width);
+            var targetHeight = Math.Min(preferredHeight, workArea.Height);
+            var targetX = workArea.X + Math.Max(0, (workArea.Width - targetWidth) / 2);
+            var targetY = workArea.Y + Math.Max(0, (workArea.Height - targetHeight) / 2);
+
+            appWindow.MoveAndResize(new RectInt32(targetX, targetY, targetWidth, targetHeight));
+        }
+        catch
+        {
+            // Ignore visibility correction failures.
+        }
+    }
+
+    private static bool RectanglesIntersect(RectInt32 left, RectInt32 right)
+    {
+        return left.X < right.X + right.Width &&
+               left.X + left.Width > right.X &&
+               left.Y < right.Y + right.Height &&
+               left.Y + left.Height > right.Y;
+    }
+
+    private static FrameworkElement BuildStartupErrorView(Exception ex)
+    {
+        return new ScrollViewer
+        {
+            Content = new TextBlock
+            {
+                Margin = new Thickness(16),
+                TextWrapping = TextWrapping.Wrap,
+                Text =
+                    "bTranslator startup failed.\n\n" +
+                    "See logs/startup-exception.log for details.\n\n" +
+                    ex.ToString()
+            }
+        };
+    }
+
+    private static void LogStartupException(string source, Exception ex)
+    {
         try
         {
             Directory.CreateDirectory("logs");
             File.AppendAllText(
                 Path.Combine("logs", "startup-exception.log"),
-                $"[DOMAIN] {DateTimeOffset.Now:O}\n{e.ExceptionObject}\n\n");
+                $"[{source}] {DateTimeOffset.Now:O}\n{ex}\n\n");
         }
         catch
         {
@@ -130,16 +221,25 @@ public partial class App : Microsoft.UI.Xaml.Application
         }
     }
 
-    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    private static void LogStartupException(string source, object? ex)
     {
-        ApplyConfiguredUiLanguage();
-
-        _window ??= new Window
+        if (ex is Exception exception)
         {
-            Content = _host.Services.GetRequiredService<MainPage>()
-        };
+            LogStartupException(source, exception);
+            return;
+        }
 
-        _window.Activate();
+        try
+        {
+            Directory.CreateDirectory("logs");
+            File.AppendAllText(
+                Path.Combine("logs", "startup-exception.log"),
+                $"[{source}] {DateTimeOffset.Now:O}\n{ex}\n\n");
+        }
+        catch
+        {
+            // Ignore logging failures.
+        }
     }
 
     private void ApplyConfiguredUiLanguage()

@@ -1,10 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <data name="App.WindowTitle" xml:space="preserve">
     <value>bTranslator</value>
-  </data>
-  <data name="WindowTitle.AiWorkflow" xml:space="preserve">
-    <value>AI 工作流设计器</value>
   </data>
   <data name="WindowTitle.ProviderConfiguration" xml:space="preserve">
     <value>Provider 配置</value>
@@ -115,7 +112,7 @@
     <value>没有待翻译条目。</value>
   </data>
   <data name="Status.NoAvailableProvider" xml:space="preserve">
-    <value>Provider 链中没有可用项。</value>
+    <value>未选择模型或对应 Provider 不可用。</value>
   </data>
   <data name="Status.BatchTranslationDone" xml:space="preserve">
     <value>批量翻译完成，使用“{0}”，更新 {1} 条。</value>
@@ -127,7 +124,7 @@
     <value>未找到插件文件：“{0}”。</value>
   </data>
   <data name="Status.NoProviderSelected" xml:space="preserve">
-    <value>未选择 Provider。</value>
+    <value>未选择模型。</value>
   </data>
   <data name="Status.UiLanguageChangedRestart" xml:space="preserve">
     <value>UI 语言已切换为“{0}”，重启应用后可完整生效。</value>
@@ -345,6 +342,18 @@
   <data name="Shortcut.Search" xml:space="preserve">
     <value>Ctrl+F 搜索</value>
   </data>
+  <data name="Shortcut.FocusRows" xml:space="preserve">
+    <value>Ctrl+G 行列表</value>
+  </data>
+  <data name="Shortcut.FocusInspector" xml:space="preserve">
+    <value>Ctrl+I 检查器</value>
+  </data>
+  <data name="Shortcut.FocusAiInput" xml:space="preserve">
+    <value>Ctrl+K Copilot 输入</value>
+  </data>
+  <data name="Shortcut.FocusModel" xml:space="preserve">
+    <value>Ctrl+Shift+M 模型</value>
+  </data>
   <data name="Shortcut.Apply" xml:space="preserve">
     <value>Ctrl+Enter 应用</value>
   </data>
@@ -400,13 +409,25 @@
     <value>保存当前工作区</value>
   </data>
   <data name="ShortcutHelp.BatchTranslate" xml:space="preserve">
-    <value>按 Provider 链执行批量翻译</value>
+    <value>按当前所选模型执行批量翻译</value>
   </data>
   <data name="ShortcutHelp.Refresh" xml:space="preserve">
     <value>重载元数据与工作区设置</value>
   </data>
   <data name="ShortcutHelp.FocusSearch" xml:space="preserve">
     <value>聚焦到搜索框</value>
+  </data>
+  <data name="ShortcutHelp.FocusRows" xml:space="preserve">
+    <value>聚焦到翻译行列表</value>
+  </data>
+  <data name="ShortcutHelp.FocusInspector" xml:space="preserve">
+    <value>聚焦到检查器译文输入框</value>
+  </data>
+  <data name="ShortcutHelp.FocusAiInput" xml:space="preserve">
+    <value>聚焦到 AI 对话输入框</value>
+  </data>
+  <data name="ShortcutHelp.FocusModel" xml:space="preserve">
+    <value>聚焦到模型选择框</value>
   </data>
   <data name="ShortcutHelp.ApplyInspector" xml:space="preserve">
     <value>将检查器译文应用到当前行</value>
@@ -422,6 +443,12 @@
   </data>
   <data name="ShortcutHelp.MarkValidated" xml:space="preserve">
     <value>将所选行标记为已验证</value>
+  </data>
+  <data name="ShortcutHelp.AiSend" xml:space="preserve">
+    <value>在 AI 输入框中发送消息</value>
+  </data>
+  <data name="ShortcutHelp.AiNewLine" xml:space="preserve">
+    <value>在 AI 输入框中插入换行</value>
   </data>
   <data name="ShortcutHelp.NextPending" xml:space="preserve">
     <value>选择下一条待翻译</value>
@@ -558,53 +585,11 @@
   <data name="InspectorProviderMovedHint.Text" xml:space="preserve">
     <value>Provider 配置已移动到 Actions -&gt; Provider -&gt; Configuration -&gt; Open Configuration Window。</value>
   </data>
-  <data name="AiWorkflowPageTitle.Text" xml:space="preserve">
-    <value>AI 工作流设计器</value>
-  </data>
-  <data name="AiWorkflowChainBuilderTitle.Text" xml:space="preserve">
-    <value>Provider 链构建</value>
-  </data>
-  <data name="AiWorkflowMoveUpButton.Content" xml:space="preserve">
-    <value>上移</value>
-  </data>
-  <data name="AiWorkflowMoveDownButton.Content" xml:space="preserve">
-    <value>下移</value>
-  </data>
-  <data name="AiWorkflowAllButton.Content" xml:space="preserve">
-    <value>全选</value>
-  </data>
-  <data name="AiWorkflowNoneButton.Content" xml:space="preserve">
-    <value>全不选</value>
-  </data>
-  <data name="AiWorkflowProfileTitle.Text" xml:space="preserve">
-    <value>工作流配置</value>
-  </data>
-  <data name="AiWorkflowSourceLanguageBox.Header" xml:space="preserve">
-    <value>源语言</value>
-  </data>
-  <data name="AiWorkflowTargetLanguageBox.Header" xml:space="preserve">
-    <value>目标语言</value>
-  </data>
-  <data name="AiWorkflowLoadStringsToggle.Header" xml:space="preserve">
-    <value>加载 STRINGS</value>
-  </data>
-  <data name="AiWorkflowLoadFieldsToggle.Header" xml:space="preserve">
-    <value>加载记录字段</value>
-  </data>
-  <data name="AiWorkflowCurrentChainBox.Header" xml:space="preserve">
-    <value>当前工作流链</value>
-  </data>
-  <data name="AiWorkflowRunButton.Content" xml:space="preserve">
-    <value>运行工作流</value>
-  </data>
-  <data name="AiWorkflowTipText.Text" xml:space="preserve">
-    <value>提示：可启用/禁用 Provider 并调整顺序来定义回退链。优先使用最前面的可用 Provider，失败会自动回退。</value>
-  </data>
   <data name="ProviderConfigPageTitle.Text" xml:space="preserve">
     <value>Provider 配置</value>
   </data>
   <data name="ProviderConfigProviderBox.Header" xml:space="preserve">
-    <value>Provider</value>
+    <value>模型</value>
   </data>
   <data name="ProviderConfigSelectedProviderTitle.Text" xml:space="preserve">
     <value>当前 Provider</value>
@@ -720,14 +705,8 @@
   <data name="Menu.ReloadMetadata" xml:space="preserve">
     <value>重载元数据</value>
   </data>
-  <data name="Menu.AiWorkflow" xml:space="preserve">
-    <value>AI 工作流</value>
-  </data>
-  <data name="Menu.OpenWorkflowDesigner" xml:space="preserve">
-    <value>打开工作流设计器</value>
-  </data>
   <data name="Menu.Chain" xml:space="preserve">
-    <value>链路</value>
+    <value>模型</value>
   </data>
   <data name="Menu.MoveSelectedUp" xml:space="preserve">
     <value>上移选中项</value>
@@ -742,7 +721,7 @@
     <value>全部禁用</value>
   </data>
   <data name="Menu.CurrentChain" xml:space="preserve">
-    <value>当前链路</value>
+    <value>当前模型</value>
   </data>
   <data name="Menu.Configuration" xml:space="preserve">
     <value>配置</value>
@@ -912,4 +891,95 @@
   <data name="Status.UiLanguageChangeFailed" xml:space="preserve">
     <value>UI 语言切换失败：{0}</value>
   </data>
+  <data name="AiCopilotSectionTitle.Text" xml:space="preserve">
+    <value>AI Copilot</value>
+  </data>
+  <data name="AiCopilotProviderChainHeader.Text" xml:space="preserve">
+    <value>模型</value>
+  </data>
+  <data name="AiCopilotMcpHint.Text" xml:space="preserve">
+    <value>提示：使用 /mcp translate-mod --save 可一键汉化并保存。</value>
+  </data>
+  <data name="AiCopilotInputBox.PlaceholderText" xml:space="preserve">
+    <value>输入翻译问题，或使用 /mcp 命令直接执行...</value>
+  </data>
+  <data name="AiCopilotSendButton.Content" xml:space="preserve">
+    <value>发送</value>
+  </data>
+  <data name="AiCopilotClearButton.Content" xml:space="preserve">
+    <value>清空</value>
+  </data>
+  <data name="AiCopilotBusy.Text" xml:space="preserve">
+    <value>思考中...</value>
+  </data>
+  <data name="AiCopilot.WelcomeMessage" xml:space="preserve">
+    <value>Copilot 已就绪。输入 /mcp help 查看可直接汉化 MOD 的工具命令。</value>
+  </data>
+  <data name="AiCopilot.UserRoleLabelText" xml:space="preserve">
+    <value>你</value>
+  </data>
+  <data name="AiCopilot.AssistantRoleLabelText" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="AiCopilot.McpTranslateRowFailed" xml:space="preserve">
+    <value>MCP translate-row 执行失败，请查看状态栏。</value>
+  </data>
+  <data name="AiCopilot.McpNextPendingDone" xml:space="preserve">
+    <value>已跳转到下一条待翻译行。</value>
+  </data>
+  <data name="AiCopilot.McpLocalizeAndSaveDone" xml:space="preserve">
+    <value>MCP 已汉化 {0} 行并保存工作区。</value>
+  </data>
+  <data name="AiCopilot.McpLocalizeDone" xml:space="preserve">
+    <value>MCP 已汉化 {0} 行。可执行 /mcp save 保存输出。</value>
+  </data>
+  <data name="AiCopilot.McpUnknownCommand" xml:space="preserve">
+    <value>未知 MCP 命令：'{0}'。请使用 /mcp help。</value>
+  </data>
+  <data name="AiCopilot.McpOpenUsage" xml:space="preserve">
+    <value>用法：/mcp open &lt;plugin-path&gt;</value>
+  </data>
+  <data name="AiCopilot.McpOpenPathMissing" xml:space="preserve">
+    <value>未找到插件路径：{0}</value>
+  </data>
+  <data name="AiCopilot.NoProviderAvailable" xml:space="preserve">
+    <value>未选择模型，请在模型下拉框中选择一个。</value>
+  </data>
+  <data name="AiCopilot.EmptyReply" xml:space="preserve">
+    <value>Provider 返回空回复，请检查模型或提示词配置。</value>
+  </data>
+  <data name="AiCopilot.McpStatusSummary" xml:space="preserve">
+    <value>工作区={0}；总行数={1}，待翻译={2}；当前选中={3}；模型={4}。</value>
+  </data>
+  <data name="AiCopilot.McpHelpText" xml:space="preserve">
+    <value>MCP 命令：
+/mcp status
+/mcp open &lt;plugin-path&gt;
+/mcp translate-row
+/mcp translate-mod [--save]
+/mcp save
+/mcp next</value>
+  </data>
+  <data name="Status.AiCopilotError" xml:space="preserve">
+    <value>Copilot 请求失败：{0}</value>
+  </data>
+  <data name="Status.AiCopilotLlmFailed" xml:space="preserve">
+    <value>LLM 对话失败：{0}</value>
+  </data>
+  <data name="Status.NoSelectedRow" xml:space="preserve">
+    <value>未选中任何行。</value>
+  </data>
+  <data name="Status.RowLockedCannotTranslate" xml:space="preserve">
+    <value>当前行已锁定，请先解锁再进行 AI 翻译。</value>
+  </data>
+  <data name="Status.RowTranslationDone" xml:space="preserve">
+    <value>已通过 '{1}' 翻译选中行 '{0}'。</value>
+  </data>
+  <data name="Status.RowTranslationFailed" xml:space="preserve">
+    <value>选中行翻译失败：{0}</value>
+  </data>
+  <data name="Log.AiCopilotProviderReply" xml:space="preserve">
+    <value>Copilot 回复由 '{0}' 生成。</value>
+  </data>
 </root>
+
