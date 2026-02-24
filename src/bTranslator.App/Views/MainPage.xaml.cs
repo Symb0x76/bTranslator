@@ -418,6 +418,38 @@ public partial class MainPage : Page
         return file?.Path;
     }
 
+    private async Task<string?> PickDictionaryImportPathAsync()
+    {
+        var picker = new FileOpenPicker();
+        picker.FileTypeFilter.Add(".json");
+        picker.FileTypeFilter.Add("*");
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSingleFileAsync();
+        return file?.Path;
+    }
+
+    private async Task<string?> PickDictionaryExportPathAsync()
+    {
+        var picker = new FileSavePicker
+        {
+            SuggestedFileName = "translation-dictionary"
+        };
+        picker.FileTypeChoices.Add("JSON", [".json"]);
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSaveFileAsync();
+        return file?.Path;
+    }
+
     private async void OnOpenPluginFromMenuClicked(object sender, RoutedEventArgs e)
     {
         if (!await PickPluginPathAsync().ConfigureAwait(true))
@@ -519,6 +551,43 @@ public partial class MainPage : Page
         if (ViewModel.ImportLegacyApiTranslatorConfigCommand.CanExecute(path))
         {
             await ViewModel.ImportLegacyApiTranslatorConfigCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnImportDictionaryClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickDictionaryImportPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.ImportDictionaryCommand.CanExecute(path))
+        {
+            await ViewModel.ImportDictionaryCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnEditDictionaryClicked(object sender, RoutedEventArgs e)
+    {
+        var dialog = new DictionaryEditorDialog(ViewModel)
+        {
+            XamlRoot = XamlRoot
+        };
+        _ = await dialog.ShowAsync();
+    }
+
+    private async void OnExportDictionaryClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickDictionaryExportPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.ExportDictionaryCommand.CanExecute(path))
+        {
+            await ViewModel.ExportDictionaryCommand.ExecuteAsync(path).ConfigureAwait(true);
         }
     }
 

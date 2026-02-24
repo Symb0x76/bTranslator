@@ -33,9 +33,14 @@ C# bootstrap implementation for a WinUI 3 rewrite of xTranslator.
 
 ## Build
 ```powershell
-dotnet restore bTranslator.slnx
-dotnet build bTranslator.slnx
-dotnet test bTranslator.slnx
+dotnet restore bTranslator.sln
+dotnet build bTranslator.sln
+dotnet test bTranslator.sln
+```
+
+## Run (Unpackaged)
+```powershell
+dotnet run --project src/bTranslator.App/bTranslator.App.csproj
 ```
 
 ## Package (PowerShell)

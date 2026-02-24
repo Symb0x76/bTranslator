@@ -153,6 +153,45 @@
   <data name="Status.ApiTranslatorImportFailed" xml:space="preserve">
     <value>导入 ApiTranslator 配置失败：{0}</value>
   </data>
+  <data name="Status.DictionaryPathMissing" xml:space="preserve">
+    <value>词典路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.DictionaryImported" xml:space="preserve">
+    <value>已从“{0}”导入词典（{1} 条词条）。</value>
+  </data>
+  <data name="Status.DictionaryImportFailed" xml:space="preserve">
+    <value>导入词典失败：{0}</value>
+  </data>
+  <data name="Status.DictionaryExported" xml:space="preserve">
+    <value>已导出词典到“{0}”（{1} 条词条）。</value>
+  </data>
+  <data name="Status.DictionaryExportFailed" xml:space="preserve">
+    <value>导出词典失败：{0}</value>
+  </data>
+  <data name="Status.DictionaryUpdated" xml:space="preserve">
+    <value>词典已更新（{0} 条）。</value>
+  </data>
+  <data name="Status.DictionaryEditorSaveFailed" xml:space="preserve">
+    <value>保存词典编辑器修改失败：{0}</value>
+  </data>
+  <data name="Status.DictionarySeedRowMissing" xml:space="preserve">
+    <value>当前未选中任何行，无法生成词典词条。</value>
+  </data>
+  <data name="Status.DictionarySeedMissingSourceOrTarget" xml:space="preserve">
+    <value>当前行源文或译文为空，无法生成词典词条。</value>
+  </data>
+  <data name="Status.DictionarySeedAdded" xml:space="preserve">
+    <value>已根据当前选中行添加作用域词条：{0} / {1}。</value>
+  </data>
+  <data name="Status.DictionarySeedDuplicate" xml:space="preserve">
+    <value>作用域词条已存在，无需重复添加。</value>
+  </data>
+  <data name="Status.DictionaryPasteNoEntries" xml:space="preserve">
+    <value>粘贴内容中未找到有效词条。</value>
+  </data>
+  <data name="Status.DictionaryPasteImported" xml:space="preserve">
+    <value>已从粘贴内容解析 {0} 条，去重后新增 {1} 条。</value>
+  </data>
   <data name="Status.ProviderSettingsLoadFailed" xml:space="preserve">
     <value>加载 Provider 配置失败：{0}</value>
   </data>
@@ -188,6 +227,9 @@
   </data>
   <data name="Log.ProviderConnectivitySample" xml:space="preserve">
     <value>{0} 示例：{1}</value>
+  </data>
+  <data name="Log.DictionaryPreReplaceRows" xml:space="preserve">
+    <value>已在 AI 翻译前为 {0} 条记录应用词典预替换。</value>
   </data>
   <data name="Shortcut.Open" xml:space="preserve">
     <value>Ctrl+O 打开</value>
@@ -324,6 +366,9 @@
   <data name="WorkspaceMenuEncodingManual.Text" xml:space="preserve">
     <value>编码（手动）</value>
   </data>
+  <data name="WorkspaceMenuApplyEncoding.Text" xml:space="preserve">
+    <value>应用编码（重新打开）</value>
+  </data>
   <data name="PluginSwitcherTitle.Text" xml:space="preserve">
     <value>插件切换器</value>
   </data>
@@ -404,6 +449,9 @@
   </data>
   <data name="InspectorToggleLockButton.Content" xml:space="preserve">
     <value>切换锁定</value>
+  </data>
+  <data name="InspectorAddToDictionaryButton.Content" xml:space="preserve">
+    <value>加入词典</value>
   </data>
   <data name="InspectorProviderMovedHint.Text" xml:space="preserve">
     <value>Provider 配置已移动到 Actions -&gt; Provider -&gt; Configuration -&gt; Open Configuration Window。</value>
@@ -611,6 +659,102 @@
   </data>
   <data name="Menu.ImportApiTranslator" xml:space="preserve">
     <value>导入 ApiTranslator.txt...</value>
+  </data>
+  <data name="Menu.Dictionary" xml:space="preserve">
+    <value>词典</value>
+  </data>
+  <data name="Menu.EditDictionary" xml:space="preserve">
+    <value>编辑词典...</value>
+  </data>
+  <data name="Menu.AddSelectedRowToDictionary" xml:space="preserve">
+    <value>将选中行加入词典</value>
+  </data>
+  <data name="Menu.ImportDictionary" xml:space="preserve">
+    <value>导入词典...</value>
+  </data>
+  <data name="Menu.ExportDictionary" xml:space="preserve">
+    <value>导出词典...</value>
+  </data>
+  <data name="Menu.EnableDictionaryPreReplace" xml:space="preserve">
+    <value>启用词典预替换</value>
+  </data>
+  <data name="DictionaryEditor.DialogTitle" xml:space="preserve">
+    <value>词典编辑器</value>
+  </data>
+  <data name="DictionaryEditor.Search.Header" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="DictionaryEditor.Search.PlaceholderText" xml:space="preserve">
+    <value>源文 / 译文 / EDID 作用域 / 字段作用域</value>
+  </data>
+  <data name="DictionaryEditor.Sort.Header" xml:space="preserve">
+    <value>排序</value>
+  </data>
+  <data name="DictionaryEditor.Sort.SourceAsc" xml:space="preserve">
+    <value>源文（A-Z）</value>
+  </data>
+  <data name="DictionaryEditor.Sort.TargetAsc" xml:space="preserve">
+    <value>译文（A-Z）</value>
+  </data>
+  <data name="DictionaryEditor.Sort.Scope" xml:space="preserve">
+    <value>作用域</value>
+  </data>
+  <data name="DictionaryEditor.EntryCount.Text" xml:space="preserve">
+    <value>词条数：{0}</value>
+  </data>
+  <data name="DictionaryEditor.Source.Header" xml:space="preserve">
+    <value>源文</value>
+  </data>
+  <data name="DictionaryEditor.Target.Header" xml:space="preserve">
+    <value>译文</value>
+  </data>
+  <data name="DictionaryEditor.EditorIdScope.Header" xml:space="preserve">
+    <value>EDID 作用域</value>
+  </data>
+  <data name="DictionaryEditor.FieldScope.Header" xml:space="preserve">
+    <value>字段作用域</value>
+  </data>
+  <data name="DictionaryEditor.MatchCase.Header" xml:space="preserve">
+    <value>区分大小写</value>
+  </data>
+  <data name="DictionaryEditor.WholeWord.Header" xml:space="preserve">
+    <value>整词匹配</value>
+  </data>
+  <data name="DictionaryEditor.ScopePreview.Header" xml:space="preserve">
+    <value>作用域预览</value>
+  </data>
+  <data name="DictionaryEditor.ScopeGlobal.Text" xml:space="preserve">
+    <value>全局</value>
+  </data>
+  <data name="DictionaryEditor.AddButton.Content" xml:space="preserve">
+    <value>新增</value>
+  </data>
+  <data name="DictionaryEditor.DuplicateButton.Content" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="DictionaryEditor.DeleteButton.Content" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="DictionaryEditor.ApplyButton.Content" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="DictionaryEditor.CloseButton.Content" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="DictionaryEditor.PasteButton.Content" xml:space="preserve">
+    <value>粘贴 CSV/TSV</value>
+  </data>
+  <data name="DictionaryEditor.PasteDialog.Title" xml:space="preserve">
+    <value>粘贴 CSV/TSV 词典词条</value>
+  </data>
+  <data name="DictionaryEditor.Paste.PlaceholderText" xml:space="preserve">
+    <value>在此粘贴 CSV/TSV 行。列顺序：source,target,editorIdPattern,fieldPattern,matchCase,wholeWord</value>
+  </data>
+  <data name="DictionaryEditor.PasteApplyButton.Content" xml:space="preserve">
+    <value>解析并添加</value>
+  </data>
+  <data name="DictionaryEditor.PasteCancelButton.Content" xml:space="preserve">
+    <value>取消</value>
   </data>
   <data name="Menu.RefreshWorkspace" xml:space="preserve">
     <value>刷新工作区</value>

@@ -5,7 +5,7 @@ param(
 
     [string[]]$RuntimeIdentifiers = @("win-x64"),
 
-    [string]$Solution = "bTranslator.slnx",
+    [string]$Solution = "bTranslator.sln",
     [string]$AppProject = "src/bTranslator.App/bTranslator.App.csproj",
     [string]$PackageDirectory = "Package",
 
@@ -34,7 +34,13 @@ try {
     Set-Location $repoRoot
 
     if (-not (Test-Path $Solution)) {
-        throw "Solution file not found: $Solution"
+        if ($Solution -eq "bTranslator.sln" -and (Test-Path "bTranslator.slnx")) {
+            Write-Warning "Solution '$Solution' not found. Falling back to bTranslator.slnx."
+            $Solution = "bTranslator.slnx"
+        }
+        else {
+            throw "Solution file not found: $Solution"
+        }
     }
 
     if (-not (Test-Path $AppProject)) {

@@ -153,6 +153,45 @@
   <data name="Status.ApiTranslatorImportFailed" xml:space="preserve">
     <value>Import ApiTranslator config failed: {0}</value>
   </data>
+  <data name="Status.DictionaryPathMissing" xml:space="preserve">
+    <value>Dictionary path is empty or file does not exist.</value>
+  </data>
+  <data name="Status.DictionaryImported" xml:space="preserve">
+    <value>Imported dictionary from '{0}' ({1} entries).</value>
+  </data>
+  <data name="Status.DictionaryImportFailed" xml:space="preserve">
+    <value>Import dictionary failed: {0}</value>
+  </data>
+  <data name="Status.DictionaryExported" xml:space="preserve">
+    <value>Exported dictionary to '{0}' ({1} entries).</value>
+  </data>
+  <data name="Status.DictionaryExportFailed" xml:space="preserve">
+    <value>Export dictionary failed: {0}</value>
+  </data>
+  <data name="Status.DictionaryUpdated" xml:space="preserve">
+    <value>Dictionary updated ({0} entries).</value>
+  </data>
+  <data name="Status.DictionaryEditorSaveFailed" xml:space="preserve">
+    <value>Save dictionary editor changes failed: {0}</value>
+  </data>
+  <data name="Status.DictionarySeedRowMissing" xml:space="preserve">
+    <value>No selected row for dictionary entry.</value>
+  </data>
+  <data name="Status.DictionarySeedMissingSourceOrTarget" xml:space="preserve">
+    <value>Selected row source/translation is empty, cannot create dictionary entry.</value>
+  </data>
+  <data name="Status.DictionarySeedAdded" xml:space="preserve">
+    <value>Added scoped dictionary entry from selected row: {0} / {1}.</value>
+  </data>
+  <data name="Status.DictionarySeedDuplicate" xml:space="preserve">
+    <value>Scoped dictionary entry already exists.</value>
+  </data>
+  <data name="Status.DictionaryPasteNoEntries" xml:space="preserve">
+    <value>No valid dictionary entries found in pasted text.</value>
+  </data>
+  <data name="Status.DictionaryPasteImported" xml:space="preserve">
+    <value>Parsed {0} entries from pasted text, added {1} after dedupe.</value>
+  </data>
   <data name="Status.ProviderSettingsLoadFailed" xml:space="preserve">
     <value>Load provider settings failed: {0}</value>
   </data>
@@ -188,6 +227,9 @@
   </data>
   <data name="Log.ProviderConnectivitySample" xml:space="preserve">
     <value>{0} Sample: {1}</value>
+  </data>
+  <data name="Log.DictionaryPreReplaceRows" xml:space="preserve">
+    <value>Dictionary pre-replace prepared {0} rows before AI translation.</value>
   </data>
   <data name="Shortcut.Open" xml:space="preserve">
     <value>Ctrl+O Open</value>
@@ -324,6 +366,9 @@
   <data name="WorkspaceMenuEncodingManual.Text" xml:space="preserve">
     <value>Encoding (Manual)</value>
   </data>
+  <data name="WorkspaceMenuApplyEncoding.Text" xml:space="preserve">
+    <value>Apply Encoding (Reopen)</value>
+  </data>
   <data name="PluginSwitcherTitle.Text" xml:space="preserve">
     <value>Plugin Switcher</value>
   </data>
@@ -404,6 +449,9 @@
   </data>
   <data name="InspectorToggleLockButton.Content" xml:space="preserve">
     <value>Toggle Lock</value>
+  </data>
+  <data name="InspectorAddToDictionaryButton.Content" xml:space="preserve">
+    <value>Add To Dictionary</value>
   </data>
   <data name="InspectorProviderMovedHint.Text" xml:space="preserve">
     <value>Provider configuration has moved to Actions -&gt; Provider -&gt; Configuration -&gt; Open Configuration Window.</value>
@@ -611,6 +659,102 @@
   </data>
   <data name="Menu.ImportApiTranslator" xml:space="preserve">
     <value>Import ApiTranslator.txt...</value>
+  </data>
+  <data name="Menu.Dictionary" xml:space="preserve">
+    <value>Dictionary</value>
+  </data>
+  <data name="Menu.EditDictionary" xml:space="preserve">
+    <value>Edit Dictionary...</value>
+  </data>
+  <data name="Menu.AddSelectedRowToDictionary" xml:space="preserve">
+    <value>Add Selected Row to Dictionary</value>
+  </data>
+  <data name="Menu.ImportDictionary" xml:space="preserve">
+    <value>Import Dictionary...</value>
+  </data>
+  <data name="Menu.ExportDictionary" xml:space="preserve">
+    <value>Export Dictionary...</value>
+  </data>
+  <data name="Menu.EnableDictionaryPreReplace" xml:space="preserve">
+    <value>Enable Dictionary Pre-Replace</value>
+  </data>
+  <data name="DictionaryEditor.DialogTitle" xml:space="preserve">
+    <value>Dictionary Editor</value>
+  </data>
+  <data name="DictionaryEditor.Search.Header" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="DictionaryEditor.Search.PlaceholderText" xml:space="preserve">
+    <value>Source / Target / EDID Scope / Field Scope</value>
+  </data>
+  <data name="DictionaryEditor.Sort.Header" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="DictionaryEditor.Sort.SourceAsc" xml:space="preserve">
+    <value>Source (A-Z)</value>
+  </data>
+  <data name="DictionaryEditor.Sort.TargetAsc" xml:space="preserve">
+    <value>Target (A-Z)</value>
+  </data>
+  <data name="DictionaryEditor.Sort.Scope" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="DictionaryEditor.EntryCount.Text" xml:space="preserve">
+    <value>Entries: {0}</value>
+  </data>
+  <data name="DictionaryEditor.Source.Header" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="DictionaryEditor.Target.Header" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="DictionaryEditor.EditorIdScope.Header" xml:space="preserve">
+    <value>EDID Scope</value>
+  </data>
+  <data name="DictionaryEditor.FieldScope.Header" xml:space="preserve">
+    <value>Field Scope</value>
+  </data>
+  <data name="DictionaryEditor.MatchCase.Header" xml:space="preserve">
+    <value>Match Case</value>
+  </data>
+  <data name="DictionaryEditor.WholeWord.Header" xml:space="preserve">
+    <value>Whole Word</value>
+  </data>
+  <data name="DictionaryEditor.ScopePreview.Header" xml:space="preserve">
+    <value>Scope Preview</value>
+  </data>
+  <data name="DictionaryEditor.ScopeGlobal.Text" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="DictionaryEditor.AddButton.Content" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="DictionaryEditor.DuplicateButton.Content" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="DictionaryEditor.DeleteButton.Content" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DictionaryEditor.ApplyButton.Content" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="DictionaryEditor.CloseButton.Content" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="DictionaryEditor.PasteButton.Content" xml:space="preserve">
+    <value>Paste CSV/TSV</value>
+  </data>
+  <data name="DictionaryEditor.PasteDialog.Title" xml:space="preserve">
+    <value>Paste CSV/TSV Dictionary Entries</value>
+  </data>
+  <data name="DictionaryEditor.Paste.PlaceholderText" xml:space="preserve">
+    <value>Paste CSV/TSV lines here. Columns: source,target,editorIdPattern,fieldPattern,matchCase,wholeWord</value>
+  </data>
+  <data name="DictionaryEditor.PasteApplyButton.Content" xml:space="preserve">
+    <value>Parse And Add</value>
+  </data>
+  <data name="DictionaryEditor.PasteCancelButton.Content" xml:space="preserve">
+    <value>Cancel</value>
   </data>
   <data name="Menu.RefreshWorkspace" xml:space="preserve">
     <value>Refresh Workspace</value>

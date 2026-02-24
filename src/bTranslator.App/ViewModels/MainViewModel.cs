@@ -78,6 +78,7 @@ public partial class MainViewModel : ObservableObject
     private Encoding _activeEncoding = Encoding.UTF8;
     private string _activeEncodingDisplay = $"{DefaultEncodingDisplayName} (Auto)";
     private bool _isApplyingUiLanguage;
+    private bool _isLoadingWorkspaceSettings;
     private TranslationRowViewModel.QualityLabelSet _rowQualityLabels = TranslationRowViewModel.QualityLabelSet.Default;
 
     public MainViewModel(
@@ -297,13 +298,29 @@ public partial class MainViewModel : ObservableObject
     partial void OnShowLockedChanged(bool value) => ApplyFilters();
     partial void OnSelectedUiLanguageTagChanged(string value) => _ = ApplyUiLanguageSelectionAsync(value);
     partial void OnPluginSwitcherSearchTextChanged(string value) => RefreshPluginSwitcherItems();
-    partial void OnSelectedEncodingModeChanged(string value) => UpdateEncodingDisplayFallback();
-    partial void OnSelectedEncodingNameChanged(string value) => UpdateEncodingDisplayFallback();
+    partial void OnSelectedEncodingModeChanged(string value)
+    {
+        UpdateEncodingDisplayFallback();
+        if (!_isLoadingWorkspaceSettings)
+        {
+            _ = PersistEncodingPreferenceAsync();
+        }
+    }
+
+    partial void OnSelectedEncodingNameChanged(string value)
+    {
+        UpdateEncodingDisplayFallback();
+        if (!_isLoadingWorkspaceSettings)
+        {
+            _ = PersistEncodingPreferenceAsync();
+        }
+    }
 
     partial void OnSelectedRowChanged(TranslationRowViewModel? value)
     {
         UpdateInspectorFromSelection(value);
         UpdateKeyboardShortcutHint();
+        AddScopedDictionaryEntryFromSelectedRowCommand.NotifyCanExecuteChanged();
     }
 
     partial void OnInspectorTranslatedTextChanged(string value)
@@ -328,6 +345,7 @@ public partial class MainViewModel : ObservableObject
         await LoadPluginSwitcherStateAsync().ConfigureAwait(false);
         await LoadPersistedProviderSettingsAsync().ConfigureAwait(false);
         await LoadSelectedProviderConfigurationAsync().ConfigureAwait(false);
+        await LoadDictionaryStateAsync().ConfigureAwait(false);
 
         if (!string.IsNullOrWhiteSpace(PluginPath))
         {
@@ -364,11 +382,6 @@ public partial class MainViewModel : ObservableObject
             StatusText = L("Status.PlaceholderCheckFailed", "Placeholder pipeline check failed.");
             AddLog(StatusText);
             return;
-        }
-
-        if (_allRows.Count == 0)
-        {
-            SeedRows();
         }
 
         StatusText = L("Status.MetadataRefreshed", "Metadata refreshed.");
@@ -514,14 +527,44 @@ public partial class MainViewModel : ObservableObject
 
         try
         {
-            var requestItems = candidates.Select(static row => new TranslationItem
+            var dictionaryReplacementMap = new Dictionary<string, IReadOnlyList<TranslationDictionaryTokenReplacement>>(
+                StringComparer.Ordinal);
+            var dictionaryPreparedRowCount = 0;
+            var requestItems = new List<TranslationItem>(candidates.Count);
+            foreach (var row in candidates)
             {
-                Id = row.RowKey,
-                SourceText = row.SourceText,
-                TranslatedText = row.TranslatedText,
-                IsLocked = row.IsLocked,
-                IsValidated = row.IsValidated
-            }).ToList();
+                var preparedSource = row.SourceText;
+                if (IsDictionaryPreReplaceEnabled && DictionaryEntryCount > 0)
+                {
+                    var preReplacement = PrepareSourceWithDictionary(
+                        row.SourceText,
+                        row.EditorId,
+                        row.FieldSignature);
+                    preparedSource = preReplacement.PreparedSource;
+                    if (preReplacement.Replacements.Count > 0)
+                    {
+                        dictionaryReplacementMap[row.RowKey] = preReplacement.Replacements;
+                        dictionaryPreparedRowCount++;
+                    }
+                }
+
+                requestItems.Add(new TranslationItem
+                {
+                    Id = row.RowKey,
+                    SourceText = preparedSource,
+                    TranslatedText = row.TranslatedText,
+                    IsLocked = row.IsLocked,
+                    IsValidated = row.IsValidated
+                });
+            }
+
+            if (dictionaryPreparedRowCount > 0)
+            {
+                AddLog(Lf(
+                    "Log.DictionaryPreReplaceRows",
+                    "Dictionary pre-replace prepared {0} rows before AI translation.",
+                    dictionaryPreparedRowCount));
+            }
 
             var result = await _translationOrchestrator.ExecuteAsync(
                 new TranslationJob
@@ -545,7 +588,13 @@ public partial class MainViewModel : ObservableObject
                     continue;
                 }
 
-                row.TranslatedText = item.TranslatedText ?? row.SourceText;
+                var translated = item.TranslatedText ?? row.SourceText;
+                if (dictionaryReplacementMap.TryGetValue(row.RowKey, out var replacements))
+                {
+                    translated = RestoreDictionaryTokens(translated, replacements);
+                }
+
+                row.TranslatedText = translated;
                 row.IsValidated = false;
             }
 
@@ -767,51 +816,59 @@ public partial class MainViewModel : ObservableObject
 
     private async Task LoadWorkspaceSettingsAsync()
     {
-        PluginPath = await _settingsStore.GetAsync("workspace.plugin_path").ConfigureAwait(false) ?? PluginPath;
-        OutputPluginPath = await _settingsStore.GetAsync("workspace.output_path").ConfigureAwait(false) ?? OutputPluginPath;
-        var uiLanguageTag = await _settingsStore.GetAsync(UiLanguageSettingKey).ConfigureAwait(false);
-        if (uiLanguageTag is not null)
+        _isLoadingWorkspaceSettings = true;
+        try
         {
-            var normalizedUiLanguage = _localizationService.NormalizeLanguageTag(uiLanguageTag);
-            if (!string.Equals(SelectedUiLanguageTag, normalizedUiLanguage, StringComparison.OrdinalIgnoreCase))
+            PluginPath = await _settingsStore.GetAsync("workspace.plugin_path").ConfigureAwait(false) ?? PluginPath;
+            OutputPluginPath = await _settingsStore.GetAsync("workspace.output_path").ConfigureAwait(false) ?? OutputPluginPath;
+            var uiLanguageTag = await _settingsStore.GetAsync(UiLanguageSettingKey).ConfigureAwait(false);
+            if (uiLanguageTag is not null)
             {
-                _isApplyingUiLanguage = true;
-                SelectedUiLanguageTag = normalizedUiLanguage;
-                _isApplyingUiLanguage = false;
+                var normalizedUiLanguage = _localizationService.NormalizeLanguageTag(uiLanguageTag);
+                if (!string.Equals(SelectedUiLanguageTag, normalizedUiLanguage, StringComparison.OrdinalIgnoreCase))
+                {
+                    _isApplyingUiLanguage = true;
+                    SelectedUiLanguageTag = normalizedUiLanguage;
+                    _isApplyingUiLanguage = false;
+                }
             }
-        }
 
-        var game = await _settingsStore.GetAsync("workspace.game").ConfigureAwait(false);
-        if (!string.IsNullOrWhiteSpace(game) && Games.Contains(game))
-        {
-            SelectedGame = game;
-            WorkspaceTitle = Lf("WorkspaceTitle.Format", "{0} Workspace", SelectedGame);
-        }
-
-        var encodingMode = await _settingsStore.GetAsync(WorkspaceEncodingModeKey).ConfigureAwait(false);
-        if (!string.IsNullOrWhiteSpace(encodingMode))
-        {
-            var normalizedEncodingMode = NormalizeEncodingModeValue(encodingMode);
-            if (EncodingModes.Any(mode => string.Equals(mode, normalizedEncodingMode, StringComparison.Ordinal)))
+            var game = await _settingsStore.GetAsync("workspace.game").ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(game) && Games.Contains(game))
             {
-                SelectedEncodingMode = normalizedEncodingMode;
+                SelectedGame = game;
+                WorkspaceTitle = Lf("WorkspaceTitle.Format", "{0} Workspace", SelectedGame);
             }
-        }
 
-        var encodingName = await _settingsStore.GetAsync(WorkspaceEncodingNameKey).ConfigureAwait(false);
-        if (!string.IsNullOrWhiteSpace(encodingName) &&
-            AvailableEncodings.Any(name => string.Equals(name, encodingName, StringComparison.Ordinal)))
+            var encodingMode = await _settingsStore.GetAsync(WorkspaceEncodingModeKey).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(encodingMode))
+            {
+                var normalizedEncodingMode = NormalizeEncodingModeValue(encodingMode);
+                if (EncodingModes.Any(mode => string.Equals(mode, normalizedEncodingMode, StringComparison.Ordinal)))
+                {
+                    SelectedEncodingMode = normalizedEncodingMode;
+                }
+            }
+
+            var encodingName = await _settingsStore.GetAsync(WorkspaceEncodingNameKey).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(encodingName) &&
+                AvailableEncodings.Any(name => string.Equals(name, encodingName, StringComparison.Ordinal)))
+            {
+                SelectedEncodingName = encodingName;
+            }
+
+            var effective = await _settingsStore.GetAsync(WorkspaceEncodingEffectiveKey).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(effective))
+            {
+                _activeEncodingDisplay = effective;
+            }
+
+            UpdateEncodingDisplayFallback();
+        }
+        finally
         {
-            SelectedEncodingName = encodingName;
+            _isLoadingWorkspaceSettings = false;
         }
-
-        var effective = await _settingsStore.GetAsync(WorkspaceEncodingEffectiveKey).ConfigureAwait(false);
-        if (!string.IsNullOrWhiteSpace(effective))
-        {
-            _activeEncodingDisplay = effective;
-        }
-
-        UpdateEncodingDisplayFallback();
     }
 
     private void LoadProviders()
@@ -940,56 +997,6 @@ public partial class MainViewModel : ObservableObject
             pair.Value.IsLocked = pair.Key.IsLocked;
             pair.Value.IsValidated = pair.Key.IsValidated;
         }
-    }
-
-    private void SeedRows()
-    {
-        foreach (var row in _allRows)
-        {
-            row.PropertyChanged -= OnRowChanged;
-        }
-
-        _allRows.Clear();
-        _stringEntryBindings.Clear();
-        _recordItemBindings.Clear();
-
-        AddSampleRow("CROSSap_MatSwap", "KYWD FULL", "涂装替换", "涂装替换", "STRINGS", 0.0, false, true);
-        AddSampleRow("CROSSap_PaletteIndex", "KYWD FULL", "色调替换", "色调替换", "STRINGS", 0.0, false, true);
-        AddSampleRow("CROSSap_sol_CooldownMod", "KYWD FULL", "CROSSap_sol_CooldownMod", "", "STRINGS", 4.5, false, false);
-        AddSampleRow("CROSSap_sol_ChargeTime", "KYWD FULL", "CROSSap_sol_ChargeTimeMod", "", "DLSTRINGS", 6.0, false, false);
-        AddSampleRow("CROSSrace_sol_PowerArmor", "RACE FMRN", "动力装甲", "动力装甲", "STRINGS", 0.0, false, true);
-        AddSampleRow("CROSSrace_sol_NPCComment", "INFO NAM1", "这个动作太慢了。", "", "ILSTRINGS", 8.1, false, false);
-
-        RecalculateMetrics();
-        ApplyFilters();
-    }
-
-    private void AddSampleRow(
-        string editorId,
-        string fieldSignature,
-        string source,
-        string translated,
-        string listKind,
-        double ld,
-        bool locked,
-        bool validated)
-    {
-        var row = new TranslationRowViewModel
-        {
-            RowKey = $"sample:{Guid.NewGuid():N}",
-            EditorId = editorId,
-            FieldSignature = fieldSignature,
-            SourceText = source,
-            TranslatedText = translated,
-            ListKind = listKind,
-            LdScore = ld,
-            IsLocked = locked,
-            IsValidated = validated
-        };
-
-        row.ApplyQualityLabels(_rowQualityLabels);
-        row.PropertyChanged += OnRowChanged;
-        _allRows.Add(row);
     }
 
     private void OnRowChanged(object? sender, PropertyChangedEventArgs e)
@@ -1684,6 +1691,20 @@ public partial class MainViewModel : ObservableObject
         EffectiveEncodingDisplay = _activeEncodingDisplay;
     }
 
+    private async Task PersistEncodingPreferenceAsync()
+    {
+        try
+        {
+            await _settingsStore.SetAsync(WorkspaceEncodingModeKey, SelectedEncodingMode).ConfigureAwait(false);
+            await _settingsStore.SetAsync(WorkspaceEncodingNameKey, SelectedEncodingName).ConfigureAwait(false);
+            await _settingsStore.SetAsync(WorkspaceEncodingEffectiveKey, EffectiveEncodingDisplay).ConfigureAwait(false);
+        }
+        catch
+        {
+            // Ignore persistence failures so UI interactions are not blocked.
+        }
+    }
+
     private (Encoding Encoding, string Display) ResolveWorkspaceSaveEncoding()
     {
         if (string.Equals(SelectedEncodingMode, ManualEncodingMode, StringComparison.Ordinal))
@@ -1728,15 +1749,17 @@ public partial class MainViewModel : ObservableObject
         var stringsDirectory = explicitStringsDirectory ??
                                Path.Combine(Path.GetDirectoryName(pluginPath)!, "Strings");
         var pluginName = Path.GetFileNameWithoutExtension(pluginPath);
-        var stringFiles = Enum
-            .GetValues<StringsFileKind>()
-            .Select(kind => (Kind: kind, Path: BuildStringsPath(stringsDirectory, pluginName, languageToken, kind)))
-            .Where(static item => File.Exists(item.Path))
-            .ToArray();
+        var stringFiles = ResolveStringsFilesForEncodingDetection(stringsDirectory, pluginName, languageToken);
 
         if (stringFiles.Length == 0)
         {
             return null;
+        }
+
+        var bomDetected = TryDetectEncodingFromBom(stringFiles);
+        if (bomDetected is not null)
+        {
+            return bomDetected;
         }
 
         var bestChoice = default(EncodingChoice?);
@@ -1774,7 +1797,7 @@ public partial class MainViewModel : ObservableObject
 
             if (totalScore < bestScore ||
                 (totalScore == bestScore &&
-                 string.Equals(choice.DisplayName, DefaultEncodingDisplayName, StringComparison.Ordinal)))
+                 IsPreferredEncodingForLanguage(choice.DisplayName, bestChoice?.DisplayName, languageToken)))
             {
                 bestScore = totalScore;
                 bestChoice = choice;
@@ -1782,6 +1805,193 @@ public partial class MainViewModel : ObservableObject
         }
 
         return bestChoice;
+    }
+
+    private static (StringsFileKind Kind, string Path)[] ResolveStringsFilesForEncodingDetection(
+        string stringsDirectory,
+        string pluginName,
+        string languageToken)
+    {
+        if (!Directory.Exists(stringsDirectory))
+        {
+            return [];
+        }
+
+        var preferred = Enum
+            .GetValues<StringsFileKind>()
+            .Select(kind => (Kind: kind, Path: BuildStringsPath(stringsDirectory, pluginName, languageToken, kind)))
+            .Where(static item => File.Exists(item.Path))
+            .ToArray();
+        if (preferred.Length > 0)
+        {
+            return preferred;
+        }
+
+        const int maxFilesPerKind = 4;
+        var discovered = new List<(StringsFileKind Kind, string Path)>();
+        var filePrefix = pluginName + "_";
+        foreach (var kind in Enum.GetValues<StringsFileKind>())
+        {
+            var extension = kind switch
+            {
+                StringsFileKind.Strings => ".strings",
+                StringsFileKind.DlStrings => ".dlstrings",
+                StringsFileKind.IlStrings => ".ilstrings",
+                _ => ".strings"
+            };
+
+            var files = Directory
+                .EnumerateFiles(stringsDirectory, $"*{extension}", SearchOption.TopDirectoryOnly)
+                .Where(path => Path.GetFileName(path).StartsWith(filePrefix, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(static path => path, StringComparer.OrdinalIgnoreCase)
+                .Take(maxFilesPerKind);
+            foreach (var filePath in files)
+            {
+                discovered.Add((kind, filePath));
+            }
+        }
+
+        if (discovered.Count == 0)
+        {
+            foreach (var kind in Enum.GetValues<StringsFileKind>())
+            {
+                var extension = kind switch
+                {
+                    StringsFileKind.Strings => ".strings",
+                    StringsFileKind.DlStrings => ".dlstrings",
+                    StringsFileKind.IlStrings => ".ilstrings",
+                    _ => ".strings"
+                };
+
+                var fallbackPath = Path.Combine(stringsDirectory, pluginName + extension);
+                if (File.Exists(fallbackPath))
+                {
+                    discovered.Add((kind, fallbackPath));
+                }
+            }
+        }
+
+        return discovered
+            .GroupBy(static item => item.Path, StringComparer.OrdinalIgnoreCase)
+            .Select(static group => group.First())
+            .ToArray();
+    }
+
+    private static EncodingChoice? TryDetectEncodingFromBom((StringsFileKind Kind, string Path)[] stringFiles)
+    {
+        EncodingChoice? detected = null;
+        foreach (var file in stringFiles)
+        {
+            var bomEncoding = ReadBomEncodingChoice(file.Path);
+            if (bomEncoding is null)
+            {
+                continue;
+            }
+
+            if (detected is null)
+            {
+                detected = bomEncoding;
+                continue;
+            }
+
+            if (!string.Equals(detected.Value.DisplayName, bomEncoding.Value.DisplayName, StringComparison.Ordinal))
+            {
+                return null;
+            }
+        }
+
+        return detected;
+    }
+
+    private static EncodingChoice? ReadBomEncodingChoice(string path)
+    {
+        try
+        {
+            using var stream = File.OpenRead(path);
+            Span<byte> bom = stackalloc byte[4];
+            var read = stream.Read(bom);
+            if (read >= 3 && bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF)
+            {
+                return new EncodingChoice("UTF-8", "utf-8");
+            }
+
+            if (read >= 2 && bom[0] == 0xFF && bom[1] == 0xFE)
+            {
+                return new EncodingChoice("UTF-16 LE", "utf-16");
+            }
+
+            if (read >= 2 && bom[0] == 0xFE && bom[1] == 0xFF)
+            {
+                return new EncodingChoice("UTF-16 BE", "utf-16BE");
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static bool IsPreferredEncodingForLanguage(
+        string candidateDisplayName,
+        string? currentDisplayName,
+        string languageToken)
+    {
+        if (currentDisplayName is null)
+        {
+            return true;
+        }
+
+        var candidateRank = GetEncodingPreferenceRank(candidateDisplayName, languageToken);
+        var currentRank = GetEncodingPreferenceRank(currentDisplayName, languageToken);
+        if (candidateRank != currentRank)
+        {
+            return candidateRank < currentRank;
+        }
+
+        return string.Equals(candidateDisplayName, DefaultEncodingDisplayName, StringComparison.Ordinal);
+    }
+
+    private static int GetEncodingPreferenceRank(string displayName, string languageToken)
+    {
+        var normalizedLanguage = languageToken.Trim().ToLowerInvariant();
+        return normalizedLanguage switch
+        {
+            "chinese" => displayName switch
+            {
+                "GB18030" => 0,
+                "Big5" => 1,
+                "UTF-8" => 2,
+                "UTF-16 LE" => 3,
+                "UTF-16 BE" => 4,
+                _ => 5
+            },
+            "japanese" => displayName switch
+            {
+                "Shift-JIS" => 0,
+                "UTF-8" => 1,
+                "UTF-16 LE" => 2,
+                "UTF-16 BE" => 3,
+                _ => 4
+            },
+            "korean" => displayName switch
+            {
+                "EUC-KR" => 0,
+                "UTF-8" => 1,
+                "UTF-16 LE" => 2,
+                "UTF-16 BE" => 3,
+                _ => 4
+            },
+            _ => displayName switch
+            {
+                "UTF-8" => 0,
+                "UTF-16 LE" => 1,
+                "UTF-16 BE" => 2,
+                "Windows-1252" => 3,
+                _ => 4
+            }
+        };
     }
 
     private static long ScoreDecodedEntries(IReadOnlyList<StringsEntry> entries)

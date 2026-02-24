@@ -432,6 +432,27 @@
                             <MenuFlyoutSubItem
                                 x:Name="WorkspaceEncodingMenu"
                                 Text="{x:Bind ViewModel.Ui.WorkspaceMenuEncodingManualText, Mode=OneWay}" />
+                            <MenuFlyoutItem
+                                Command="{Binding OpenWorkspaceCommand}"
+                                Text="{x:Bind ViewModel.Ui.WorkspaceMenuApplyEncodingText, Mode=OneWay}" />
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuDictionary, Mode=OneWay}">
+                                <MenuFlyoutItem
+                                    Click="OnEditDictionaryClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuEditDictionary, Mode=OneWay}" />
+                                <MenuFlyoutItem
+                                    Command="{Binding AddScopedDictionaryEntryFromSelectedRowCommand}"
+                                    Text="{x:Bind ViewModel.Ui.MenuAddSelectedRowToDictionary, Mode=OneWay}" />
+                                <MenuFlyoutSeparator />
+                                <MenuFlyoutItem
+                                    Click="OnImportDictionaryClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuImportDictionary, Mode=OneWay}" />
+                                <MenuFlyoutItem
+                                    Click="OnExportDictionaryClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuExportDictionary, Mode=OneWay}" />
+                                <ToggleMenuFlyoutItem
+                                    IsChecked="{Binding IsDictionaryPreReplaceEnabled, Mode=TwoWay}"
+                                    Text="{x:Bind ViewModel.Ui.MenuEnableDictionaryPreReplace, Mode=OneWay}" />
+                            </MenuFlyoutSubItem>
                             <ToggleMenuFlyoutItem
                                 IsChecked="{Binding LoadStrings, Mode=TwoWay}"
                                 Text="{x:Bind ViewModel.Ui.MenuLoadStrings, Mode=OneWay}" />
@@ -851,6 +872,10 @@
                                 Command="{Binding ToggleSelectedLockCommand}"
                                 Content="{x:Bind ViewModel.Ui.InspectorToggleLockButtonContent, Mode=OneWay}"
                                 Style="{StaticResource SubtleAction}" />
+                            <Button
+                                Command="{Binding AddScopedDictionaryEntryFromSelectedRowCommand}"
+                                Content="{x:Bind ViewModel.Ui.InspectorAddToDictionaryButtonContent, Mode=OneWay}"
+                                Style="{StaticResource SecondaryAction}" />
                         </StackPanel>
                     </StackPanel>
 
