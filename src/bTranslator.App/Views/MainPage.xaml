@@ -453,6 +453,14 @@
                                     IsChecked="{Binding IsDictionaryPreReplaceEnabled, Mode=TwoWay}"
                                     Text="{x:Bind ViewModel.Ui.MenuEnableDictionaryPreReplace, Mode=OneWay}" />
                             </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuEspCompare, Mode=OneWay}">
+                                <MenuFlyoutItem
+                                    Click="OnCompareEspClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuCompareWithEsp, Mode=OneWay}" />
+                                <MenuFlyoutItem
+                                    Command="{Binding ApplyEspCompareReplacementsCommand}"
+                                    Text="{x:Bind ViewModel.Ui.MenuApplyEspCompareReplacements, Mode=OneWay}" />
+                            </MenuFlyoutSubItem>
                             <ToggleMenuFlyoutItem
                                 IsChecked="{Binding LoadStrings, Mode=TwoWay}"
                                 Text="{x:Bind ViewModel.Ui.MenuLoadStrings, Mode=OneWay}" />

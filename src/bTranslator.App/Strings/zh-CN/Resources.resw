@@ -192,6 +192,24 @@
   <data name="Status.DictionaryPasteImported" xml:space="preserve">
     <value>已从粘贴内容解析 {0} 条，去重后新增 {1} 条。</value>
   </data>
+  <data name="Status.EspCompareNoActiveWorkspace" xml:space="preserve">
+    <value>当前没有已打开的工作区，请先打开插件后再进行 ESP 对比。</value>
+  </data>
+  <data name="Status.EspComparePathMissing" xml:space="preserve">
+    <value>对比 ESP 路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.EspCompareCompleted" xml:space="preserve">
+    <value>ESP 对比完成。匹配 {0}，源文差异 {1}，译文差异 {2}，可替换 {3}，对比缺失 {4}，当前缺失 {5}。</value>
+  </data>
+  <data name="Status.EspCompareFailed" xml:space="preserve">
+    <value>ESP 对比失败：{0}</value>
+  </data>
+  <data name="Status.EspCompareNoPendingReplacements" xml:space="preserve">
+    <value>没有可应用的 ESP 对比替换项。</value>
+  </data>
+  <data name="Status.EspCompareApplied" xml:space="preserve">
+    <value>已应用 {0} 条替换（锁定跳过 {1}，源文不一致跳过 {2}）。</value>
+  </data>
   <data name="Status.ProviderSettingsLoadFailed" xml:space="preserve">
     <value>加载 Provider 配置失败：{0}</value>
   </data>
@@ -230,6 +248,9 @@
   </data>
   <data name="Log.DictionaryPreReplaceRows" xml:space="preserve">
     <value>已在 AI 翻译前为 {0} 条记录应用词典预替换。</value>
+  </data>
+  <data name="Log.EspCompareCandidateSample" xml:space="preserve">
+    <value>ESP 候选：{0}/{1} | '{2}' -&gt; '{3}'</value>
   </data>
   <data name="Shortcut.Open" xml:space="preserve">
     <value>Ctrl+O 打开</value>
@@ -668,6 +689,15 @@
   </data>
   <data name="Menu.AddSelectedRowToDictionary" xml:space="preserve">
     <value>将选中行加入词典</value>
+  </data>
+  <data name="Menu.EspCompare" xml:space="preserve">
+    <value>ESP 对比</value>
+  </data>
+  <data name="Menu.CompareWithEsp" xml:space="preserve">
+    <value>选择 ESP 对比...</value>
+  </data>
+  <data name="Menu.ApplyEspCompareReplacements" xml:space="preserve">
+    <value>应用对比替换</value>
   </data>
   <data name="Menu.ImportDictionary" xml:space="preserve">
     <value>导入词典...</value>

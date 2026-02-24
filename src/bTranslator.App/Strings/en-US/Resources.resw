@@ -192,6 +192,24 @@
   <data name="Status.DictionaryPasteImported" xml:space="preserve">
     <value>Parsed {0} entries from pasted text, added {1} after dedupe.</value>
   </data>
+  <data name="Status.EspCompareNoActiveWorkspace" xml:space="preserve">
+    <value>No active workspace. Open a plugin before ESP compare.</value>
+  </data>
+  <data name="Status.EspComparePathMissing" xml:space="preserve">
+    <value>Compare ESP path is empty or file does not exist.</value>
+  </data>
+  <data name="Status.EspCompareCompleted" xml:space="preserve">
+    <value>ESP compare done. Matched {0}, source diff {1}, translation diff {2}, replaceable {3}, missing in compare {4}, missing in current {5}.</value>
+  </data>
+  <data name="Status.EspCompareFailed" xml:space="preserve">
+    <value>ESP compare failed: {0}</value>
+  </data>
+  <data name="Status.EspCompareNoPendingReplacements" xml:space="preserve">
+    <value>No pending replacements from ESP compare.</value>
+  </data>
+  <data name="Status.EspCompareApplied" xml:space="preserve">
+    <value>Applied {0} replacements ({1} locked skipped, {2} source mismatch skipped).</value>
+  </data>
   <data name="Status.ProviderSettingsLoadFailed" xml:space="preserve">
     <value>Load provider settings failed: {0}</value>
   </data>
@@ -230,6 +248,9 @@
   </data>
   <data name="Log.DictionaryPreReplaceRows" xml:space="preserve">
     <value>Dictionary pre-replace prepared {0} rows before AI translation.</value>
+  </data>
+  <data name="Log.EspCompareCandidateSample" xml:space="preserve">
+    <value>ESP candidate: {0}/{1} | '{2}' -&gt; '{3}'</value>
   </data>
   <data name="Shortcut.Open" xml:space="preserve">
     <value>Ctrl+O Open</value>
@@ -668,6 +689,15 @@
   </data>
   <data name="Menu.AddSelectedRowToDictionary" xml:space="preserve">
     <value>Add Selected Row to Dictionary</value>
+  </data>
+  <data name="Menu.EspCompare" xml:space="preserve">
+    <value>ESP Compare</value>
+  </data>
+  <data name="Menu.CompareWithEsp" xml:space="preserve">
+    <value>Compare With ESP...</value>
+  </data>
+  <data name="Menu.ApplyEspCompareReplacements" xml:space="preserve">
+    <value>Apply Compare Replacements</value>
   </data>
   <data name="Menu.ImportDictionary" xml:space="preserve">
     <value>Import Dictionary...</value>

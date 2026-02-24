@@ -55,6 +55,9 @@ public sealed class LocalizedUiText : ObservableObject
             [nameof(MenuDictionary)] = ("Menu.Dictionary", "Dictionary"),
             [nameof(MenuEditDictionary)] = ("Menu.EditDictionary", "Edit Dictionary..."),
             [nameof(MenuAddSelectedRowToDictionary)] = ("Menu.AddSelectedRowToDictionary", "Add Selected Row to Dictionary"),
+            [nameof(MenuEspCompare)] = ("Menu.EspCompare", "ESP Compare"),
+            [nameof(MenuCompareWithEsp)] = ("Menu.CompareWithEsp", "Compare With ESP..."),
+            [nameof(MenuApplyEspCompareReplacements)] = ("Menu.ApplyEspCompareReplacements", "Apply Compare Replacements"),
             [nameof(MenuImportDictionary)] = ("Menu.ImportDictionary", "Import Dictionary..."),
             [nameof(MenuExportDictionary)] = ("Menu.ExportDictionary", "Export Dictionary..."),
             [nameof(MenuEnableDictionaryPreReplace)] = ("Menu.EnableDictionaryPreReplace", "Enable Dictionary Pre-Replace"),
@@ -208,6 +211,9 @@ public sealed class LocalizedUiText : ObservableObject
     public string MenuDictionary => Get();
     public string MenuEditDictionary => Get();
     public string MenuAddSelectedRowToDictionary => Get();
+    public string MenuEspCompare => Get();
+    public string MenuCompareWithEsp => Get();
+    public string MenuApplyEspCompareReplacements => Get();
     public string MenuImportDictionary => Get();
     public string MenuExportDictionary => Get();
     public string MenuEnableDictionaryPreReplace => Get();

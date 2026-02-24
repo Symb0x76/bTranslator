@@ -979,6 +979,11 @@ public partial class MainViewModel : ObservableObject
             _recordItemBindings[row] = item;
         }
 
+        _espCompareCandidates.Clear();
+        EspComparePendingReplacementCount = 0;
+        EspCompareSummary = string.Empty;
+        ApplyEspCompareReplacementsCommand.NotifyCanExecuteChanged();
+
         _allRows.Sort(static (x, y) => string.CompareOrdinal(x.EditorId, y.EditorId));
         RecalculateMetrics();
         ApplyFilters();

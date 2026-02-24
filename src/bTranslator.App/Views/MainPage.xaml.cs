@@ -450,6 +450,23 @@ public partial class MainPage : Page
         return file?.Path;
     }
 
+    private async Task<string?> PickCompareEspPathAsync()
+    {
+        var picker = new FileOpenPicker();
+        picker.FileTypeFilter.Add(".esp");
+        picker.FileTypeFilter.Add(".esm");
+        picker.FileTypeFilter.Add(".esl");
+        picker.FileTypeFilter.Add("*");
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSingleFileAsync();
+        return file?.Path;
+    }
+
     private async void OnOpenPluginFromMenuClicked(object sender, RoutedEventArgs e)
     {
         if (!await PickPluginPathAsync().ConfigureAwait(true))
@@ -575,6 +592,20 @@ public partial class MainPage : Page
             XamlRoot = XamlRoot
         };
         _ = await dialog.ShowAsync();
+    }
+
+    private async void OnCompareEspClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickCompareEspPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.CompareEspCommand.CanExecute(path))
+        {
+            await ViewModel.CompareEspCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
     }
 
     private async void OnExportDictionaryClicked(object sender, RoutedEventArgs e)
