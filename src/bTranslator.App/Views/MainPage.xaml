@@ -461,6 +461,36 @@
                                     Command="{Binding ApplyEspCompareReplacementsCommand}"
                                     Text="{x:Bind ViewModel.Ui.MenuApplyEspCompareReplacements, Mode=OneWay}" />
                             </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCompatibilityModes, Mode=OneWay}">
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCompatibilityPexMode, Mode=OneWay}">
+                                    <MenuFlyoutItem
+                                        Click="OnOpenPexModeClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuOpenPexMode, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Click="OnExportPexStringsClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuExportPexStrings, Mode=OneWay}" />
+                                </MenuFlyoutSubItem>
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCompatibilityMcmMode, Mode=OneWay}">
+                                    <MenuFlyoutItem
+                                        Click="OnOpenMcmModeClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuOpenMcmMode, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Click="OnExportMcmModeClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuExportMcmMode, Mode=OneWay}" />
+                                </MenuFlyoutSubItem>
+                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuCompatibilityTxtMode, Mode=OneWay}">
+                                    <MenuFlyoutItem
+                                        Click="OnOpenTxtModeClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuOpenTxtMode, Mode=OneWay}" />
+                                    <MenuFlyoutItem
+                                        Click="OnExportTxtModeClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuExportTxtMode, Mode=OneWay}" />
+                                    <MenuFlyoutSeparator />
+                                    <MenuFlyoutItem
+                                        Click="OnRunTxtBatchScriptClicked"
+                                        Text="{x:Bind ViewModel.Ui.MenuRunTxtBatchScript, Mode=OneWay}" />
+                                </MenuFlyoutSubItem>
+                            </MenuFlyoutSubItem>
                             <ToggleMenuFlyoutItem
                                 IsChecked="{Binding LoadStrings, Mode=TwoWay}"
                                 Text="{x:Bind ViewModel.Ui.MenuLoadStrings, Mode=OneWay}" />

@@ -71,6 +71,10 @@ public partial class MainViewModel : ObservableObject
     private readonly TranslationProviderOptions _translationProviderOptions;
     private readonly IPluginDocumentService _pluginDocumentService;
     private readonly ITranslationOrchestrator _translationOrchestrator;
+    private readonly IPexToolchainService _pexToolchainService;
+    private readonly IXmlCompatibilityService _xmlCompatibilityService;
+    private readonly ISstCompatibilityService _sstCompatibilityService;
+    private readonly IBatchScriptEngine _batchScriptEngine;
     private readonly List<TranslationRowViewModel> _allRows = [];
     private readonly Dictionary<TranslationRowViewModel, StringsEntryBinding> _stringEntryBindings = new();
     private readonly Dictionary<TranslationRowViewModel, TranslationItem> _recordItemBindings = new();
@@ -90,7 +94,11 @@ public partial class MainViewModel : ObservableObject
         IAppLocalizationService localizationService,
         IOptions<TranslationProviderOptions> translationProviderOptions,
         IPluginDocumentService pluginDocumentService,
-        ITranslationOrchestrator translationOrchestrator)
+        ITranslationOrchestrator translationOrchestrator,
+        IPexToolchainService pexToolchainService,
+        IXmlCompatibilityService xmlCompatibilityService,
+        ISstCompatibilityService sstCompatibilityService,
+        IBatchScriptEngine batchScriptEngine)
     {
         _providers = providers;
         _stringsCodec = stringsCodec;
@@ -102,6 +110,10 @@ public partial class MainViewModel : ObservableObject
         _translationProviderOptions = translationProviderOptions.Value;
         _pluginDocumentService = pluginDocumentService;
         _translationOrchestrator = translationOrchestrator;
+        _pexToolchainService = pexToolchainService;
+        _xmlCompatibilityService = xmlCompatibilityService;
+        _sstCompatibilityService = sstCompatibilityService;
+        _batchScriptEngine = batchScriptEngine;
 
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         AvailableLanguages = new ObservableCollection<string>(SupportedLanguageValues);
@@ -918,6 +930,8 @@ public partial class MainViewModel : ObservableObject
 
     private void RebuildRowsFromDocument(PluginDocument document)
     {
+        ResetCompatibilityModeState();
+
         foreach (var row in _allRows)
         {
             row.PropertyChanged -= OnRowChanged;

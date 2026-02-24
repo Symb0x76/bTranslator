@@ -114,6 +114,28 @@ public sealed class SstCompatibilityService : ISstCompatibilityService
             return;
         }
 
+        if (extension == ".txt")
+        {
+            var directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            await using var textWriter = new StreamWriter(path, append: false, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            foreach (var item in items)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var id = SanitizePlainText(item.Id);
+                var source = SanitizePlainText(item.SourceText);
+                var translated = SanitizePlainText(item.TranslatedText ?? string.Empty);
+                await textWriter.WriteLineAsync($"{id}\t{source}\t{translated}").ConfigureAwait(false);
+            }
+
+            await textWriter.FlushAsync().ConfigureAwait(false);
+            return;
+        }
+
         if (version is < 1 or > 8)
         {
             throw new ArgumentOutOfRangeException(nameof(version), "Legacy SST version must be between 1 and 8.");
@@ -409,6 +431,14 @@ public sealed class SstCompatibilityService : ISstCompatibilityService
         var padded = (signature ?? "****").PadRight(4, '_');
         var bytes = Encoding.ASCII.GetBytes(padded[..4]);
         writer.Write(bytes);
+    }
+
+    private static string SanitizePlainText(string value)
+    {
+        return value
+            .Replace('\t', ' ')
+            .Replace('\r', ' ')
+            .Replace('\n', ' ');
     }
 
     private sealed class SstEntryDto

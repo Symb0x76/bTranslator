@@ -66,6 +66,21 @@
   <data name="WorkspaceTitle.Format" xml:space="preserve">
     <value>{0} 工作区</value>
   </data>
+  <data name="WorkspaceTitle.CompatibilityModeFormat" xml:space="preserve">
+    <value>{0} 模式</value>
+  </data>
+  <data name="CompatibilityMode.None" xml:space="preserve">
+    <value>工作区</value>
+  </data>
+  <data name="CompatibilityMode.McmXml" xml:space="preserve">
+    <value>MCM/XML</value>
+  </data>
+  <data name="CompatibilityMode.TxtSst" xml:space="preserve">
+    <value>TXT/SST</value>
+  </data>
+  <data name="CompatibilityMode.Pex" xml:space="preserve">
+    <value>PEX</value>
+  </data>
   <data name="PluginSwitcher.CurrentPlugin" xml:space="preserve">
     <value>当前插件</value>
   </data>
@@ -210,6 +225,69 @@
   <data name="Status.EspCompareApplied" xml:space="preserve">
     <value>已应用 {0} 条替换（锁定跳过 {1}，源文不一致跳过 {2}）。</value>
   </data>
+  <data name="Status.McmPathMissing" xml:space="preserve">
+    <value>MCM/XML 路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.McmModeOpened" xml:space="preserve">
+    <value>已从“{0}”打开 MCM/XML 模式（{1} 行）。</value>
+  </data>
+  <data name="Status.McmModeOpenFailed" xml:space="preserve">
+    <value>打开 MCM/XML 模式失败：{0}</value>
+  </data>
+  <data name="Status.McmModeNotActive" xml:space="preserve">
+    <value>当前未处于 MCM/XML 模式，请先打开 MCM/XML 文件。</value>
+  </data>
+  <data name="Status.McmModeExported" xml:space="preserve">
+    <value>已导出 MCM/XML 模式到“{0}”（{1} 行）。</value>
+  </data>
+  <data name="Status.McmModeExportFailed" xml:space="preserve">
+    <value>导出 MCM/XML 模式失败：{0}</value>
+  </data>
+  <data name="Status.TxtPathMissing" xml:space="preserve">
+    <value>TXT/SST 路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.TxtModeOpened" xml:space="preserve">
+    <value>已从“{0}”打开 TXT/SST 模式（{1} 行）。</value>
+  </data>
+  <data name="Status.TxtModeOpenFailed" xml:space="preserve">
+    <value>打开 TXT/SST 模式失败：{0}</value>
+  </data>
+  <data name="Status.TxtModeNotActive" xml:space="preserve">
+    <value>当前未处于 TXT/SST 模式，请先打开 TXT/SST 文件。</value>
+  </data>
+  <data name="Status.TxtModeExported" xml:space="preserve">
+    <value>已导出 TXT/SST 模式到“{0}”（{1} 行）。</value>
+  </data>
+  <data name="Status.TxtModeExportFailed" xml:space="preserve">
+    <value>导出 TXT/SST 模式失败：{0}</value>
+  </data>
+  <data name="Status.TxtBatchScriptPathMissing" xml:space="preserve">
+    <value>TXT 批处理脚本路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.TxtBatchScriptApplied" xml:space="preserve">
+    <value>TXT 批处理脚本“{0}”已应用，变更 {1} 行。</value>
+  </data>
+  <data name="Status.TxtBatchScriptFailed" xml:space="preserve">
+    <value>TXT 批处理脚本执行失败：{0}</value>
+  </data>
+  <data name="Status.PexPathMissing" xml:space="preserve">
+    <value>PEX 路径为空或文件不存在。</value>
+  </data>
+  <data name="Status.PexModeOpened" xml:space="preserve">
+    <value>已从“{0}”打开 PEX 模式（{1} 条字符串）。</value>
+  </data>
+  <data name="Status.PexModeOpenFailed" xml:space="preserve">
+    <value>打开 PEX 模式失败：{0}</value>
+  </data>
+  <data name="Status.PexNoActiveDocument" xml:space="preserve">
+    <value>当前未处于 PEX 模式，请先打开 PEX 文件。</value>
+  </data>
+  <data name="Status.PexStringsExported" xml:space="preserve">
+    <value>已导出 PEX 字符串到“{0}”（{1} 行）。</value>
+  </data>
+  <data name="Status.PexStringsExportFailed" xml:space="preserve">
+    <value>导出 PEX 字符串失败：{0}</value>
+  </data>
   <data name="Status.ProviderSettingsLoadFailed" xml:space="preserve">
     <value>加载 Provider 配置失败：{0}</value>
   </data>
@@ -251,6 +329,9 @@
   </data>
   <data name="Log.EspCompareCandidateSample" xml:space="preserve">
     <value>ESP 候选：{0}/{1} | '{2}' -&gt; '{3}'</value>
+  </data>
+  <data name="Log.TxtBatchSample" xml:space="preserve">
+    <value>TXT 批处理：{0}</value>
   </data>
   <data name="Shortcut.Open" xml:space="preserve">
     <value>Ctrl+O 打开</value>
@@ -707,6 +788,39 @@
   </data>
   <data name="Menu.EnableDictionaryPreReplace" xml:space="preserve">
     <value>启用词典预替换</value>
+  </data>
+  <data name="Menu.CompatibilityModes" xml:space="preserve">
+    <value>兼容模式</value>
+  </data>
+  <data name="Menu.CompatibilityPexMode" xml:space="preserve">
+    <value>PEX 模式</value>
+  </data>
+  <data name="Menu.OpenPexMode" xml:space="preserve">
+    <value>打开 PEX 模式...</value>
+  </data>
+  <data name="Menu.ExportPexStrings" xml:space="preserve">
+    <value>导出 PEX 字符串...</value>
+  </data>
+  <data name="Menu.CompatibilityMcmMode" xml:space="preserve">
+    <value>MCM/XML 模式</value>
+  </data>
+  <data name="Menu.OpenMcmMode" xml:space="preserve">
+    <value>打开 MCM/XML 模式...</value>
+  </data>
+  <data name="Menu.ExportMcmMode" xml:space="preserve">
+    <value>导出 MCM/XML...</value>
+  </data>
+  <data name="Menu.CompatibilityTxtMode" xml:space="preserve">
+    <value>TXT/SST 模式</value>
+  </data>
+  <data name="Menu.OpenTxtMode" xml:space="preserve">
+    <value>打开 TXT/SST 模式...</value>
+  </data>
+  <data name="Menu.ExportTxtMode" xml:space="preserve">
+    <value>导出 TXT/SST...</value>
+  </data>
+  <data name="Menu.RunTxtBatchScript" xml:space="preserve">
+    <value>运行 TXT 批处理脚本...</value>
   </data>
   <data name="DictionaryEditor.DialogTitle" xml:space="preserve">
     <value>词典编辑器</value>

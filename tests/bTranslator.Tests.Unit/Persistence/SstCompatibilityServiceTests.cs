@@ -1,6 +1,7 @@
 using bTranslator.Domain.Models;
 using bTranslator.Infrastructure.Persistence.Compatibility;
 using FluentAssertions;
+using System.Text;
 
 namespace bTranslator.Tests.Unit.Persistence;
 
@@ -53,6 +54,33 @@ public class SstCompatibilityServiceTests
         first.SstMetadata.Pointer.RecordSignature.Should().Be("BOOK");
         first.SstMetadata.Pointer.FieldSignature.Should().Be("FULL");
         first.SstMetadata.Pointer.FormId.Should().Be(0x12345678);
+    }
+
+    [Fact]
+    public async Task ExportTxt_ShouldWriteTabSeparatedText_AndRoundTrip()
+    {
+        var service = new SstCompatibilityService();
+        var file = Path.Combine(Path.GetTempPath(), $"bTranslator-sst-{Guid.NewGuid():N}.txt");
+        var items = new[]
+        {
+            new TranslationItem
+            {
+                Id = "001",
+                SourceText = "Hello",
+                TranslatedText = "你好"
+            }
+        };
+
+        await service.ExportAsync(file, items);
+
+        var raw = await File.ReadAllTextAsync(file, Encoding.UTF8);
+        raw.Should().Contain("001\tHello\t你好");
+
+        var imported = await service.ImportAsync(file);
+        imported.Should().ContainSingle();
+        imported[0].Id.Should().Be("001");
+        imported[0].SourceText.Should().Be("Hello");
+        imported[0].TranslatedText.Should().Be("你好");
     }
 }
 

@@ -467,6 +467,125 @@ public partial class MainPage : Page
         return file?.Path;
     }
 
+    private async Task<string?> PickMcmImportPathAsync()
+    {
+        var picker = new FileOpenPicker();
+        picker.FileTypeFilter.Add(".xml");
+        picker.FileTypeFilter.Add("*");
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSingleFileAsync();
+        return file?.Path;
+    }
+
+    private async Task<string?> PickMcmExportPathAsync()
+    {
+        var picker = new FileSavePicker
+        {
+            SuggestedFileName = "mcm-translation"
+        };
+        picker.FileTypeChoices.Add("MCM/XML", [".xml"]);
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSaveFileAsync();
+        return file?.Path;
+    }
+
+    private async Task<string?> PickTxtImportPathAsync()
+    {
+        var picker = new FileOpenPicker();
+        picker.FileTypeFilter.Add(".txt");
+        picker.FileTypeFilter.Add(".sst");
+        picker.FileTypeFilter.Add(".sstx");
+        picker.FileTypeFilter.Add(".json");
+        picker.FileTypeFilter.Add("*");
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSingleFileAsync();
+        return file?.Path;
+    }
+
+    private async Task<string?> PickTxtExportPathAsync()
+    {
+        var picker = new FileSavePicker
+        {
+            SuggestedFileName = "txt-translation"
+        };
+        picker.FileTypeChoices.Add("TXT", [".txt"]);
+        picker.FileTypeChoices.Add("SST", [".sst"]);
+        picker.FileTypeChoices.Add("SSTX/JSON", [".sstx"]);
+        picker.FileTypeChoices.Add("JSON", [".json"]);
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSaveFileAsync();
+        return file?.Path;
+    }
+
+    private async Task<string?> PickTxtBatchScriptPathAsync()
+    {
+        var picker = new FileOpenPicker();
+        picker.FileTypeFilter.Add(".txt");
+        picker.FileTypeFilter.Add(".yaml");
+        picker.FileTypeFilter.Add(".yml");
+        picker.FileTypeFilter.Add("*");
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSingleFileAsync();
+        return file?.Path;
+    }
+
+    private async Task<string?> PickPexPathAsync()
+    {
+        var picker = new FileOpenPicker();
+        picker.FileTypeFilter.Add(".pex");
+        picker.FileTypeFilter.Add("*");
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSingleFileAsync();
+        return file?.Path;
+    }
+
+    private async Task<string?> PickPexExportPathAsync()
+    {
+        var picker = new FileSavePicker
+        {
+            SuggestedFileName = "pex-strings"
+        };
+        picker.FileTypeChoices.Add("TXT", [".txt"]);
+
+        if (!TryInitializePicker(picker))
+        {
+            return null;
+        }
+
+        var file = await picker.PickSaveFileAsync();
+        return file?.Path;
+    }
+
     private async void OnOpenPluginFromMenuClicked(object sender, RoutedEventArgs e)
     {
         if (!await PickPluginPathAsync().ConfigureAwait(true))
@@ -619,6 +738,104 @@ public partial class MainPage : Page
         if (ViewModel.ExportDictionaryCommand.CanExecute(path))
         {
             await ViewModel.ExportDictionaryCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnOpenMcmModeClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickMcmImportPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.OpenMcmModeCommand.CanExecute(path))
+        {
+            await ViewModel.OpenMcmModeCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnExportMcmModeClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickMcmExportPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.ExportMcmModeCommand.CanExecute(path))
+        {
+            await ViewModel.ExportMcmModeCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnOpenTxtModeClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickTxtImportPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.OpenTxtModeCommand.CanExecute(path))
+        {
+            await ViewModel.OpenTxtModeCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnExportTxtModeClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickTxtExportPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.ExportTxtModeCommand.CanExecute(path))
+        {
+            await ViewModel.ExportTxtModeCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnRunTxtBatchScriptClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickTxtBatchScriptPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.RunTxtBatchScriptCommand.CanExecute(path))
+        {
+            await ViewModel.RunTxtBatchScriptCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnOpenPexModeClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickPexPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.OpenPexModeCommand.CanExecute(path))
+        {
+            await ViewModel.OpenPexModeCommand.ExecuteAsync(path).ConfigureAwait(true);
+        }
+    }
+
+    private async void OnExportPexStringsClicked(object sender, RoutedEventArgs e)
+    {
+        var path = await PickPexExportPathAsync().ConfigureAwait(true);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (ViewModel.ExportPexStringsCommand.CanExecute(path))
+        {
+            await ViewModel.ExportPexStringsCommand.ExecuteAsync(path).ConfigureAwait(true);
         }
     }
 
