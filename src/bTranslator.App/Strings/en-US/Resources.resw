@@ -87,6 +87,12 @@
   <data name="Status.MetadataRefreshed" xml:space="preserve">
     <value>Metadata refreshed.</value>
   </data>
+  <data name="Status.ShortcutMappingsSaved" xml:space="preserve">
+    <value>Keyboard shortcut mappings updated.</value>
+  </data>
+  <data name="Status.ShortcutMappingsReset" xml:space="preserve">
+    <value>Keyboard shortcut mappings reset to defaults.</value>
+  </data>
   <data name="Status.PlaceholderCheckFailed" xml:space="preserve">
     <value>Placeholder pipeline check failed.</value>
   </data>
@@ -331,52 +337,55 @@
     <value>TXT batch: {0}</value>
   </data>
   <data name="Shortcut.Open" xml:space="preserve">
-    <value>Ctrl+O Open</value>
+    <value>{0} Open</value>
   </data>
   <data name="Shortcut.Save" xml:space="preserve">
-    <value>Ctrl+S Save</value>
+    <value>{0} Save</value>
   </data>
   <data name="Shortcut.AiBatch" xml:space="preserve">
-    <value>Ctrl+Shift+T AI Batch</value>
+    <value>{0} AI Batch</value>
   </data>
   <data name="Shortcut.Search" xml:space="preserve">
-    <value>Ctrl+F Search</value>
+    <value>{0} Search</value>
   </data>
   <data name="Shortcut.FocusRows" xml:space="preserve">
-    <value>Ctrl+G Rows</value>
+    <value>{0} Rows</value>
   </data>
   <data name="Shortcut.FocusInspector" xml:space="preserve">
-    <value>Ctrl+I Inspector</value>
+    <value>{0} Inspector</value>
   </data>
   <data name="Shortcut.FocusAiInput" xml:space="preserve">
-    <value>Ctrl+K Copilot</value>
+    <value>{0} Copilot</value>
   </data>
   <data name="Shortcut.FocusModel" xml:space="preserve">
-    <value>Ctrl+Shift+M Model</value>
+    <value>{0} Model</value>
+  </data>
+  <data name="Shortcut.ClearAiChat" xml:space="preserve">
+    <value>{0} Clear Copilot</value>
   </data>
   <data name="Shortcut.Apply" xml:space="preserve">
-    <value>Ctrl+Enter Apply</value>
+    <value>{0} Apply</value>
   </data>
   <data name="Shortcut.ApplyNext" xml:space="preserve">
-    <value>Ctrl+Shift+Enter Apply+Next</value>
+    <value>{0} Apply+Next</value>
   </data>
   <data name="Shortcut.CopySource" xml:space="preserve">
-    <value>Ctrl+Shift+C CopySource</value>
+    <value>{0} CopySource</value>
   </data>
   <data name="Shortcut.ToggleLock" xml:space="preserve">
-    <value>Ctrl+L Lock</value>
+    <value>{0} Lock</value>
   </data>
   <data name="Shortcut.Validate" xml:space="preserve">
-    <value>Ctrl+M Validate</value>
+    <value>{0} Validate</value>
   </data>
   <data name="Shortcut.NextPending" xml:space="preserve">
-    <value>F8 NextPending</value>
+    <value>{0} NextPending</value>
   </data>
   <data name="Shortcut.PrevPending" xml:space="preserve">
-    <value>Shift+F8 PrevPending</value>
+    <value>{0} PrevPending</value>
   </data>
   <data name="Shortcut.Help" xml:space="preserve">
-    <value>F1 Help</value>
+    <value>{0} Help</value>
   </data>
   <data name="ShortcutGroup.File" xml:space="preserve">
     <value>File</value>
@@ -392,6 +401,9 @@
   </data>
   <data name="ShortcutHelp.DialogTitle" xml:space="preserve">
     <value>Keyboard Shortcuts</value>
+  </data>
+  <data name="ShortcutHelp.ConfigureButton" xml:space="preserve">
+    <value>Configure...</value>
   </data>
   <data name="ShortcutHelp.CloseButton" xml:space="preserve">
     <value>Close</value>
@@ -427,7 +439,10 @@
     <value>Focus AI chat input</value>
   </data>
   <data name="ShortcutHelp.FocusModel" xml:space="preserve">
-    <value>Focus model selector</value>
+    <value>Focus model filter</value>
+  </data>
+  <data name="ShortcutHelp.ClearAiChat" xml:space="preserve">
+    <value>Clear Copilot conversation history</value>
   </data>
   <data name="ShortcutHelp.ApplyInspector" xml:space="preserve">
     <value>Apply inspector translation to current row</value>
@@ -458,6 +473,36 @@
   </data>
   <data name="ShortcutHelp.ShowHelp" xml:space="preserve">
     <value>Open this keyboard shortcut help</value>
+  </data>
+  <data name="ShortcutConfig.DialogTitle" xml:space="preserve">
+    <value>Configure Keyboard Shortcuts</value>
+  </data>
+  <data name="ShortcutConfig.SearchPlaceholder" xml:space="preserve">
+    <value>Filter actions or gestures</value>
+  </data>
+  <data name="ShortcutConfig.NoResults" xml:space="preserve">
+    <value>No shortcut action matches current filter.</value>
+  </data>
+  <data name="ShortcutConfig.Instruction" xml:space="preserve">
+    <value>Use format like Ctrl+Shift+K. Save applies immediately.</value>
+  </data>
+  <data name="ShortcutConfig.SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ShortcutConfig.ResetButton" xml:space="preserve">
+    <value>Reset Defaults</value>
+  </data>
+  <data name="ShortcutConfig.CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ShortcutConfig.EmptyGestureError" xml:space="preserve">
+    <value>Shortcut for '{0}' cannot be empty.</value>
+  </data>
+  <data name="ShortcutConfig.InvalidGestureError" xml:space="preserve">
+    <value>Shortcut '{0}' for '{1}' is invalid.</value>
+  </data>
+  <data name="ShortcutConfig.DuplicateGestureError" xml:space="preserve">
+    <value>Shortcut '{0}' conflicts between '{1}' and '{2}'.</value>
   </data>
   <data name="MainMenuFile.Title" xml:space="preserve">
     <value>File</value>

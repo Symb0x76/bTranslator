@@ -87,6 +87,12 @@
   <data name="Status.MetadataRefreshed" xml:space="preserve">
     <value>元数据已刷新。</value>
   </data>
+  <data name="Status.ShortcutMappingsSaved" xml:space="preserve">
+    <value>快捷键映射已更新。</value>
+  </data>
+  <data name="Status.ShortcutMappingsReset" xml:space="preserve">
+    <value>快捷键映射已恢复默认。</value>
+  </data>
   <data name="Status.PlaceholderCheckFailed" xml:space="preserve">
     <value>占位符流程校验失败。</value>
   </data>
@@ -331,52 +337,55 @@
     <value>TXT 批处理：{0}</value>
   </data>
   <data name="Shortcut.Open" xml:space="preserve">
-    <value>Ctrl+O 打开</value>
+    <value>{0} 打开</value>
   </data>
   <data name="Shortcut.Save" xml:space="preserve">
-    <value>Ctrl+S 保存</value>
+    <value>{0} 保存</value>
   </data>
   <data name="Shortcut.AiBatch" xml:space="preserve">
-    <value>Ctrl+Shift+T 批量 AI</value>
+    <value>{0} 批量 AI</value>
   </data>
   <data name="Shortcut.Search" xml:space="preserve">
-    <value>Ctrl+F 搜索</value>
+    <value>{0} 搜索</value>
   </data>
   <data name="Shortcut.FocusRows" xml:space="preserve">
-    <value>Ctrl+G 行列表</value>
+    <value>{0} 行列表</value>
   </data>
   <data name="Shortcut.FocusInspector" xml:space="preserve">
-    <value>Ctrl+I 检查器</value>
+    <value>{0} 检查器</value>
   </data>
   <data name="Shortcut.FocusAiInput" xml:space="preserve">
-    <value>Ctrl+K Copilot 输入</value>
+    <value>{0} Copilot 输入</value>
   </data>
   <data name="Shortcut.FocusModel" xml:space="preserve">
-    <value>Ctrl+Shift+M 模型</value>
+    <value>{0} 模型</value>
+  </data>
+  <data name="Shortcut.ClearAiChat" xml:space="preserve">
+    <value>{0} 清空 Copilot</value>
   </data>
   <data name="Shortcut.Apply" xml:space="preserve">
-    <value>Ctrl+Enter 应用</value>
+    <value>{0} 应用</value>
   </data>
   <data name="Shortcut.ApplyNext" xml:space="preserve">
-    <value>Ctrl+Shift+Enter 应用并下一条</value>
+    <value>{0} 应用并下一条</value>
   </data>
   <data name="Shortcut.CopySource" xml:space="preserve">
-    <value>Ctrl+Shift+C 复制源文</value>
+    <value>{0} 复制源文</value>
   </data>
   <data name="Shortcut.ToggleLock" xml:space="preserve">
-    <value>Ctrl+L 切换锁定</value>
+    <value>{0} 切换锁定</value>
   </data>
   <data name="Shortcut.Validate" xml:space="preserve">
-    <value>Ctrl+M 标记验证</value>
+    <value>{0} 标记验证</value>
   </data>
   <data name="Shortcut.NextPending" xml:space="preserve">
-    <value>F8 下一个待翻译</value>
+    <value>{0} 下一个待翻译</value>
   </data>
   <data name="Shortcut.PrevPending" xml:space="preserve">
-    <value>Shift+F8 上一个待翻译</value>
+    <value>{0} 上一个待翻译</value>
   </data>
   <data name="Shortcut.Help" xml:space="preserve">
-    <value>F1 快捷键帮助</value>
+    <value>{0} 快捷键帮助</value>
   </data>
   <data name="ShortcutGroup.File" xml:space="preserve">
     <value>文件</value>
@@ -392,6 +401,9 @@
   </data>
   <data name="ShortcutHelp.DialogTitle" xml:space="preserve">
     <value>快捷键帮助</value>
+  </data>
+  <data name="ShortcutHelp.ConfigureButton" xml:space="preserve">
+    <value>配置...</value>
   </data>
   <data name="ShortcutHelp.CloseButton" xml:space="preserve">
     <value>关闭</value>
@@ -427,7 +439,10 @@
     <value>聚焦到 AI 对话输入框</value>
   </data>
   <data name="ShortcutHelp.FocusModel" xml:space="preserve">
-    <value>聚焦到模型选择框</value>
+    <value>聚焦到模型筛选框</value>
+  </data>
+  <data name="ShortcutHelp.ClearAiChat" xml:space="preserve">
+    <value>清空 Copilot 对话历史</value>
   </data>
   <data name="ShortcutHelp.ApplyInspector" xml:space="preserve">
     <value>将检查器译文应用到当前行</value>
@@ -458,6 +473,36 @@
   </data>
   <data name="ShortcutHelp.ShowHelp" xml:space="preserve">
     <value>打开此快捷键帮助弹窗</value>
+  </data>
+  <data name="ShortcutConfig.DialogTitle" xml:space="preserve">
+    <value>配置快捷键</value>
+  </data>
+  <data name="ShortcutConfig.SearchPlaceholder" xml:space="preserve">
+    <value>按操作说明或按键筛选</value>
+  </data>
+  <data name="ShortcutConfig.NoResults" xml:space="preserve">
+    <value>没有匹配当前筛选的快捷键操作。</value>
+  </data>
+  <data name="ShortcutConfig.Instruction" xml:space="preserve">
+    <value>格式示例：Ctrl+Shift+K。保存后立即生效。</value>
+  </data>
+  <data name="ShortcutConfig.SaveButton" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="ShortcutConfig.ResetButton" xml:space="preserve">
+    <value>恢复默认</value>
+  </data>
+  <data name="ShortcutConfig.CancelButton" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ShortcutConfig.EmptyGestureError" xml:space="preserve">
+    <value>“{0}” 的快捷键不能为空。</value>
+  </data>
+  <data name="ShortcutConfig.InvalidGestureError" xml:space="preserve">
+    <value>“{1}” 的快捷键“{0}”无效。</value>
+  </data>
+  <data name="ShortcutConfig.DuplicateGestureError" xml:space="preserve">
+    <value>快捷键“{0}”冲突：{1} 与 {2}。</value>
   </data>
   <data name="MainMenuFile.Title" xml:space="preserve">
     <value>文件</value>

@@ -1,6 +1,7 @@
 using bTranslator.App.Localization;
 using bTranslator.App.ViewModels;
 using System.ComponentModel;
+using System.Globalization;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
@@ -22,17 +23,300 @@ public partial class MainPage : Page
         ViewModel = viewModel;
         InitializeComponent();
         DataContext = ViewModel;
+        RebuildKeyboardAccelerators();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         Loaded += async (_, _) =>
         {
             ConfigureTitleBar();
             await ViewModel.RefreshAsync();
             EnsureWorkspaceMenus();
+            RebuildKeyboardAccelerators();
         };
         Unloaded += (_, _) => ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
     public MainViewModel ViewModel { get; }
+
+    private void RebuildKeyboardAccelerators()
+    {
+        KeyboardAccelerators.Clear();
+
+        var registered = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var mappings = ViewModel.GetEffectiveShortcutMappings();
+        foreach (var pair in mappings)
+        {
+            if (!TryParseShortcutGesture(pair.Value, out var key, out var modifiers))
+            {
+                continue;
+            }
+
+            var signature = BuildShortcutSignature(key, modifiers);
+            if (!registered.Add(signature))
+            {
+                continue;
+            }
+
+            var accelerator = new KeyboardAccelerator
+            {
+                Key = key,
+                Modifiers = modifiers
+            };
+
+            if (!TryAttachShortcutHandler(pair.Key, accelerator))
+            {
+                continue;
+            }
+
+            KeyboardAccelerators.Add(accelerator);
+        }
+    }
+
+    private bool TryAttachShortcutHandler(string actionId, KeyboardAccelerator accelerator)
+    {
+        switch (actionId)
+        {
+            case MainViewModel.ShortcutActionOpenWorkspace:
+                accelerator.Invoked += OnOpenWorkspaceAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionSaveWorkspace:
+                accelerator.Invoked += OnSaveWorkspaceAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionRunBatchTranslation:
+                accelerator.Invoked += OnRunBatchAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionRefreshWorkspace:
+                accelerator.Invoked += OnReloadAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionFocusSearch:
+                accelerator.Invoked += OnFocusSearchAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionFocusRows:
+                accelerator.Invoked += OnFocusRowsAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionFocusInspector:
+                accelerator.Invoked += OnFocusInspectorAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionFocusAiInput:
+                accelerator.Invoked += OnFocusAiInputAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionFocusModelFilter:
+                accelerator.Invoked += OnFocusModelAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionClearAiChat:
+                accelerator.Invoked += OnClearAiChatAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionApplyInspector:
+                accelerator.Invoked += OnApplyInspectorAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionApplyAndNext:
+                accelerator.Invoked += OnApplyAndNextAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionCopySource:
+                accelerator.Invoked += OnCopySourceAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionToggleLock:
+                accelerator.Invoked += OnToggleLockAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionMarkValidated:
+                accelerator.Invoked += OnMarkValidatedAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionNextPending:
+                accelerator.Invoked += OnNextPendingAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionPreviousPending:
+                accelerator.Invoked += OnPreviousPendingAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionShowShortcutHelp:
+                accelerator.Invoked += OnShortcutHelpAcceleratorInvoked;
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static bool TryParseShortcutGesture(
+        string? gesture,
+        out VirtualKey key,
+        out VirtualKeyModifiers modifiers)
+    {
+        key = VirtualKey.None;
+        modifiers = VirtualKeyModifiers.None;
+
+        if (string.IsNullOrWhiteSpace(gesture))
+        {
+            return false;
+        }
+
+        var segments = gesture
+            .Split('+', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 0)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < segments.Length - 1; i++)
+        {
+            if (!TryParseModifierToken(segments[i], out var modifier))
+            {
+                return false;
+            }
+
+            modifiers |= modifier;
+        }
+
+        return TryParseKeyToken(segments[^1], out key);
+    }
+
+    private static bool TryParseModifierToken(string token, out VirtualKeyModifiers modifier)
+    {
+        modifier = token.Trim().ToUpperInvariant() switch
+        {
+            "CTRL" or "CONTROL" => VirtualKeyModifiers.Control,
+            "SHIFT" => VirtualKeyModifiers.Shift,
+            "ALT" => VirtualKeyModifiers.Menu,
+            "WIN" or "WINDOWS" => VirtualKeyModifiers.Windows,
+            _ => VirtualKeyModifiers.None
+        };
+
+        return modifier != VirtualKeyModifiers.None;
+    }
+
+    private static bool TryParseKeyToken(string token, out VirtualKey key)
+    {
+        var normalized = token.Trim().ToUpperInvariant();
+
+        if (normalized.Length == 1)
+        {
+            var c = normalized[0];
+            if (c is >= 'A' and <= 'Z')
+            {
+                key = (VirtualKey)((int)VirtualKey.A + (c - 'A'));
+                return true;
+            }
+
+            if (c is >= '0' and <= '9')
+            {
+                key = (VirtualKey)((int)VirtualKey.Number0 + (c - '0'));
+                return true;
+            }
+        }
+
+        if (normalized.StartsWith('F') &&
+            int.TryParse(normalized[1..], NumberStyles.Integer, CultureInfo.InvariantCulture, out var functionKey) &&
+            functionKey is >= 1 and <= 24)
+        {
+            key = (VirtualKey)((int)VirtualKey.F1 + (functionKey - 1));
+            return true;
+        }
+
+        key = normalized switch
+        {
+            "ENTER" => VirtualKey.Enter,
+            "ESC" or "ESCAPE" => VirtualKey.Escape,
+            "SPACE" => VirtualKey.Space,
+            "TAB" => VirtualKey.Tab,
+            "UP" => VirtualKey.Up,
+            "DOWN" => VirtualKey.Down,
+            "LEFT" => VirtualKey.Left,
+            "RIGHT" => VirtualKey.Right,
+            "HOME" => VirtualKey.Home,
+            "END" => VirtualKey.End,
+            "PAGEUP" => VirtualKey.PageUp,
+            "PAGEDOWN" => VirtualKey.PageDown,
+            "INSERT" => VirtualKey.Insert,
+            "DELETE" or "DEL" => VirtualKey.Delete,
+            _ => VirtualKey.None
+        };
+
+        if (key != VirtualKey.None)
+        {
+            return true;
+        }
+
+        return Enum.TryParse(normalized, ignoreCase: true, out key) && key != VirtualKey.None;
+    }
+
+    private static string BuildShortcutSignature(VirtualKey key, VirtualKeyModifiers modifiers)
+    {
+        return $"{(int)modifiers}:{(int)key}";
+    }
+
+    private static string FormatShortcutGesture(VirtualKey key, VirtualKeyModifiers modifiers)
+    {
+        var parts = new List<string>(4);
+        if ((modifiers & VirtualKeyModifiers.Control) == VirtualKeyModifiers.Control)
+        {
+            parts.Add("Ctrl");
+        }
+
+        if ((modifiers & VirtualKeyModifiers.Shift) == VirtualKeyModifiers.Shift)
+        {
+            parts.Add("Shift");
+        }
+
+        if ((modifiers & VirtualKeyModifiers.Menu) == VirtualKeyModifiers.Menu)
+        {
+            parts.Add("Alt");
+        }
+
+        if ((modifiers & VirtualKeyModifiers.Windows) == VirtualKeyModifiers.Windows)
+        {
+            parts.Add("Win");
+        }
+
+        parts.Add(FormatShortcutKeyToken(key));
+        return string.Join("+", parts);
+    }
+
+    private static string FormatShortcutKeyToken(VirtualKey key)
+    {
+        if (key is >= VirtualKey.A and <= VirtualKey.Z)
+        {
+            return ((char)('A' + ((int)key - (int)VirtualKey.A))).ToString(CultureInfo.InvariantCulture);
+        }
+
+        if (key is >= VirtualKey.Number0 and <= VirtualKey.Number9)
+        {
+            return ((char)('0' + ((int)key - (int)VirtualKey.Number0))).ToString(CultureInfo.InvariantCulture);
+        }
+
+        if (key is >= VirtualKey.F1 and <= VirtualKey.F24)
+        {
+            return $"F{(int)key - (int)VirtualKey.F1 + 1}";
+        }
+
+        return key switch
+        {
+            VirtualKey.Enter => "Enter",
+            VirtualKey.Escape => "Esc",
+            VirtualKey.Space => "Space",
+            VirtualKey.Tab => "Tab",
+            VirtualKey.Up => "Up",
+            VirtualKey.Down => "Down",
+            VirtualKey.Left => "Left",
+            VirtualKey.Right => "Right",
+            VirtualKey.Home => "Home",
+            VirtualKey.End => "End",
+            VirtualKey.PageUp => "PageUp",
+            VirtualKey.PageDown => "PageDown",
+            VirtualKey.Insert => "Insert",
+            VirtualKey.Delete => "Delete",
+            _ => key.ToString()
+        };
+    }
+
+    private string LocalizedFormat(string resourceKey, string fallbackTemplate, params object?[] args)
+    {
+        var template = ViewModel.GetLocalizedString(resourceKey, fallbackTemplate);
+        try
+        {
+            return string.Format(CultureInfo.CurrentUICulture, template, args);
+        }
+        catch (FormatException)
+        {
+            return template;
+        }
+    }
 
     private void ConfigureTitleBar()
     {
@@ -919,9 +1203,13 @@ public partial class MainPage : Page
         }
     }
 
-    private void FocusModelSelector()
+    private void FocusModelSelector(bool openDropdown)
     {
         _ = ModelSelectorComboBox.Focus(FocusState.Keyboard);
+        if (openDropdown)
+        {
+            ModelSelectorComboBox.IsDropDownOpen = true;
+        }
     }
 
     private bool IsElementOrDescendantFocused(DependencyObject element)
@@ -1065,7 +1353,16 @@ public partial class MainPage : Page
     private void OnFocusModelAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
         args.Handled = true;
-        FocusModelSelector();
+        FocusModelSelector(openDropdown: true);
+    }
+
+    private void OnClearAiChatAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        if (ViewModel.ClearAiChatHistoryCommand.CanExecute(null))
+        {
+            ViewModel.ClearAiChatHistoryCommand.Execute(null);
+        }
     }
 
     private async void OnApplyInspectorAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -1288,12 +1585,301 @@ public partial class MainPage : Page
         {
             XamlRoot = XamlRoot,
             Title = ViewModel.GetLocalizedString("ShortcutHelp.DialogTitle", "Keyboard Shortcuts"),
+            PrimaryButtonText = ViewModel.GetLocalizedString("ShortcutHelp.ConfigureButton", "Configure..."),
             CloseButtonText = ViewModel.GetLocalizedString("ShortcutHelp.CloseButton", "Close"),
             DefaultButton = ContentDialogButton.Close,
             Content = contentGrid
         };
 
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary)
+        {
+            await ShowShortcutMappingDialogAsync().ConfigureAwait(true);
+        }
+    }
+
+    private async Task ShowShortcutMappingDialogAsync()
+    {
+        var bindingItems = ViewModel.GetShortcutBindingItems()
+            .OrderBy(item => item.Group, StringComparer.CurrentCultureIgnoreCase)
+            .ThenBy(item => item.Description, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+        var descriptionByActionId = bindingItems.ToDictionary(
+            static item => item.ActionId,
+            static item => item.Description,
+            StringComparer.OrdinalIgnoreCase);
+        var editValues = new Dictionary<string, string>(
+            ViewModel.GetEffectiveShortcutMappings(),
+            StringComparer.OrdinalIgnoreCase);
+
+        var searchBox = new TextBox
+        {
+            PlaceholderText = ViewModel.GetLocalizedString(
+                "ShortcutConfig.SearchPlaceholder",
+                "Filter actions or gestures")
+        };
+
+        var validationText = new TextBlock
+        {
+            Opacity = 0.9,
+            TextWrapping = TextWrapping.WrapWholeWords,
+            Visibility = Visibility.Collapsed
+        };
+
+        var rowsPanel = new StackPanel
+        {
+            Spacing = 8
+        };
+
+        void RenderRows(string? filterText)
+        {
+            var query = filterText?.Trim() ?? string.Empty;
+            var filtered = bindingItems.Where(item =>
+                    string.IsNullOrWhiteSpace(query) ||
+                    item.Group.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    item.Description.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    item.Gesture.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                    (editValues.TryGetValue(item.ActionId, out var currentGesture) &&
+                     currentGesture.Contains(query, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            rowsPanel.Children.Clear();
+            if (filtered.Count == 0)
+            {
+                rowsPanel.Children.Add(new TextBlock
+                {
+                    Opacity = 0.75,
+                    Text = ViewModel.GetLocalizedString(
+                        "ShortcutConfig.NoResults",
+                        "No shortcut action matches current filter.")
+                });
+                return;
+            }
+
+            foreach (var group in filtered.GroupBy(item => item.Group))
+            {
+                rowsPanel.Children.Add(new TextBlock
+                {
+                    FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI Variable Text Semibold"),
+                    FontSize = 14,
+                    Opacity = 0.95,
+                    Text = group.Key
+                });
+
+                foreach (var item in group)
+                {
+                    if (!editValues.TryGetValue(item.ActionId, out var currentGesture))
+                    {
+                        currentGesture = item.Gesture;
+                    }
+
+                    var row = new Grid
+                    {
+                        ColumnSpacing = 12
+                    };
+                    row.ColumnDefinitions.Add(new ColumnDefinition
+                    {
+                        Width = new GridLength(1, GridUnitType.Star)
+                    });
+                    row.ColumnDefinitions.Add(new ColumnDefinition
+                    {
+                        Width = new GridLength(190)
+                    });
+
+                    var descriptionText = new TextBlock
+                    {
+                        Opacity = 0.92,
+                        Text = item.Description,
+                        TextWrapping = TextWrapping.WrapWholeWords
+                    };
+                    row.Children.Add(descriptionText);
+
+                    var gestureEditor = new TextBox
+                    {
+                        FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Cascadia Mono"),
+                        PlaceholderText = item.Gesture,
+                        Text = currentGesture
+                    };
+                    gestureEditor.TextChanged += (_, _) =>
+                    {
+                        editValues[item.ActionId] = gestureEditor.Text.Trim();
+                        validationText.Text = string.Empty;
+                        validationText.Visibility = Visibility.Collapsed;
+                    };
+                    Grid.SetColumn(gestureEditor, 1);
+                    row.Children.Add(gestureEditor);
+
+                    rowsPanel.Children.Add(row);
+                }
+            }
+        }
+
+        searchBox.TextChanged += (_, _) => RenderRows(searchBox.Text);
+        RenderRows(string.Empty);
+
+        var contentGrid = new Grid
+        {
+            RowSpacing = 10
+        };
+        contentGrid.RowDefinitions.Add(new RowDefinition
+        {
+            Height = GridLength.Auto
+        });
+        contentGrid.RowDefinitions.Add(new RowDefinition
+        {
+            Height = GridLength.Auto
+        });
+        contentGrid.RowDefinitions.Add(new RowDefinition
+        {
+            Height = new GridLength(1, GridUnitType.Star)
+        });
+        contentGrid.RowDefinitions.Add(new RowDefinition
+        {
+            Height = GridLength.Auto
+        });
+
+        var tipText = new TextBlock
+        {
+            Opacity = 0.78,
+            TextWrapping = TextWrapping.WrapWholeWords,
+            Text = ViewModel.GetLocalizedString(
+                "ShortcutConfig.Instruction",
+                "Use format like Ctrl+Shift+K. Save applies immediately.")
+        };
+        contentGrid.Children.Add(tipText);
+
+        Grid.SetRow(searchBox, 1);
+        contentGrid.Children.Add(searchBox);
+
+        var scroller = new ScrollViewer
+        {
+            MaxHeight = 520,
+            MinWidth = 760,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            Content = rowsPanel
+        };
+        Grid.SetRow(scroller, 2);
+        contentGrid.Children.Add(scroller);
+
+        Grid.SetRow(validationText, 3);
+        contentGrid.Children.Add(validationText);
+
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot,
+            Title = ViewModel.GetLocalizedString("ShortcutConfig.DialogTitle", "Configure Keyboard Shortcuts"),
+            PrimaryButtonText = ViewModel.GetLocalizedString("ShortcutConfig.SaveButton", "Save"),
+            SecondaryButtonText = ViewModel.GetLocalizedString("ShortcutConfig.ResetButton", "Reset Defaults"),
+            CloseButtonText = ViewModel.GetLocalizedString("ShortcutConfig.CancelButton", "Cancel"),
+            DefaultButton = ContentDialogButton.Primary,
+            Content = contentGrid
+        };
+
+        dialog.PrimaryButtonClick += async (_, args) =>
+        {
+            var deferral = args.GetDeferral();
+            try
+            {
+                if (!TryNormalizeShortcutMappings(
+                        bindingItems,
+                        descriptionByActionId,
+                        editValues,
+                        out var normalizedMappings,
+                        out var errorMessage))
+                {
+                    args.Cancel = true;
+                    validationText.Text = errorMessage;
+                    validationText.Visibility = Visibility.Visible;
+                    return;
+                }
+
+                await ViewModel.SaveShortcutMappingsAsync(normalizedMappings).ConfigureAwait(true);
+                RebuildKeyboardAccelerators();
+                ViewModel.StatusText = ViewModel.GetLocalizedString(
+                    "Status.ShortcutMappingsSaved",
+                    "Keyboard shortcut mappings updated.");
+            }
+            finally
+            {
+                deferral.Complete();
+            }
+        };
+
+        dialog.SecondaryButtonClick += async (_, args) =>
+        {
+            var deferral = args.GetDeferral();
+            try
+            {
+                await ViewModel.ResetShortcutMappingsAsync().ConfigureAwait(true);
+                RebuildKeyboardAccelerators();
+                ViewModel.StatusText = ViewModel.GetLocalizedString(
+                    "Status.ShortcutMappingsReset",
+                    "Keyboard shortcut mappings reset to defaults.");
+            }
+            finally
+            {
+                deferral.Complete();
+            }
+        };
+
         _ = await dialog.ShowAsync();
+    }
+
+    private bool TryNormalizeShortcutMappings(
+        IReadOnlyList<MainViewModel.ShortcutBindingItem> bindingItems,
+        IReadOnlyDictionary<string, string> descriptionByActionId,
+        IReadOnlyDictionary<string, string> editValues,
+        out Dictionary<string, string> normalizedMappings,
+        out string errorMessage)
+    {
+        normalizedMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var signatureOwner = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var item in bindingItems)
+        {
+            if (!editValues.TryGetValue(item.ActionId, out var rawGesture) ||
+                string.IsNullOrWhiteSpace(rawGesture))
+            {
+                errorMessage = LocalizedFormat(
+                    "ShortcutConfig.EmptyGestureError",
+                    "Shortcut for '{0}' cannot be empty.",
+                    item.Description);
+                return false;
+            }
+
+            if (!TryParseShortcutGesture(rawGesture, out var key, out var modifiers))
+            {
+                errorMessage = LocalizedFormat(
+                    "ShortcutConfig.InvalidGestureError",
+                    "Shortcut '{0}' for '{1}' is invalid.",
+                    rawGesture.Trim(),
+                    item.Description);
+                return false;
+            }
+
+            var normalizedGesture = FormatShortcutGesture(key, modifiers);
+            var signature = BuildShortcutSignature(key, modifiers);
+            if (signatureOwner.TryGetValue(signature, out var existingActionId))
+            {
+                var existingDescription = descriptionByActionId.TryGetValue(existingActionId, out var text)
+                    ? text
+                    : existingActionId;
+
+                errorMessage = LocalizedFormat(
+                    "ShortcutConfig.DuplicateGestureError",
+                    "Shortcut '{0}' conflicts between '{1}' and '{2}'.",
+                    normalizedGesture,
+                    existingDescription,
+                    item.Description);
+                return false;
+            }
+
+            signatureOwner[signature] = item.ActionId;
+            normalizedMappings[item.ActionId] = normalizedGesture;
+        }
+
+        errorMessage = string.Empty;
+        return true;
     }
 }
 

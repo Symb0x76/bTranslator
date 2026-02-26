@@ -20,6 +20,7 @@ public partial class MainViewModel : ObservableObject
     private const string WorkspaceEncodingModeKey = "workspace.encoding_mode";
     private const string WorkspaceEncodingNameKey = "workspace.encoding_name";
     private const string WorkspaceEncodingEffectiveKey = "workspace.encoding_effective";
+    private const string ShortcutMappingsSettingKey = "ui.shortcut_mappings.v1";
     private const string UiLanguageSettingKey = AppLocalizationService.UiLanguageSettingKey;
     private const string LanguageEnglish = "english";
     private const string LanguageChineseSimplified = "chinese (simplified)";
@@ -33,6 +34,24 @@ public partial class MainViewModel : ObservableObject
     private const string AutoEncodingMode = "auto";
     private const string ManualEncodingMode = "manual";
     private const string DefaultEncodingDisplayName = "UTF-8";
+    public const string ShortcutActionOpenWorkspace = "open_workspace";
+    public const string ShortcutActionSaveWorkspace = "save_workspace";
+    public const string ShortcutActionRunBatchTranslation = "run_batch_translation";
+    public const string ShortcutActionRefreshWorkspace = "refresh_workspace";
+    public const string ShortcutActionFocusSearch = "focus_search";
+    public const string ShortcutActionFocusRows = "focus_rows";
+    public const string ShortcutActionFocusInspector = "focus_inspector";
+    public const string ShortcutActionFocusAiInput = "focus_ai_input";
+    public const string ShortcutActionFocusModelFilter = "focus_model_filter";
+    public const string ShortcutActionClearAiChat = "clear_ai_chat";
+    public const string ShortcutActionApplyInspector = "apply_inspector";
+    public const string ShortcutActionApplyAndNext = "apply_and_next";
+    public const string ShortcutActionCopySource = "copy_source";
+    public const string ShortcutActionToggleLock = "toggle_lock";
+    public const string ShortcutActionMarkValidated = "mark_validated";
+    public const string ShortcutActionNextPending = "next_pending";
+    public const string ShortcutActionPreviousPending = "previous_pending";
+    public const string ShortcutActionShowShortcutHelp = "show_shortcut_help";
     private static readonly string[] SupportedLanguageValues =
     [
         LanguageEnglish,
@@ -61,6 +80,176 @@ public partial class MainViewModel : ObservableObject
         new("EUC-KR", "euc-kr"),
         new("Big5", "big5")
     ];
+    private static readonly ShortcutActionDefinition[] ShortcutActionDefinitions =
+    [
+        new(
+            ShortcutActionOpenWorkspace,
+            "Ctrl+O",
+            "ShortcutGroup.File",
+            "File",
+            "ShortcutHelp.Open",
+            "Open plugin and load workspace",
+            "Shortcut.Open",
+            "{0} Open"),
+        new(
+            ShortcutActionSaveWorkspace,
+            "Ctrl+S",
+            "ShortcutGroup.File",
+            "File",
+            "ShortcutHelp.Save",
+            "Save current workspace",
+            "Shortcut.Save",
+            "{0} Save"),
+        new(
+            ShortcutActionRunBatchTranslation,
+            "Ctrl+Shift+T",
+            "ShortcutGroup.Translate",
+            "Translate",
+            "ShortcutHelp.BatchTranslate",
+            "Run batch translation via selected model",
+            "Shortcut.AiBatch",
+            "{0} AI Batch"),
+        new(
+            ShortcutActionRefreshWorkspace,
+            "Ctrl+R",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.Refresh",
+            "Reload metadata and workspace settings",
+            null,
+            null),
+        new(
+            ShortcutActionFocusSearch,
+            "Ctrl+F",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.FocusSearch",
+            "Focus search box",
+            "Shortcut.Search",
+            "{0} Search"),
+        new(
+            ShortcutActionFocusRows,
+            "Ctrl+G",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.FocusRows",
+            "Focus translation rows list",
+            "Shortcut.FocusRows",
+            "{0} Rows"),
+        new(
+            ShortcutActionFocusInspector,
+            "Ctrl+I",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.FocusInspector",
+            "Focus inspector translation editor",
+            "Shortcut.FocusInspector",
+            "{0} Inspector"),
+        new(
+            ShortcutActionFocusAiInput,
+            "Ctrl+K",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.FocusAiInput",
+            "Focus AI chat input",
+            "Shortcut.FocusAiInput",
+            "{0} Copilot"),
+        new(
+            ShortcutActionFocusModelFilter,
+            "Ctrl+Shift+F",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.FocusModel",
+            "Focus model filter",
+            "Shortcut.FocusModel",
+            "{0} Model"),
+        new(
+            ShortcutActionClearAiChat,
+            "Ctrl+Shift+K",
+            "ShortcutGroup.Editing",
+            "Editing",
+            "ShortcutHelp.ClearAiChat",
+            "Clear Copilot conversation history",
+            "Shortcut.ClearAiChat",
+            "{0} Clear Copilot"),
+        new(
+            ShortcutActionApplyInspector,
+            "Ctrl+Enter",
+            "ShortcutGroup.Editing",
+            "Editing",
+            "ShortcutHelp.ApplyInspector",
+            "Apply inspector translation to current row",
+            "Shortcut.Apply",
+            "{0} Apply"),
+        new(
+            ShortcutActionApplyAndNext,
+            "Ctrl+Shift+Enter",
+            "ShortcutGroup.Editing",
+            "Editing",
+            "ShortcutHelp.ApplyAndNext",
+            "Apply and jump to next pending row",
+            "Shortcut.ApplyNext",
+            "{0} Apply+Next"),
+        new(
+            ShortcutActionCopySource,
+            "Ctrl+Shift+C",
+            "ShortcutGroup.Editing",
+            "Editing",
+            "ShortcutHelp.CopySource",
+            "Copy source text into translation box",
+            "Shortcut.CopySource",
+            "{0} CopySource"),
+        new(
+            ShortcutActionToggleLock,
+            "Ctrl+L",
+            "ShortcutGroup.Editing",
+            "Editing",
+            "ShortcutHelp.ToggleLock",
+            "Toggle lock state for selected row",
+            "Shortcut.ToggleLock",
+            "{0} Lock"),
+        new(
+            ShortcutActionMarkValidated,
+            "Ctrl+M",
+            "ShortcutGroup.Editing",
+            "Editing",
+            "ShortcutHelp.MarkValidated",
+            "Mark selected row as validated",
+            "Shortcut.Validate",
+            "{0} Validate"),
+        new(
+            ShortcutActionNextPending,
+            "F8",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.NextPending",
+            "Select next pending row",
+            "Shortcut.NextPending",
+            "{0} NextPending"),
+        new(
+            ShortcutActionPreviousPending,
+            "Shift+F8",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.PreviousPending",
+            "Select previous pending row",
+            "Shortcut.PrevPending",
+            "{0} PrevPending"),
+        new(
+            ShortcutActionShowShortcutHelp,
+            "F1",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.ShowHelp",
+            "Open this keyboard shortcut help",
+            "Shortcut.Help",
+            "{0} Help")
+    ];
+    private static readonly IReadOnlyDictionary<string, ShortcutActionDefinition> ShortcutActionDefinitionMap =
+        ShortcutActionDefinitions.ToDictionary(
+            static definition => definition.ActionId,
+            static definition => definition,
+            StringComparer.OrdinalIgnoreCase);
 
     private readonly IEnumerable<ITranslationProvider> _providers;
     private readonly IStringsCodec _stringsCodec;
@@ -78,6 +267,7 @@ public partial class MainViewModel : ObservableObject
     private readonly List<TranslationRowViewModel> _allRows = [];
     private readonly Dictionary<TranslationRowViewModel, StringsEntryBinding> _stringEntryBindings = new();
     private readonly Dictionary<TranslationRowViewModel, TranslationItem> _recordItemBindings = new();
+    private readonly Dictionary<string, string> _shortcutGestureOverrides = new(StringComparer.OrdinalIgnoreCase);
     private PluginDocument? _currentDocument;
     private Encoding _activeEncoding = Encoding.UTF8;
     private string _activeEncodingDisplay = $"{DefaultEncodingDisplayName} (Auto)";
@@ -353,6 +543,7 @@ public partial class MainViewModel : ObservableObject
     public async Task RefreshAsync()
     {
         LoadProviders();
+        await LoadShortcutMappingsAsync().ConfigureAwait(false);
         await LoadWorkspaceSettingsAsync().ConfigureAwait(false);
         await LoadPluginSwitcherStateAsync().ConfigureAwait(false);
         await LoadPersistedProviderSettingsAsync().ConfigureAwait(false);
@@ -858,6 +1049,7 @@ public partial class MainViewModel : ObservableObject
         RefreshProviderModelOptions();
         SelectedProviderOption = ProviderOptions.FirstOrDefault();
         UpdateProviderChainPreview();
+        UpdateKeyboardShortcutHint();
     }
 
     private void RebuildRowsFromDocument(PluginDocument document)
@@ -1117,34 +1309,35 @@ public partial class MainViewModel : ObservableObject
     {
         var hints = new List<string>
         {
-            L("Shortcut.Open", "Ctrl+O Open"),
-            L("Shortcut.Save", "Ctrl+S Save"),
-            L("Shortcut.AiBatch", "Ctrl+Shift+T AI Batch"),
-            L("Shortcut.Search", "Ctrl+F Search"),
-            L("Shortcut.FocusRows", "Ctrl+G Rows"),
-            L("Shortcut.FocusAiInput", "Ctrl+K Copilot"),
-            L("Shortcut.Help", "F1 Help")
+            BuildShortcutHint("Shortcut.Open", "{0} Open", ShortcutActionOpenWorkspace),
+            BuildShortcutHint("Shortcut.Save", "{0} Save", ShortcutActionSaveWorkspace),
+            BuildShortcutHint("Shortcut.AiBatch", "{0} AI Batch", ShortcutActionRunBatchTranslation),
+            BuildShortcutHint("Shortcut.Search", "{0} Search", ShortcutActionFocusSearch),
+            BuildShortcutHint("Shortcut.FocusRows", "{0} Rows", ShortcutActionFocusRows),
+            BuildShortcutHint("Shortcut.FocusAiInput", "{0} Copilot", ShortcutActionFocusAiInput),
+            BuildShortcutHint("Shortcut.ClearAiChat", "{0} Clear Copilot", ShortcutActionClearAiChat),
+            BuildShortcutHint("Shortcut.Help", "{0} Help", ShortcutActionShowShortcutHelp)
         };
 
         if (SelectedRow is not null)
         {
-            hints.Add(L("Shortcut.FocusInspector", "Ctrl+I Inspector"));
-            hints.Add(L("Shortcut.Apply", "Ctrl+Enter Apply"));
-            hints.Add(L("Shortcut.ApplyNext", "Ctrl+Shift+Enter Apply+Next"));
-            hints.Add(L("Shortcut.CopySource", "Ctrl+Shift+C CopySource"));
-            hints.Add(L("Shortcut.ToggleLock", "Ctrl+L Lock"));
-            hints.Add(L("Shortcut.Validate", "Ctrl+M Validate"));
+            hints.Add(BuildShortcutHint("Shortcut.FocusInspector", "{0} Inspector", ShortcutActionFocusInspector));
+            hints.Add(BuildShortcutHint("Shortcut.Apply", "{0} Apply", ShortcutActionApplyInspector));
+            hints.Add(BuildShortcutHint("Shortcut.ApplyNext", "{0} Apply+Next", ShortcutActionApplyAndNext));
+            hints.Add(BuildShortcutHint("Shortcut.CopySource", "{0} CopySource", ShortcutActionCopySource));
+            hints.Add(BuildShortcutHint("Shortcut.ToggleLock", "{0} Lock", ShortcutActionToggleLock));
+            hints.Add(BuildShortcutHint("Shortcut.Validate", "{0} Validate", ShortcutActionMarkValidated));
         }
 
         if (ProviderOptions.Count > 0)
         {
-            hints.Add(L("Shortcut.FocusModel", "Ctrl+Shift+M Model"));
+            hints.Add(BuildShortcutHint("Shortcut.FocusModel", "{0} Model", ShortcutActionFocusModelFilter));
         }
 
         if (_allRows.Any(static row => !row.IsLocked && row.IsUntranslated))
         {
-            hints.Add(L("Shortcut.NextPending", "F8 NextPending"));
-            hints.Add(L("Shortcut.PrevPending", "Shift+F8 PrevPending"));
+            hints.Add(BuildShortcutHint("Shortcut.NextPending", "{0} NextPending", ShortcutActionNextPending));
+            hints.Add(BuildShortcutHint("Shortcut.PrevPending", "{0} PrevPending", ShortcutActionPreviousPending));
         }
 
         KeyboardShortcutHint = string.Join("  |  ", hints);
@@ -1152,85 +1345,165 @@ public partial class MainViewModel : ObservableObject
 
     public IReadOnlyList<ShortcutHelpItem> GetShortcutHelpItems()
     {
-        return
-        [
-            new(
-                L("ShortcutGroup.File", "File"),
-                "Ctrl+O",
-                L("ShortcutHelp.Open", "Open plugin and load workspace")),
-            new(
-                L("ShortcutGroup.File", "File"),
-                "Ctrl+S",
-                L("ShortcutHelp.Save", "Save current workspace")),
-            new(
-                L("ShortcutGroup.Translate", "Translate"),
-                "Ctrl+Shift+T",
-                L("ShortcutHelp.BatchTranslate", "Run batch translation via selected model")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "Ctrl+R",
-                L("ShortcutHelp.Refresh", "Reload metadata and workspace settings")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "Ctrl+F",
-                L("ShortcutHelp.FocusSearch", "Focus search box")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "Ctrl+G",
-                L("ShortcutHelp.FocusRows", "Focus translation rows list")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "Ctrl+I",
-                L("ShortcutHelp.FocusInspector", "Focus inspector translation editor")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "Ctrl+K",
-                L("ShortcutHelp.FocusAiInput", "Focus AI chat input")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "Ctrl+Shift+M",
-                L("ShortcutHelp.FocusModel", "Focus model selector")),
-            new(
-                L("ShortcutGroup.Editing", "Editing"),
-                "Ctrl+Enter",
-                L("ShortcutHelp.ApplyInspector", "Apply inspector translation to current row")),
-            new(
-                L("ShortcutGroup.Editing", "Editing"),
-                "Ctrl+Shift+Enter",
-                L("ShortcutHelp.ApplyAndNext", "Apply and jump to next pending row")),
-            new(
-                L("ShortcutGroup.Editing", "Editing"),
-                "Ctrl+Shift+C",
-                L("ShortcutHelp.CopySource", "Copy source text into translation box")),
-            new(
-                L("ShortcutGroup.Editing", "Editing"),
-                "Ctrl+L",
-                L("ShortcutHelp.ToggleLock", "Toggle lock state for selected row")),
-            new(
-                L("ShortcutGroup.Editing", "Editing"),
-                "Ctrl+M",
-                L("ShortcutHelp.MarkValidated", "Mark selected row as validated")),
-            new(
-                L("ShortcutGroup.Editing", "Editing"),
-                "Enter (in AI input)",
-                L("ShortcutHelp.AiSend", "Send message from AI input")),
-            new(
-                L("ShortcutGroup.Editing", "Editing"),
-                "Shift+Enter (in AI input)",
-                L("ShortcutHelp.AiNewLine", "Insert new line in AI input")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "F8",
-                L("ShortcutHelp.NextPending", "Select next pending row")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "Shift+F8",
-                L("ShortcutHelp.PreviousPending", "Select previous pending row")),
-            new(
-                L("ShortcutGroup.Navigation", "Navigation"),
-                "F1",
-                L("ShortcutHelp.ShowHelp", "Open this keyboard shortcut help"))
-        ];
+        var items = ShortcutActionDefinitions
+            .Select(definition => new ShortcutHelpItem(
+                L(definition.GroupKey, definition.GroupFallback),
+                GetShortcutGesture(definition.ActionId),
+                L(definition.DescriptionKey, definition.DescriptionFallback)))
+            .ToList();
+
+        items.Add(new ShortcutHelpItem(
+            L("ShortcutGroup.Editing", "Editing"),
+            "Enter (in AI input)",
+            L("ShortcutHelp.AiSend", "Send message from AI input")));
+        items.Add(new ShortcutHelpItem(
+            L("ShortcutGroup.Editing", "Editing"),
+            "Shift+Enter (in AI input)",
+            L("ShortcutHelp.AiNewLine", "Insert new line in AI input")));
+        return items;
+    }
+
+    public IReadOnlyList<ShortcutBindingItem> GetShortcutBindingItems()
+    {
+        return ShortcutActionDefinitions
+            .Select(definition => new ShortcutBindingItem(
+                definition.ActionId,
+                L(definition.GroupKey, definition.GroupFallback),
+                GetShortcutGesture(definition.ActionId),
+                L(definition.DescriptionKey, definition.DescriptionFallback)))
+            .ToList();
+    }
+
+    public IReadOnlyDictionary<string, string> GetDefaultShortcutMappings()
+    {
+        return ShortcutActionDefinitions.ToDictionary(
+            static definition => definition.ActionId,
+            static definition => definition.DefaultGesture,
+            StringComparer.OrdinalIgnoreCase);
+    }
+
+    public IReadOnlyDictionary<string, string> GetEffectiveShortcutMappings()
+    {
+        return ShortcutActionDefinitions.ToDictionary(
+            static definition => definition.ActionId,
+            definition => GetShortcutGesture(definition.ActionId),
+            StringComparer.OrdinalIgnoreCase);
+    }
+
+    public string GetShortcutGesture(string actionId)
+    {
+        if (!ShortcutActionDefinitionMap.TryGetValue(actionId, out var definition))
+        {
+            return string.Empty;
+        }
+
+        if (_shortcutGestureOverrides.TryGetValue(actionId, out var overrideGesture)
+            && !string.IsNullOrWhiteSpace(overrideGesture))
+        {
+            return overrideGesture;
+        }
+
+        return definition.DefaultGesture;
+    }
+
+    public async Task SaveShortcutMappingsAsync(IReadOnlyDictionary<string, string> mappings)
+    {
+        _shortcutGestureOverrides.Clear();
+        foreach (var definition in ShortcutActionDefinitions)
+        {
+            if (!mappings.TryGetValue(definition.ActionId, out var gesture))
+            {
+                continue;
+            }
+
+            var normalized = gesture.Trim();
+            if (string.IsNullOrWhiteSpace(normalized))
+            {
+                continue;
+            }
+
+            if (!string.Equals(normalized, definition.DefaultGesture, StringComparison.OrdinalIgnoreCase))
+            {
+                _shortcutGestureOverrides[definition.ActionId] = normalized;
+            }
+        }
+
+        await PersistShortcutMappingsAsync().ConfigureAwait(false);
+        UpdateKeyboardShortcutHint();
+    }
+
+    public async Task ResetShortcutMappingsAsync()
+    {
+        _shortcutGestureOverrides.Clear();
+        await PersistShortcutMappingsAsync().ConfigureAwait(false);
+        UpdateKeyboardShortcutHint();
+    }
+
+    private string BuildShortcutHint(string resourceKey, string fallbackTemplate, string actionId)
+    {
+        return Lf(resourceKey, fallbackTemplate, GetShortcutGesture(actionId));
+    }
+
+    private async Task LoadShortcutMappingsAsync()
+    {
+        _shortcutGestureOverrides.Clear();
+        var raw = await _settingsStore.GetAsync(ShortcutMappingsSettingKey).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            UpdateKeyboardShortcutHint();
+            return;
+        }
+
+        try
+        {
+            var snapshot = JsonSerializer.Deserialize<Dictionary<string, string>>(raw);
+            if (snapshot is null)
+            {
+                UpdateKeyboardShortcutHint();
+                return;
+            }
+
+            foreach (var pair in snapshot)
+            {
+                if (!ShortcutActionDefinitionMap.TryGetValue(pair.Key, out var definition))
+                {
+                    continue;
+                }
+
+                var normalized = pair.Value?.Trim();
+                if (string.IsNullOrWhiteSpace(normalized))
+                {
+                    continue;
+                }
+
+                if (!string.Equals(normalized, definition.DefaultGesture, StringComparison.OrdinalIgnoreCase))
+                {
+                    _shortcutGestureOverrides[definition.ActionId] = normalized;
+                }
+            }
+        }
+        catch
+        {
+            // Ignore malformed shortcut mappings and keep defaults.
+        }
+
+        UpdateKeyboardShortcutHint();
+    }
+
+    private async Task PersistShortcutMappingsAsync()
+    {
+        var snapshot = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var definition in ShortcutActionDefinitions)
+        {
+            if (_shortcutGestureOverrides.TryGetValue(definition.ActionId, out var overrideGesture)
+                && !string.IsNullOrWhiteSpace(overrideGesture))
+            {
+                snapshot[definition.ActionId] = overrideGesture;
+            }
+        }
+
+        var json = JsonSerializer.Serialize(snapshot);
+        await _settingsStore.SetAsync(ShortcutMappingsSettingKey, json).ConfigureAwait(false);
     }
 
     private async Task ApplyUiLanguageSelectionAsync(string languageTag)
@@ -2149,6 +2422,16 @@ public partial class MainViewModel : ObservableObject
     }
 
     public readonly record struct ShortcutHelpItem(string Group, string Gesture, string Description);
+    public readonly record struct ShortcutBindingItem(string ActionId, string Group, string Gesture, string Description);
+    private readonly record struct ShortcutActionDefinition(
+        string ActionId,
+        string DefaultGesture,
+        string GroupKey,
+        string GroupFallback,
+        string DescriptionKey,
+        string DescriptionFallback,
+        string? HintKey,
+        string? HintFallback);
 
     private readonly record struct EncodingChoice(string DisplayName, string CodePageName);
 }
