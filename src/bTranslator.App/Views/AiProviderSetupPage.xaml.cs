@@ -17,4 +17,6 @@ public sealed partial class AiProviderSetupPage : Page
     }
 
     public MainViewModel? ViewModel { get; }
+
+    public FrameworkElement TitleBarDragRegion => AiSetupTitleBarHost;
 }

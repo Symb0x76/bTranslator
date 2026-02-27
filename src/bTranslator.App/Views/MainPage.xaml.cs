@@ -3,8 +3,10 @@ using bTranslator.App.ViewModels;
 using System.ComponentModel;
 using System.Globalization;
 using Microsoft.UI.Input;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
+using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.System;
 using Windows.Storage.Pickers;
@@ -16,6 +18,10 @@ public partial class MainPage : Page
 {
     private const double MinAiDrawerHeight = 200d;
     private const double MaxAiDrawerHeight = 620d;
+    private const int AiSetupPreferredWidth = 1220;
+    private const int AiSetupPreferredHeight = 860;
+    private const int AiSetupMinWidth = 960;
+    private const int AiSetupMinHeight = 680;
 
     private Window? _aiProviderSetupWindow;
     private Window? _providerConfigurationWindow;
@@ -607,6 +613,18 @@ public partial class MainPage : Page
             if (Microsoft.UI.Xaml.Application.Current is App app && app.MainWindow is not null)
             {
                 app.MainWindow.Title = ViewModel.Ui.AppWindowTitle;
+            }
+            if (_providerConfigurationWindow is not null)
+            {
+                _providerConfigurationWindow.Title = ViewModel.GetLocalizedString(
+                    "WindowTitle.ProviderConfiguration",
+                    "Provider Configuration");
+            }
+            if (_aiProviderSetupWindow is not null)
+            {
+                _aiProviderSetupWindow.Title = ViewModel.GetLocalizedString(
+                    "WindowTitle.AiProviderSetup",
+                    "AI Token / API Setup");
             }
 
             SetAiDrawerExpanded(_isAiDrawerExpanded);
@@ -1284,13 +1302,46 @@ public partial class MainPage : Page
             return;
         }
 
+        var aiSetupPage = new AiProviderSetupPage(ViewModel);
         _aiProviderSetupWindow = new Window
         {
             Title = ViewModel.GetLocalizedString("WindowTitle.AiProviderSetup", "AI Token / API Setup"),
-            Content = new AiProviderSetupPage(ViewModel)
+            Content = aiSetupPage
         };
         _aiProviderSetupWindow.Closed += (_, _) => _aiProviderSetupWindow = null;
         _aiProviderSetupWindow.Activate();
+        ConfigureAiProviderSetupWindow(_aiProviderSetupWindow, aiSetupPage);
+    }
+
+    private static void ConfigureAiProviderSetupWindow(Window window, AiProviderSetupPage page)
+    {
+        window.ExtendsContentIntoTitleBar = true;
+        window.SetTitleBar(page.TitleBarDragRegion);
+
+        var hwnd = WindowNative.GetWindowHandle(window);
+        if (hwnd == IntPtr.Zero)
+        {
+            return;
+        }
+
+        var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
+        var appWindow = AppWindow.GetFromWindowId(windowId);
+        if (appWindow.Presenter is OverlappedPresenter presenter)
+        {
+            presenter.Restore();
+            presenter.IsResizable = true;
+            presenter.IsMinimizable = true;
+            presenter.IsMaximizable = true;
+            presenter.PreferredMinimumWidth = AiSetupMinWidth;
+            presenter.PreferredMinimumHeight = AiSetupMinHeight;
+        }
+
+        var workArea = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary).WorkArea;
+        var targetWidth = Math.Min(AiSetupPreferredWidth, workArea.Width);
+        var targetHeight = Math.Min(AiSetupPreferredHeight, workArea.Height);
+        var targetX = workArea.X + Math.Max(0, (workArea.Width - targetWidth) / 2);
+        var targetY = workArea.Y + Math.Max(0, (workArea.Height - targetHeight) / 2);
+        appWindow.MoveAndResize(new RectInt32(targetX, targetY, targetWidth, targetHeight));
     }
 
     private async Task OpenPluginAndWorkspaceAsync()

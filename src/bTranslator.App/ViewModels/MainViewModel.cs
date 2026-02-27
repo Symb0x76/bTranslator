@@ -31,6 +31,7 @@ public partial class MainViewModel : ObservableObject
     private const string LanguageJapanese = "japanese";
     private const string LanguageKorean = "korean";
     private const string ListFilterAll = "all";
+    private const string ListFilterValidText = "valid_text";
     private const string ListFilterStrings = "strings";
     private const string ListFilterDlStrings = "dlstrings";
     private const string ListFilterIlStrings = "ilstrings";
@@ -71,6 +72,7 @@ public partial class MainViewModel : ObservableObject
     private static readonly string[] SupportedListFilterValues =
     [
         ListFilterAll,
+        ListFilterValidText,
         ListFilterStrings,
         ListFilterDlStrings,
         ListFilterIlStrings,
@@ -1202,7 +1204,12 @@ public partial class MainViewModel : ObservableObject
     {
         var filtered = _allRows.Where(static _ => true);
 
-        if (!string.Equals(SelectedListFilter, ListFilterAll, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(SelectedListFilter, ListFilterValidText, StringComparison.OrdinalIgnoreCase))
+        {
+            filtered = filtered.Where(static row =>
+                ContainsLegalCharacter(row.SourceText) || ContainsLegalCharacter(row.TranslatedText));
+        }
+        else if (!string.Equals(SelectedListFilter, ListFilterAll, StringComparison.OrdinalIgnoreCase))
         {
             filtered = filtered.Where(row =>
                 string.Equals(row.ListKind, SelectedListFilter, StringComparison.OrdinalIgnoreCase));
@@ -1814,6 +1821,7 @@ public partial class MainViewModel : ObservableObject
         return value switch
         {
             ListFilterAll => L("ListFilter.All", "All"),
+            ListFilterValidText => L("ListFilter.ValidText", "Valid Text"),
             ListFilterStrings => L("ListFilter.Strings", "STRINGS"),
             ListFilterDlStrings => L("ListFilter.DlStrings", "DLSTRINGS"),
             ListFilterIlStrings => L("ListFilter.IlStrings", "ILSTRINGS"),
@@ -1871,12 +1879,43 @@ public partial class MainViewModel : ObservableObject
         return listFilter.Trim().ToUpperInvariant() switch
         {
             "ALL" => ListFilterAll,
+            "VALID" => ListFilterValidText,
+            "VALIDTEXT" => ListFilterValidText,
+            "VALID_TEXT" => ListFilterValidText,
             "STRINGS" => ListFilterStrings,
             "DLSTRINGS" => ListFilterDlStrings,
             "ILSTRINGS" => ListFilterIlStrings,
             "RECORD" => ListFilterRecord,
             _ => ListFilterAll
         };
+    }
+
+    private static bool ContainsLegalCharacter(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        foreach (var ch in text)
+        {
+            if (ch == '\uFFFD' || ch == '\0')
+            {
+                continue;
+            }
+
+            if (char.IsControl(ch) && ch is not '\r' and not '\n' and not '\t')
+            {
+                continue;
+            }
+
+            if (char.IsLetterOrDigit(ch) || char.IsPunctuation(ch) || char.IsSymbol(ch))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static string NormalizeEncodingModeValue(string? encodingMode)
