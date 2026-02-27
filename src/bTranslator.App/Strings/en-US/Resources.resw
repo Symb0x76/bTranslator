@@ -6,6 +6,9 @@
   <data name="WindowTitle.ProviderConfiguration" xml:space="preserve">
     <value>Provider Configuration</value>
   </data>
+  <data name="WindowTitle.AiProviderSetup" xml:space="preserve">
+    <value>AI Token / API Setup</value>
+  </data>
   <data name="UiLanguage.SystemDefault" xml:space="preserve">
     <value>System default</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Status.UiLanguageChangedRestart" xml:space="preserve">
     <value>UI language switched to '{0}'. Restart the app to apply all texts.</value>
+  </data>
+  <data name="Status.ThemeChanged" xml:space="preserve">
+    <value>Theme switched to '{0}'.</value>
   </data>
   <data name="Status.FilePickerUnavailable" xml:space="preserve">
     <value>Cannot open file picker: main window handle unavailable.</value>
@@ -348,6 +354,9 @@
   <data name="Shortcut.Search" xml:space="preserve">
     <value>{0} Search</value>
   </data>
+  <data name="Shortcut.ToggleTheme" xml:space="preserve">
+    <value>{0} Theme</value>
+  </data>
   <data name="Shortcut.FocusRows" xml:space="preserve">
     <value>{0} Rows</value>
   </data>
@@ -428,6 +437,9 @@
   </data>
   <data name="ShortcutHelp.FocusSearch" xml:space="preserve">
     <value>Focus search box</value>
+  </data>
+  <data name="ShortcutHelp.ToggleTheme" xml:space="preserve">
+    <value>Toggle app theme (dark/light)</value>
   </data>
   <data name="ShortcutHelp.FocusRows" xml:space="preserve">
     <value>Focus translation rows list</value>
@@ -684,6 +696,12 @@
   <data name="ProviderConfigImportButton.Content" xml:space="preserve">
     <value>Import ApiTranslator.txt</value>
   </data>
+  <data name="AiProviderSetupPageTitle.Text" xml:space="preserve">
+    <value>AI Token / API Setup</value>
+  </data>
+  <data name="AiProviderSetupHint.Text" xml:space="preserve">
+    <value>Select a model provider and fill API credentials used by Copilot and AI batch translation.</value>
+  </data>
   <data name="Status.UiLanguageChanged" xml:space="preserve">
     <value>UI language switched to '{0}'.</value>
   </data>
@@ -773,6 +791,9 @@
   </data>
   <data name="Menu.OpenConfigurationWindow" xml:space="preserve">
     <value>Open Configuration Window</value>
+  </data>
+  <data name="Menu.OpenAiProviderSetupWindow" xml:space="preserve">
+    <value>Open AI Token/API Setup</value>
   </data>
   <data name="Menu.SaveSelectedProvider" xml:space="preserve">
     <value>Save Selected Provider</value>
@@ -929,6 +950,15 @@
   </data>
   <data name="Menu.Filter" xml:space="preserve">
     <value>Filter</value>
+  </data>
+  <data name="Menu.Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Theme.Dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Theme.Light" xml:space="preserve">
+    <value>Light</value>
   </data>
   <data name="Menu.ShowLockedRows" xml:space="preserve">
     <value>Show Locked Rows</value>

@@ -6,6 +6,9 @@
   <data name="WindowTitle.ProviderConfiguration" xml:space="preserve">
     <value>Provider 配置</value>
   </data>
+  <data name="WindowTitle.AiProviderSetup" xml:space="preserve">
+    <value>AI Token / API 配置</value>
+  </data>
   <data name="UiLanguage.SystemDefault" xml:space="preserve">
     <value>跟随系统</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Status.UiLanguageChangedRestart" xml:space="preserve">
     <value>UI 语言已切换为“{0}”，重启应用后可完整生效。</value>
+  </data>
+  <data name="Status.ThemeChanged" xml:space="preserve">
+    <value>主题已切换为“{0}”。</value>
   </data>
   <data name="Status.FilePickerUnavailable" xml:space="preserve">
     <value>无法打开文件选择器：主窗口句柄不可用。</value>
@@ -348,6 +354,9 @@
   <data name="Shortcut.Search" xml:space="preserve">
     <value>{0} 搜索</value>
   </data>
+  <data name="Shortcut.ToggleTheme" xml:space="preserve">
+    <value>{0} 主题</value>
+  </data>
   <data name="Shortcut.FocusRows" xml:space="preserve">
     <value>{0} 行列表</value>
   </data>
@@ -428,6 +437,9 @@
   </data>
   <data name="ShortcutHelp.FocusSearch" xml:space="preserve">
     <value>聚焦到搜索框</value>
+  </data>
+  <data name="ShortcutHelp.ToggleTheme" xml:space="preserve">
+    <value>切换应用主题（深色/浅色）</value>
   </data>
   <data name="ShortcutHelp.FocusRows" xml:space="preserve">
     <value>聚焦到翻译行列表</value>
@@ -684,6 +696,12 @@
   <data name="ProviderConfigImportButton.Content" xml:space="preserve">
     <value>导入 ApiTranslator.txt</value>
   </data>
+  <data name="AiProviderSetupPageTitle.Text" xml:space="preserve">
+    <value>AI Token / API 配置</value>
+  </data>
+  <data name="AiProviderSetupHint.Text" xml:space="preserve">
+    <value>选择模型 Provider，并填写 Copilot 与批量 AI 翻译使用的 API 凭据。</value>
+  </data>
   <data name="Status.UiLanguageChanged" xml:space="preserve">
     <value>UI 语言已切换为“{0}”。</value>
   </data>
@@ -773,6 +791,9 @@
   </data>
   <data name="Menu.OpenConfigurationWindow" xml:space="preserve">
     <value>打开配置窗口</value>
+  </data>
+  <data name="Menu.OpenAiProviderSetupWindow" xml:space="preserve">
+    <value>打开 AI Token/API 配置</value>
   </data>
   <data name="Menu.SaveSelectedProvider" xml:space="preserve">
     <value>保存当前 Provider</value>
@@ -929,6 +950,15 @@
   </data>
   <data name="Menu.Filter" xml:space="preserve">
     <value>筛选</value>
+  </data>
+  <data name="Menu.Theme" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="Theme.Dark" xml:space="preserve">
+    <value>深色</value>
+  </data>
+  <data name="Theme.Light" xml:space="preserve">
+    <value>浅色</value>
   </data>
   <data name="Menu.ShowLockedRows" xml:space="preserve">
     <value>显示锁定行</value>

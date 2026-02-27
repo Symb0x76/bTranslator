@@ -45,6 +45,7 @@ public sealed class LocalizedUiText : ObservableObject
             [nameof(MenuDisableAll)] = ("Menu.DisableAll", "Disable All"),
             [nameof(MenuCurrentChain)] = ("Menu.CurrentChain", "Current Model"),
             [nameof(MenuConfiguration)] = ("Menu.Configuration", "Configuration"),
+            [nameof(MenuOpenAiProviderSetupWindow)] = ("Menu.OpenAiProviderSetupWindow", "Open AI Token/API Setup"),
             [nameof(MenuOpenConfigurationWindow)] = ("Menu.OpenConfigurationWindow", "Open Configuration Window"),
             [nameof(MenuSaveSelectedProvider)] = ("Menu.SaveSelectedProvider", "Save Selected Provider"),
             [nameof(MenuReloadSelectedProvider)] = ("Menu.ReloadSelectedProvider", "Reload Selected Provider"),
@@ -98,6 +99,7 @@ public sealed class LocalizedUiText : ObservableObject
             [nameof(DictionaryEditorPasteCancelButtonContent)] = ("DictionaryEditor.PasteCancelButton.Content", "Cancel"),
             [nameof(MenuRefreshWorkspace)] = ("Menu.RefreshWorkspace", "Refresh Workspace"),
             [nameof(MenuFilter)] = ("Menu.Filter", "Filter"),
+            [nameof(MenuTheme)] = ("Menu.Theme", "Theme"),
             [nameof(MenuShowLockedRows)] = ("Menu.ShowLockedRows", "Show Locked Rows"),
             [nameof(WorkspaceMenuUiLanguageText)] = ("WorkspaceMenuUiLanguage.Text", "UI Language"),
             [nameof(WorkspaceMenuGameText)] = ("WorkspaceMenuGame.Text", "Game"),
@@ -142,6 +144,8 @@ public sealed class LocalizedUiText : ObservableObject
             [nameof(AiCopilotSendButtonContent)] = ("AiCopilotSendButton.Content", "Send"),
             [nameof(AiCopilotClearButtonContent)] = ("AiCopilotClearButton.Content", "Clear"),
             [nameof(AiCopilotBusyText)] = ("AiCopilotBusy.Text", "Thinking..."),
+            [nameof(AiProviderSetupPageTitleText)] = ("AiProviderSetupPageTitle.Text", "AI Token / API Setup"),
+            [nameof(AiProviderSetupHintText)] = ("AiProviderSetupHint.Text", "Select a model provider and fill API credentials used by Copilot and AI batch translation."),
             [nameof(ProviderConfigPageTitleText)] = ("ProviderConfigPageTitle.Text", "Provider Configuration"),
             [nameof(ProviderConfigProviderBoxHeader)] = ("ProviderConfigProviderBox.Header", "Model"),
             [nameof(ProviderConfigSelectedProviderTitleText)] = ("ProviderConfigSelectedProviderTitle.Text", "Selected Provider"),
@@ -203,6 +207,7 @@ public sealed class LocalizedUiText : ObservableObject
     public string MenuDisableAll => Get();
     public string MenuCurrentChain => Get();
     public string MenuConfiguration => Get();
+    public string MenuOpenAiProviderSetupWindow => Get();
     public string MenuOpenConfigurationWindow => Get();
     public string MenuSaveSelectedProvider => Get();
     public string MenuReloadSelectedProvider => Get();
@@ -256,6 +261,7 @@ public sealed class LocalizedUiText : ObservableObject
     public string DictionaryEditorPasteCancelButtonContent => Get();
     public string MenuRefreshWorkspace => Get();
     public string MenuFilter => Get();
+    public string MenuTheme => Get();
     public string MenuShowLockedRows => Get();
     public string WorkspaceMenuUiLanguageText => Get();
     public string WorkspaceMenuGameText => Get();
@@ -300,6 +306,8 @@ public sealed class LocalizedUiText : ObservableObject
     public string AiCopilotSendButtonContent => Get();
     public string AiCopilotClearButtonContent => Get();
     public string AiCopilotBusyText => Get();
+    public string AiProviderSetupPageTitleText => Get();
+    public string AiProviderSetupHintText => Get();
     public string ProviderConfigPageTitleText => Get();
     public string ProviderConfigProviderBoxHeader => Get();
     public string ProviderConfigSelectedProviderTitleText => Get();

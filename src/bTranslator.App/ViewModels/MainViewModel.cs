@@ -20,8 +20,12 @@ public partial class MainViewModel : ObservableObject
     private const string WorkspaceEncodingModeKey = "workspace.encoding_mode";
     private const string WorkspaceEncodingNameKey = "workspace.encoding_name";
     private const string WorkspaceEncodingEffectiveKey = "workspace.encoding_effective";
+    private const string AiDrawerHeightKey = "ui.ai_drawer_height";
     private const string ShortcutMappingsSettingKey = "ui.shortcut_mappings.v1";
     private const string UiLanguageSettingKey = AppLocalizationService.UiLanguageSettingKey;
+    private const string UiThemeSettingKey = "ui.theme";
+    private const string ThemeDark = "dark";
+    private const string ThemeLight = "light";
     private const string LanguageEnglish = "english";
     private const string LanguageChineseSimplified = "chinese (simplified)";
     private const string LanguageJapanese = "japanese";
@@ -34,10 +38,14 @@ public partial class MainViewModel : ObservableObject
     private const string AutoEncodingMode = "auto";
     private const string ManualEncodingMode = "manual";
     private const string DefaultEncodingDisplayName = "UTF-8";
+    private const double DefaultAiDrawerHeight = 280d;
+    private const double MinAiDrawerHeight = 200d;
+    private const double MaxAiDrawerHeight = 620d;
     public const string ShortcutActionOpenWorkspace = "open_workspace";
     public const string ShortcutActionSaveWorkspace = "save_workspace";
     public const string ShortcutActionRunBatchTranslation = "run_batch_translation";
     public const string ShortcutActionRefreshWorkspace = "refresh_workspace";
+    public const string ShortcutActionToggleTheme = "toggle_theme";
     public const string ShortcutActionFocusSearch = "focus_search";
     public const string ShortcutActionFocusRows = "focus_rows";
     public const string ShortcutActionFocusInspector = "focus_inspector";
@@ -67,6 +75,12 @@ public partial class MainViewModel : ObservableObject
         ListFilterDlStrings,
         ListFilterIlStrings,
         ListFilterRecord
+    ];
+
+    private static readonly string[] SupportedThemeValues =
+    [
+        ThemeDark,
+        ThemeLight
     ];
 
     private static readonly EncodingChoice[] WorkspaceEncodingChoices =
@@ -118,6 +132,15 @@ public partial class MainViewModel : ObservableObject
             "Reload metadata and workspace settings",
             null,
             null),
+        new(
+            ShortcutActionToggleTheme,
+            "Ctrl+Shift+L",
+            "ShortcutGroup.Navigation",
+            "Navigation",
+            "ShortcutHelp.ToggleTheme",
+            "Toggle app theme (dark/light)",
+            "Shortcut.ToggleTheme",
+            "{0} Theme"),
         new(
             ShortcutActionFocusSearch,
             "Ctrl+F",
@@ -272,6 +295,7 @@ public partial class MainViewModel : ObservableObject
     private Encoding _activeEncoding = Encoding.UTF8;
     private string _activeEncodingDisplay = $"{DefaultEncodingDisplayName} (Auto)";
     private bool _isApplyingUiLanguage;
+    private bool _isApplyingTheme;
     private bool _isLoadingWorkspaceSettings;
     private TranslationRowViewModel.QualityLabelSet _rowQualityLabels = TranslationRowViewModel.QualityLabelSet.Default;
 
@@ -314,6 +338,7 @@ public partial class MainViewModel : ObservableObject
         AvailableLanguageOptions = new ObservableCollection<OptionItem>();
         ListFilterOptions = new ObservableCollection<OptionItem>();
         EncodingModeOptions = new ObservableCollection<OptionItem>();
+        ThemeOptions = new ObservableCollection<OptionItem>();
         AvailableEncodings = new ObservableCollection<string>(
             WorkspaceEncodingChoices.Select(static choice => choice.DisplayName));
 
@@ -366,6 +391,7 @@ public partial class MainViewModel : ObservableObject
     public ObservableCollection<UiLanguageOption> UiLanguages { get; }
     public ObservableCollection<string> EncodingModes { get; }
     public ObservableCollection<OptionItem> EncodingModeOptions { get; }
+    public ObservableCollection<OptionItem> ThemeOptions { get; }
     public ObservableCollection<string> AvailableEncodings { get; }
     public LocalizedUiText Ui { get; }
 
@@ -404,6 +430,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     public partial string SelectedUiLanguageTag { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string SelectedTheme { get; set; } = ThemeDark;
 
     [ObservableProperty]
     public partial int UiLanguageMenuVersion { get; set; }
@@ -480,6 +509,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     public partial string KeyboardShortcutHint { get; set; } = string.Empty;
 
+    [ObservableProperty]
+    public partial double AiDrawerHeight { get; set; } = DefaultAiDrawerHeight;
+
     private PluginSwitcherItemViewModel? _selectedPluginSwitcherItem;
 
     public PluginSwitcherItemViewModel? SelectedPluginSwitcherItem
@@ -499,6 +531,7 @@ public partial class MainViewModel : ObservableObject
     partial void OnShowUntranslatedOnlyChanged(bool value) => ApplyFilters();
     partial void OnShowLockedChanged(bool value) => ApplyFilters();
     partial void OnSelectedUiLanguageTagChanged(string value) => _ = ApplyUiLanguageSelectionAsync(value);
+    partial void OnSelectedThemeChanged(string value) => _ = ApplyThemeSelectionAsync(value);
     partial void OnPluginSwitcherSearchTextChanged(string value) => RefreshPluginSwitcherItems();
     partial void OnSelectedEncodingModeChanged(string value)
     {
@@ -544,6 +577,7 @@ public partial class MainViewModel : ObservableObject
     {
         LoadProviders();
         await LoadShortcutMappingsAsync().ConfigureAwait(false);
+        await LoadAiDrawerHeightAsync().ConfigureAwait(false);
         await LoadWorkspaceSettingsAsync().ConfigureAwait(false);
         await LoadPluginSwitcherStateAsync().ConfigureAwait(false);
         await LoadPersistedProviderSettingsAsync().ConfigureAwait(false);
@@ -976,6 +1010,9 @@ public partial class MainViewModel : ObservableObject
                 }
             }
 
+            var selectedTheme = await _settingsStore.GetAsync(UiThemeSettingKey).ConfigureAwait(false);
+            SelectedTheme = NormalizeThemeValue(selectedTheme);
+
             var game = await _settingsStore.GetAsync("workspace.game").ConfigureAwait(false);
             if (!string.IsNullOrWhiteSpace(game) && Games.Contains(game))
             {
@@ -1313,6 +1350,7 @@ public partial class MainViewModel : ObservableObject
             BuildShortcutHint("Shortcut.Save", "{0} Save", ShortcutActionSaveWorkspace),
             BuildShortcutHint("Shortcut.AiBatch", "{0} AI Batch", ShortcutActionRunBatchTranslation),
             BuildShortcutHint("Shortcut.Search", "{0} Search", ShortcutActionFocusSearch),
+            BuildShortcutHint("Shortcut.ToggleTheme", "{0} Theme", ShortcutActionToggleTheme),
             BuildShortcutHint("Shortcut.FocusRows", "{0} Rows", ShortcutActionFocusRows),
             BuildShortcutHint("Shortcut.FocusAiInput", "{0} Copilot", ShortcutActionFocusAiInput),
             BuildShortcutHint("Shortcut.ClearAiChat", "{0} Clear Copilot", ShortcutActionClearAiChat),
@@ -1506,6 +1544,42 @@ public partial class MainViewModel : ObservableObject
         await _settingsStore.SetAsync(ShortcutMappingsSettingKey, json).ConfigureAwait(false);
     }
 
+    private async Task LoadAiDrawerHeightAsync()
+    {
+        var raw = await _settingsStore.GetAsync(AiDrawerHeightKey).ConfigureAwait(false);
+        if (!double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
+        {
+            AiDrawerHeight = DefaultAiDrawerHeight;
+            return;
+        }
+
+        AiDrawerHeight = ClampAiDrawerHeight(parsed);
+    }
+
+    public async Task SaveAiDrawerHeightAsync(double height)
+    {
+        var normalized = ClampAiDrawerHeight(height);
+        AiDrawerHeight = normalized;
+        await _settingsStore.SetAsync(
+            AiDrawerHeightKey,
+            normalized.ToString(CultureInfo.InvariantCulture)).ConfigureAwait(false);
+    }
+
+    private static double ClampAiDrawerHeight(double height)
+    {
+        return Math.Clamp(height, MinAiDrawerHeight, MaxAiDrawerHeight);
+    }
+
+    public void ToggleThemeShortcut()
+    {
+        SelectedTheme = string.Equals(
+            NormalizeThemeValue(SelectedTheme),
+            ThemeDark,
+            StringComparison.Ordinal)
+            ? ThemeLight
+            : ThemeDark;
+    }
+
     private async Task ApplyUiLanguageSelectionAsync(string languageTag)
     {
         if (_isApplyingUiLanguage)
@@ -1558,6 +1632,48 @@ public partial class MainViewModel : ObservableObject
             "Status.UiLanguageChanged",
             "UI language switched to '{0}'.",
             languageLabel);
+        AddLog(StatusText);
+    }
+
+    private async Task ApplyThemeSelectionAsync(string themeValue)
+    {
+        if (_isApplyingTheme)
+        {
+            return;
+        }
+
+        var normalizedTheme = NormalizeThemeValue(themeValue);
+        if (!string.Equals(themeValue, normalizedTheme, StringComparison.Ordinal))
+        {
+            _isApplyingTheme = true;
+            SelectedTheme = normalizedTheme;
+            _isApplyingTheme = false;
+            return;
+        }
+
+        if (Microsoft.UI.Xaml.Application.Current is bTranslator.App.App app)
+        {
+            app.ApplyTheme(normalizedTheme);
+        }
+
+        if (_isLoadingWorkspaceSettings)
+        {
+            return;
+        }
+
+        await _settingsStore.SetAsync(UiThemeSettingKey, normalizedTheme).ConfigureAwait(false);
+
+        var themeLabel = ThemeOptions.FirstOrDefault(option =>
+            string.Equals(option.Value, normalizedTheme, StringComparison.OrdinalIgnoreCase))?.DisplayName;
+        if (string.IsNullOrWhiteSpace(themeLabel))
+        {
+            themeLabel = normalizedTheme;
+        }
+
+        StatusText = Lf(
+            "Status.ThemeChanged",
+            "Theme switched to '{0}'.",
+            themeLabel);
         AddLog(StatusText);
     }
 
@@ -1638,11 +1754,15 @@ public partial class MainViewModel : ObservableObject
         ReplaceOptionItems(
             EncodingModeOptions,
             EncodingModes.Select(value => new OptionItem(value, ResolveEncodingModeDisplayName(value))));
+        ReplaceOptionItems(
+            ThemeOptions,
+            SupportedThemeValues.Select(value => new OptionItem(value, ResolveThemeDisplayName(value))));
 
         SourceLanguage = NormalizeLanguageValue(SourceLanguage);
         TargetLanguage = NormalizeLanguageValue(TargetLanguage);
         SelectedListFilter = NormalizeListFilterValue(SelectedListFilter);
         SelectedEncodingMode = NormalizeEncodingModeValue(SelectedEncodingMode);
+        SelectedTheme = NormalizeThemeValue(SelectedTheme);
 
         UiOptionMenuVersion++;
     }
@@ -1712,6 +1832,16 @@ public partial class MainViewModel : ObservableObject
         };
     }
 
+    private string ResolveThemeDisplayName(string value)
+    {
+        return value switch
+        {
+            ThemeDark => L("Theme.Dark", "Dark"),
+            ThemeLight => L("Theme.Light", "Light"),
+            _ => value
+        };
+    }
+
     private static string NormalizeLanguageValue(string? language)
     {
         if (string.IsNullOrWhiteSpace(language))
@@ -1763,6 +1893,21 @@ public partial class MainViewModel : ObservableObject
             "auto" => AutoEncodingMode,
             "auto detect" => AutoEncodingMode,
             _ => AutoEncodingMode
+        };
+    }
+
+    private static string NormalizeThemeValue(string? theme)
+    {
+        if (string.IsNullOrWhiteSpace(theme))
+        {
+            return ThemeDark;
+        }
+
+        return theme.Trim().ToLowerInvariant() switch
+        {
+            "light" => ThemeLight,
+            "dark" => ThemeDark,
+            _ => ThemeDark
         };
     }
 

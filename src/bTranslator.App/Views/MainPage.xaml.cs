@@ -14,15 +14,25 @@ namespace bTranslator.App.Views;
 
 public partial class MainPage : Page
 {
+    private const double MinAiDrawerHeight = 200d;
+    private const double MaxAiDrawerHeight = 620d;
+
+    private Window? _aiProviderSetupWindow;
     private Window? _providerConfigurationWindow;
     private bool _titleBarConfigured;
     private bool _workspaceMenusInitialized;
+    private bool _isAiDrawerExpanded;
+    private bool _isAiDrawerResizing;
+    private double _aiDrawerResizeStartY;
+    private double _aiDrawerResizeStartHeight;
 
     public MainPage(MainViewModel viewModel)
     {
         ViewModel = viewModel;
         InitializeComponent();
         DataContext = ViewModel;
+        ApplyAiDrawerHeight(ViewModel.AiDrawerHeight);
+        SetAiDrawerExpanded(isExpanded: false);
         RebuildKeyboardAccelerators();
         ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         Loaded += async (_, _) =>
@@ -30,12 +40,105 @@ public partial class MainPage : Page
             ConfigureTitleBar();
             await ViewModel.RefreshAsync();
             EnsureWorkspaceMenus();
+            ApplyAiDrawerHeight(ViewModel.AiDrawerHeight);
             RebuildKeyboardAccelerators();
         };
         Unloaded += (_, _) => ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 
     public MainViewModel ViewModel { get; }
+
+    private void OnAiDrawerToggleClicked(object sender, RoutedEventArgs e)
+    {
+        SetAiDrawerExpanded(!_isAiDrawerExpanded);
+    }
+
+    private void SetAiDrawerExpanded(bool isExpanded)
+    {
+        _isAiDrawerExpanded = isExpanded;
+        AiDrawerContentGrid.Visibility = isExpanded ? Visibility.Visible : Visibility.Collapsed;
+        if (isExpanded)
+        {
+            ApplyAiDrawerHeight(ViewModel.AiDrawerHeight);
+        }
+
+        AiDrawerToggleButton.Content = new FontIcon
+        {
+            FontFamily = new FontFamily("Segoe Fluent Icons"),
+            Glyph = isExpanded ? "\uE70D" : "\uE70E"
+        };
+    }
+
+    private void ApplyAiDrawerHeight(double height)
+    {
+        AiDrawerContentGrid.Height = ClampAiDrawerHeight(height);
+    }
+
+    private static double ClampAiDrawerHeight(double height)
+    {
+        return Math.Clamp(height, MinAiDrawerHeight, MaxAiDrawerHeight);
+    }
+
+    private void OnAiDrawerResizeHandlePointerPressed(object sender, PointerRoutedEventArgs e)
+    {
+        _isAiDrawerResizing = true;
+        _aiDrawerResizeStartY = e.GetCurrentPoint(this).Position.Y;
+        _aiDrawerResizeStartHeight = AiDrawerContentGrid.Height;
+        if (double.IsNaN(_aiDrawerResizeStartHeight) || _aiDrawerResizeStartHeight <= 0)
+        {
+            _aiDrawerResizeStartHeight = Math.Max(AiDrawerContentGrid.ActualHeight, ViewModel.AiDrawerHeight);
+        }
+
+        AiDrawerResizeHandle.CapturePointer(e.Pointer);
+        e.Handled = true;
+    }
+
+    private void OnAiDrawerResizeHandlePointerMoved(object sender, PointerRoutedEventArgs e)
+    {
+        if (!_isAiDrawerResizing)
+        {
+            return;
+        }
+
+        var currentY = e.GetCurrentPoint(this).Position.Y;
+        var delta = _aiDrawerResizeStartY - currentY;
+        ApplyAiDrawerHeight(_aiDrawerResizeStartHeight + delta);
+        e.Handled = true;
+    }
+
+    private void OnAiDrawerResizeHandlePointerReleased(object sender, PointerRoutedEventArgs e)
+    {
+        if (!_isAiDrawerResizing)
+        {
+            return;
+        }
+
+        FinishAiDrawerResize();
+        e.Handled = true;
+    }
+
+    private void OnAiDrawerResizeHandlePointerCaptureLost(object sender, PointerRoutedEventArgs e)
+    {
+        if (!_isAiDrawerResizing)
+        {
+            return;
+        }
+
+        FinishAiDrawerResize();
+    }
+
+    private void FinishAiDrawerResize()
+    {
+        _isAiDrawerResizing = false;
+        _ = PersistAiDrawerHeightAsync();
+    }
+
+    private async Task PersistAiDrawerHeightAsync()
+    {
+        var currentHeight = ClampAiDrawerHeight(AiDrawerContentGrid.Height);
+        ApplyAiDrawerHeight(currentHeight);
+        await ViewModel.SaveAiDrawerHeightAsync(currentHeight).ConfigureAwait(true);
+    }
 
     private void RebuildKeyboardAccelerators()
     {
@@ -86,6 +189,9 @@ public partial class MainPage : Page
                 return true;
             case MainViewModel.ShortcutActionRefreshWorkspace:
                 accelerator.Invoked += OnReloadAcceleratorInvoked;
+                return true;
+            case MainViewModel.ShortcutActionToggleTheme:
+                accelerator.Invoked += OnToggleThemeAcceleratorInvoked;
                 return true;
             case MainViewModel.ShortcutActionFocusSearch:
                 accelerator.Invoked += OnFocusSearchAcceleratorInvoked;
@@ -375,6 +481,13 @@ public partial class MainPage : Page
                 "WorkspaceEncodingGroup",
                 value => ViewModel.SelectedEncodingName = value);
 
+            BuildWorkspaceMenuGroup(
+                ViewThemeMenu,
+                ViewModel.ThemeOptions,
+                ViewModel.SelectedTheme,
+                "ViewThemeGroup",
+                value => ViewModel.SelectedTheme = value);
+
             BuildWorkspaceLanguageMenuGroup(
                 WorkspaceUiLanguageMenu,
                 ViewModel.UiLanguages,
@@ -475,7 +588,8 @@ public partial class MainPage : Page
             or nameof(MainViewModel.TargetLanguage)
             or nameof(MainViewModel.SelectedEncodingMode)
             or nameof(MainViewModel.SelectedEncodingName)
-            or nameof(MainViewModel.SelectedUiLanguageTag))
+            or nameof(MainViewModel.SelectedUiLanguageTag)
+            or nameof(MainViewModel.SelectedTheme))
         {
             SyncWorkspaceMenuChecks();
         }
@@ -494,6 +608,8 @@ public partial class MainPage : Page
             {
                 app.MainWindow.Title = ViewModel.Ui.AppWindowTitle;
             }
+
+            SetAiDrawerExpanded(_isAiDrawerExpanded);
         }
 
         if (e.PropertyName == nameof(MainViewModel.UiOptionMenuVersion))
@@ -516,7 +632,18 @@ public partial class MainPage : Page
                 ViewModel.SelectedEncodingMode,
                 "WorkspaceEncodingModeGroup",
                 value => ViewModel.SelectedEncodingMode = value);
+            BuildWorkspaceMenuGroup(
+                ViewThemeMenu,
+                ViewModel.ThemeOptions,
+                ViewModel.SelectedTheme,
+                "ViewThemeGroup",
+                value => ViewModel.SelectedTheme = value);
             SyncWorkspaceMenuChecks();
+        }
+
+        if (e.PropertyName == nameof(MainViewModel.AiDrawerHeight))
+        {
+            ApplyAiDrawerHeight(ViewModel.AiDrawerHeight);
         }
 
         if (e.PropertyName == nameof(MainViewModel.SelectedRow) && ViewModel.SelectedRow is not null)
@@ -532,6 +659,7 @@ public partial class MainPage : Page
         SyncMenuCheck(WorkspaceTargetLanguageMenu, ViewModel.TargetLanguage);
         SyncMenuCheck(WorkspaceEncodingModeMenu, ViewModel.SelectedEncodingMode);
         SyncMenuCheck(WorkspaceEncodingMenu, ViewModel.SelectedEncodingName);
+        SyncMenuCheck(ViewThemeMenu, ViewModel.SelectedTheme);
         SyncMenuCheckByTag(WorkspaceUiLanguageMenu, ViewModel.SelectedUiLanguageTag);
     }
 
@@ -1148,6 +1276,23 @@ public partial class MainPage : Page
         _providerConfigurationWindow.Activate();
     }
 
+    private void OnOpenAiProviderSetupPageClicked(object sender, RoutedEventArgs e)
+    {
+        if (_aiProviderSetupWindow is not null)
+        {
+            _aiProviderSetupWindow.Activate();
+            return;
+        }
+
+        _aiProviderSetupWindow = new Window
+        {
+            Title = ViewModel.GetLocalizedString("WindowTitle.AiProviderSetup", "AI Token / API Setup"),
+            Content = new AiProviderSetupPage(ViewModel)
+        };
+        _aiProviderSetupWindow.Closed += (_, _) => _aiProviderSetupWindow = null;
+        _aiProviderSetupWindow.Activate();
+    }
+
     private async Task OpenPluginAndWorkspaceAsync()
     {
         if (!await PickPluginPathAsync().ConfigureAwait(true))
@@ -1196,6 +1341,11 @@ public partial class MainPage : Page
 
     private void FocusAiInput(bool selectAll)
     {
+        if (!_isAiDrawerExpanded)
+        {
+            SetAiDrawerExpanded(isExpanded: true);
+        }
+
         _ = AiChatInputTextBox.Focus(FocusState.Keyboard);
         if (selectAll && !string.IsNullOrWhiteSpace(AiChatInputTextBox.Text))
         {
@@ -1280,6 +1430,21 @@ public partial class MainPage : Page
             return;
         }
 
+        if (e.Key == VirtualKey.Tab)
+        {
+            e.Handled = true;
+            if (IsShiftPressed())
+            {
+                FocusInspectorEditor(selectAll: false);
+            }
+            else
+            {
+                FocusSearchBox(selectAll: true);
+            }
+
+            return;
+        }
+
         if (e.Key != VirtualKey.Enter)
         {
             return;
@@ -1300,6 +1465,21 @@ public partial class MainPage : Page
 
     private void OnSearchTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
     {
+        if (e.Key == VirtualKey.Tab)
+        {
+            e.Handled = true;
+            if (IsShiftPressed())
+            {
+                FocusAiInput(selectAll: false);
+            }
+            else
+            {
+                FocusRowsView(ensureSelection: true);
+            }
+
+            return;
+        }
+
         if (e.Key == VirtualKey.Enter)
         {
             e.Handled = true;
@@ -1317,6 +1497,21 @@ public partial class MainPage : Page
 
     private void OnRowsListViewKeyDown(object sender, KeyRoutedEventArgs e)
     {
+        if (e.Key == VirtualKey.Tab)
+        {
+            e.Handled = true;
+            if (IsShiftPressed())
+            {
+                FocusSearchBox(selectAll: true);
+            }
+            else
+            {
+                FocusInspectorEditor(selectAll: true);
+            }
+
+            return;
+        }
+
         if (e.Key != VirtualKey.Enter)
         {
             return;
@@ -1326,10 +1521,40 @@ public partial class MainPage : Page
         FocusInspectorEditor(selectAll: true);
     }
 
+    private void OnInspectorTranslationTextBoxKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == VirtualKey.Tab)
+        {
+            e.Handled = true;
+            if (IsShiftPressed())
+            {
+                FocusRowsView(ensureSelection: true);
+            }
+            else
+            {
+                FocusAiInput(selectAll: false);
+            }
+
+            return;
+        }
+
+        if (e.Key == VirtualKey.Escape)
+        {
+            e.Handled = true;
+            FocusRowsView(ensureSelection: true);
+        }
+    }
+
     private void OnFocusSearchAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
         args.Handled = true;
         FocusSearchBox(selectAll: true);
+    }
+
+    private void OnToggleThemeAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        args.Handled = true;
+        ViewModel.ToggleThemeShortcut();
     }
 
     private void OnFocusRowsAcceleratorInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
@@ -1611,6 +1836,15 @@ public partial class MainPage : Page
         var editValues = new Dictionary<string, string>(
             ViewModel.GetEffectiveShortcutMappings(),
             StringComparer.OrdinalIgnoreCase);
+        var editorByActionId = new Dictionary<string, TextBox>(StringComparer.OrdinalIgnoreCase);
+        var rowByActionId = new Dictionary<string, FrameworkElement>(StringComparer.OrdinalIgnoreCase);
+        var defaultBorderBrushByActionId = new Dictionary<string, Brush?>(StringComparer.OrdinalIgnoreCase);
+        var defaultBorderThicknessByActionId = new Dictionary<string, Thickness>(StringComparer.OrdinalIgnoreCase);
+        var conflictBorderBrush = Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue(
+                "SystemFillColorCriticalBrush",
+                out var criticalBrushObject)
+            ? criticalBrushObject as Brush
+            : new SolidColorBrush(Microsoft.UI.Colors.OrangeRed);
 
         var searchBox = new TextBox
         {
@@ -1631,6 +1865,71 @@ public partial class MainPage : Page
             Spacing = 8
         };
 
+        void ResetGestureEditorHighlights()
+        {
+            foreach (var pair in editorByActionId)
+            {
+                if (defaultBorderBrushByActionId.TryGetValue(pair.Key, out var borderBrush))
+                {
+                    pair.Value.BorderBrush = borderBrush;
+                }
+
+                if (defaultBorderThicknessByActionId.TryGetValue(pair.Key, out var borderThickness))
+                {
+                    pair.Value.BorderThickness = borderThickness;
+                }
+            }
+        }
+
+        void HighlightConflictingGestureEditors(IReadOnlyList<string> conflictingActionIds)
+        {
+            var conflictActionIds = conflictingActionIds
+                .Where(static actionId => !string.IsNullOrWhiteSpace(actionId))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+            if (conflictActionIds.Length == 0)
+            {
+                return;
+            }
+
+            var hasHiddenConflictRows = conflictActionIds.Any(actionId => !editorByActionId.ContainsKey(actionId));
+            if (hasHiddenConflictRows && !string.IsNullOrWhiteSpace(searchBox.Text))
+            {
+                searchBox.Text = string.Empty;
+                RenderRows(string.Empty);
+            }
+
+            TextBox? firstGestureEditor = null;
+            FrameworkElement? firstConflictRow = null;
+            foreach (var actionId in conflictActionIds)
+            {
+                if (editorByActionId.TryGetValue(actionId, out var gestureEditor))
+                {
+                    gestureEditor.BorderBrush = conflictBorderBrush;
+                    gestureEditor.BorderThickness = new Thickness(2);
+                    firstGestureEditor ??= gestureEditor;
+                }
+
+                if (firstConflictRow is null &&
+                    rowByActionId.TryGetValue(actionId, out var conflictRow))
+                {
+                    firstConflictRow = conflictRow;
+                }
+            }
+
+            firstConflictRow?.StartBringIntoView(new BringIntoViewOptions
+            {
+                AnimationDesired = true
+            });
+            if (firstGestureEditor is null)
+            {
+                return;
+            }
+
+            _ = firstGestureEditor.Focus(FocusState.Programmatic);
+            firstGestureEditor.SelectAll();
+        }
+
         void RenderRows(string? filterText)
         {
             var query = filterText?.Trim() ?? string.Empty;
@@ -1644,6 +1943,10 @@ public partial class MainPage : Page
                 .ToList();
 
             rowsPanel.Children.Clear();
+            editorByActionId.Clear();
+            rowByActionId.Clear();
+            defaultBorderBrushByActionId.Clear();
+            defaultBorderThicknessByActionId.Clear();
             if (filtered.Count == 0)
             {
                 rowsPanel.Children.Add(new TextBlock
@@ -1677,6 +1980,7 @@ public partial class MainPage : Page
                     {
                         ColumnSpacing = 12
                     };
+                    rowByActionId[item.ActionId] = row;
                     row.ColumnDefinitions.Add(new ColumnDefinition
                     {
                         Width = new GridLength(1, GridUnitType.Star)
@@ -1700,9 +2004,13 @@ public partial class MainPage : Page
                         PlaceholderText = item.Gesture,
                         Text = currentGesture
                     };
+                    editorByActionId[item.ActionId] = gestureEditor;
+                    defaultBorderBrushByActionId[item.ActionId] = gestureEditor.BorderBrush;
+                    defaultBorderThicknessByActionId[item.ActionId] = gestureEditor.BorderThickness;
                     gestureEditor.TextChanged += (_, _) =>
                     {
                         editValues[item.ActionId] = gestureEditor.Text.Trim();
+                        ResetGestureEditorHighlights();
                         validationText.Text = string.Empty;
                         validationText.Visibility = Visibility.Collapsed;
                     };
@@ -1785,9 +2093,12 @@ public partial class MainPage : Page
                         descriptionByActionId,
                         editValues,
                         out var normalizedMappings,
-                        out var errorMessage))
+                        out var errorMessage,
+                        out var conflictingActionIds))
                 {
                     args.Cancel = true;
+                    ResetGestureEditorHighlights();
+                    HighlightConflictingGestureEditors(conflictingActionIds);
                     validationText.Text = errorMessage;
                     validationText.Visibility = Visibility.Visible;
                     return;
@@ -1830,10 +2141,12 @@ public partial class MainPage : Page
         IReadOnlyDictionary<string, string> descriptionByActionId,
         IReadOnlyDictionary<string, string> editValues,
         out Dictionary<string, string> normalizedMappings,
-        out string errorMessage)
+        out string errorMessage,
+        out string[] conflictingActionIds)
     {
         normalizedMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var signatureOwner = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        conflictingActionIds = [];
 
         foreach (var item in bindingItems)
         {
@@ -1844,6 +2157,7 @@ public partial class MainPage : Page
                     "ShortcutConfig.EmptyGestureError",
                     "Shortcut for '{0}' cannot be empty.",
                     item.Description);
+                conflictingActionIds = [];
                 return false;
             }
 
@@ -1854,6 +2168,7 @@ public partial class MainPage : Page
                     "Shortcut '{0}' for '{1}' is invalid.",
                     rawGesture.Trim(),
                     item.Description);
+                conflictingActionIds = [];
                 return false;
             }
 
@@ -1871,6 +2186,7 @@ public partial class MainPage : Page
                     normalizedGesture,
                     existingDescription,
                     item.Description);
+                conflictingActionIds = [existingActionId, item.ActionId];
                 return false;
             }
 
@@ -1879,6 +2195,7 @@ public partial class MainPage : Page
         }
 
         errorMessage = string.Empty;
+        conflictingActionIds = [];
         return true;
     }
 }

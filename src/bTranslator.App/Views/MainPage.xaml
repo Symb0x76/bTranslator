@@ -45,6 +45,208 @@
             <Setter Property="Background" Value="{StaticResource VsCodeBackgroundBrush}" />
         </Style>
 
+        <SolidColorBrush
+            x:Key="MainSurfaceBrush"
+            Color="#232326" />
+        <SolidColorBrush
+            x:Key="MainSurfaceAltBrush"
+            Color="#1F2023" />
+        <SolidColorBrush
+            x:Key="MainPanelBorderBrush"
+            Color="#3A3D41" />
+
+        <SolidColorBrush
+            x:Key="ListViewItemBackground"
+            Color="#00000000" />
+        <SolidColorBrush
+            x:Key="ListViewItemBackgroundPointerOver"
+            Color="#2B2D31" />
+        <SolidColorBrush
+            x:Key="ListViewItemBackgroundPressed"
+            Color="#343840" />
+        <SolidColorBrush
+            x:Key="ListViewItemBackgroundSelected"
+            Color="#1E3447" />
+        <SolidColorBrush
+            x:Key="ListViewItemBackgroundSelectedPointerOver"
+            Color="#25425A" />
+        <SolidColorBrush
+            x:Key="ListViewItemBackgroundSelectedPressed"
+            Color="#2A4B66" />
+        <SolidColorBrush
+            x:Key="ListViewItemForeground"
+            Color="#CCCCCC" />
+        <SolidColorBrush
+            x:Key="ListViewItemForegroundPointerOver"
+            Color="#F0F0F0" />
+        <SolidColorBrush
+            x:Key="ListViewItemForegroundPressed"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="ListViewItemForegroundSelected"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="ListViewItemForegroundSelectedPointerOver"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="ListViewItemForegroundSelectedPressed"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="ListViewItemFocusBorderBrush"
+            Color="#0E639C" />
+        <SolidColorBrush
+            x:Key="ListViewItemFocusSecondaryBorderBrush"
+            Color="#1E1E1E" />
+
+        <SolidColorBrush
+            x:Key="TextControlBackground"
+            Color="#1F2023" />
+        <SolidColorBrush
+            x:Key="TextControlBackgroundPointerOver"
+            Color="#24262A" />
+        <SolidColorBrush
+            x:Key="TextControlBackgroundFocused"
+            Color="#252A30" />
+        <SolidColorBrush
+            x:Key="TextControlBorderBrush"
+            Color="#3A3D41" />
+        <SolidColorBrush
+            x:Key="TextControlBorderBrushPointerOver"
+            Color="#4A4F56" />
+        <SolidColorBrush
+            x:Key="TextControlBorderBrushFocused"
+            Color="#0E639C" />
+        <SolidColorBrush
+            x:Key="TextControlForeground"
+            Color="#CCCCCC" />
+        <SolidColorBrush
+            x:Key="TextControlForegroundPointerOver"
+            Color="#EFEFEF" />
+        <SolidColorBrush
+            x:Key="TextControlForegroundFocused"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="TextControlPlaceholderForeground"
+            Color="#9D9D9D" />
+        <SolidColorBrush
+            x:Key="TextControlPlaceholderForegroundPointerOver"
+            Color="#A9A9A9" />
+        <SolidColorBrush
+            x:Key="TextControlPlaceholderForegroundFocused"
+            Color="#A9A9A9" />
+        <SolidColorBrush
+            x:Key="TextControlSelectionHighlightColor"
+            Color="#80489BD8" />
+
+        <SolidColorBrush
+            x:Key="ComboBoxBackground"
+            Color="#1F2023" />
+        <SolidColorBrush
+            x:Key="ComboBoxBackgroundPointerOver"
+            Color="#24262A" />
+        <SolidColorBrush
+            x:Key="ComboBoxBackgroundPressed"
+            Color="#2B2F35" />
+        <SolidColorBrush
+            x:Key="ComboBoxBackgroundFocused"
+            Color="#252A30" />
+        <SolidColorBrush
+            x:Key="ComboBoxBorderBrush"
+            Color="#3A3D41" />
+        <SolidColorBrush
+            x:Key="ComboBoxBorderBrushPointerOver"
+            Color="#4A4F56" />
+        <SolidColorBrush
+            x:Key="ComboBoxBorderBrushPressed"
+            Color="#0E639C" />
+        <SolidColorBrush
+            x:Key="ComboBoxForeground"
+            Color="#CCCCCC" />
+        <SolidColorBrush
+            x:Key="ComboBoxForegroundPointerOver"
+            Color="#EFEFEF" />
+        <SolidColorBrush
+            x:Key="ComboBoxForegroundPressed"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="ComboBoxForegroundFocused"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="ComboBoxForegroundFocusedPressed"
+            Color="#FFFFFF" />
+        <SolidColorBrush
+            x:Key="ComboBoxBackgroundBorderBrushFocused"
+            Color="#0E639C" />
+        <SolidColorBrush
+            x:Key="ComboBoxBackgroundBorderBrushUnfocused"
+            Color="#3A3D41" />
+
+        <Style
+            x:Key="MainPanelBorderStyle"
+            BasedOn="{StaticResource PanelCardBorderStyle}"
+            TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource MainSurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource MainPanelBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10" />
+        </Style>
+
+        <Style
+            x:Key="MetricPanelBorderStyle"
+            BasedOn="{StaticResource MainPanelBorderStyle}"
+            TargetType="Border">
+            <Setter Property="Padding" Value="12,10" />
+        </Style>
+
+        <Style x:Key="InsetPanelBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource MainSurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource MainPanelBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="8,6" />
+        </Style>
+
+        <Style
+            x:Key="DenseHeaderTextStyle"
+            BasedOn="{StaticResource TableHeaderTextStyle}"
+            TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10.5" />
+            <Setter Property="CharacterSpacing" Value="20" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <Style
+            x:Key="InteractiveListItemStyle"
+            TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="MinHeight" Value="28" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style
+            x:Key="UnifiedInputTextBoxStyle"
+            TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource MainSurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource MainPanelBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="Foreground" Value="{StaticResource VsCodeTextBrush}" />
+        </Style>
+
+        <Style
+            x:Key="UnifiedInputComboBoxStyle"
+            TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource MainSurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource MainPanelBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="Foreground" Value="{StaticResource VsCodeTextBrush}" />
+        </Style>
+
     </Page.Resources>
 
     <Grid
@@ -62,10 +264,11 @@
             x:Name="TopTitleBarHost"
             Grid.Row="0"
             Background="{StaticResource VsCodeBackgroundBrush}"
-            BorderThickness="0"
+            BorderBrush="{StaticResource VsCodeBorderBrush}"
+            BorderThickness="0,0,0,1"
             CornerRadius="0"
             Margin="-12,0,-12,0"
-            Padding="14,9">
+            Padding="14,9,14,10">
             <Grid RowSpacing="6">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -192,6 +395,9 @@
                             </MenuFlyoutSubItem>
                             <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuConfiguration, Mode=OneWay}">
                                 <MenuFlyoutItem
+                                    Click="OnOpenAiProviderSetupPageClicked"
+                                    Text="{x:Bind ViewModel.Ui.MenuOpenAiProviderSetupWindow, Mode=OneWay}" />
+                                <MenuFlyoutItem
                                     Click="OnOpenProviderConfigurationPageClicked"
                                     Text="{x:Bind ViewModel.Ui.MenuOpenConfigurationWindow, Mode=OneWay}" />
                                 <MenuFlyoutSeparator />
@@ -224,100 +430,9 @@
                                     IsChecked="{Binding ShowLocked, Mode=TwoWay}"
                                     Text="{x:Bind ViewModel.Ui.MenuShowLockedRows, Mode=OneWay}" />
                             </MenuFlyoutSubItem>
-                        </MenuBarItem>
-
-                        <MenuBarItem
-                            Style="{StaticResource TopMenuBarItemStyle}"
-                            Title="{x:Bind ViewModel.Ui.MainMenuActionsTitle, Mode=OneWay}">
-                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MainMenuFileTitle, Mode=OneWay}">
-                                <MenuFlyoutItem
-                                    Click="OnOpenPluginFromMenuClicked"
-                                    Text="{x:Bind ViewModel.Ui.MenuOpenPlugin, Mode=OneWay}" />
-                                <MenuFlyoutItem
-                                    Command="{Binding SaveWorkspaceCommand}"
-                                    Text="{x:Bind ViewModel.Ui.MenuSave, Mode=OneWay}" />
-                                <MenuFlyoutItem
-                                    Click="OnOpenAndTranslateFromMenuClicked"
-                                    Text="{x:Bind ViewModel.Ui.MenuOpenAndAutoTranslate, Mode=OneWay}" />
-                                <MenuFlyoutSeparator />
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuPaths, Mode=OneWay}">
-                                    <MenuFlyoutItem
-                                        Click="OnBrowsePluginPathClicked"
-                                        Text="{x:Bind ViewModel.Ui.MenuPluginPath, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Click="OnBrowseOutputPathClicked"
-                                        Text="{x:Bind ViewModel.Ui.MenuOutputPath, Mode=OneWay}" />
-                                    <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuOptional, Mode=OneWay}">
-                                        <MenuFlyoutItem
-                                            Click="OnBrowseStringsDirectoryClicked"
-                                            Text="{x:Bind ViewModel.Ui.MenuStringsDirectory, Mode=OneWay}" />
-                                        <MenuFlyoutItem
-                                            Click="OnBrowseRecordDefinitionsPathClicked"
-                                            Text="{x:Bind ViewModel.Ui.MenuRecordDefsPath, Mode=OneWay}" />
-                                    </MenuFlyoutSubItem>
-                                </MenuFlyoutSubItem>
-                            </MenuFlyoutSubItem>
-                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MainMenuTranslateTitle, Mode=OneWay}">
-                                <MenuFlyoutItem
-                                    Command="{Binding RunBatchTranslationCommand}"
-                                    Text="{x:Bind ViewModel.Ui.MenuRunBatchTranslation, Mode=OneWay}" />
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuScope, Mode=OneWay}">
-                                    <ToggleMenuFlyoutItem
-                                        IsChecked="{Binding LoadStrings, Mode=TwoWay}"
-                                        Text="{x:Bind ViewModel.Ui.MenuLoadStrings, Mode=OneWay}" />
-                                    <ToggleMenuFlyoutItem
-                                        IsChecked="{Binding LoadRecordFields, Mode=TwoWay}"
-                                        Text="{x:Bind ViewModel.Ui.MenuLoadRecordFields, Mode=OneWay}" />
-                                    <ToggleMenuFlyoutItem
-                                        IsChecked="{Binding ShowUntranslatedOnly, Mode=TwoWay}"
-                                        Text="{x:Bind ViewModel.Ui.MenuOnlyPendingRows, Mode=OneWay}" />
-                                    <ToggleMenuFlyoutItem
-                                        IsChecked="{Binding ShowLocked, Mode=TwoWay}"
-                                        Text="{x:Bind ViewModel.Ui.MenuIncludeLockedRows, Mode=OneWay}" />
-                                </MenuFlyoutSubItem>
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuSelection, Mode=OneWay}">
-                                    <MenuFlyoutItem
-                                        Command="{Binding CopySourceToTargetCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuCopySourceToTranslation, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding ApplyInspectorToRowCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuApplyInspectorEdit, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding MarkSelectedValidatedCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuMarkSelectedValidated, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding ToggleSelectedLockCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuToggleLock, Mode=OneWay}" />
-                                </MenuFlyoutSubItem>
-                            </MenuFlyoutSubItem>
-                            <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MainMenuProvidersTitle, Mode=OneWay}">
-                                <MenuFlyoutItem
-                                    Command="{Binding RefreshCommand}"
-                                    Text="{x:Bind ViewModel.Ui.MenuReloadMetadata, Mode=OneWay}" />
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuChain, Mode=OneWay}">
-                                    <MenuFlyoutItem
-                                        IsEnabled="False"
-                                        Text="{Binding ProviderChainPreview}" />
-                                </MenuFlyoutSubItem>
-                                <MenuFlyoutSubItem Text="{x:Bind ViewModel.Ui.MenuConfiguration, Mode=OneWay}">
-                                    <MenuFlyoutItem
-                                        Click="OnOpenProviderConfigurationPageClicked"
-                                        Text="{x:Bind ViewModel.Ui.MenuOpenConfigurationWindow, Mode=OneWay}" />
-                                    <MenuFlyoutSeparator />
-                                    <MenuFlyoutItem
-                                        Command="{Binding SaveSelectedProviderConfigurationCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuSaveSelectedProvider, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding ReloadSelectedProviderConfigurationCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuReloadSelectedProvider, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Command="{Binding TestSelectedProviderConnectionCommand}"
-                                        Text="{x:Bind ViewModel.Ui.MenuTestSelectedProvider, Mode=OneWay}" />
-                                    <MenuFlyoutItem
-                                        Click="OnImportLegacyApiTranslatorConfigClicked"
-                                        Text="{x:Bind ViewModel.Ui.MenuImportApiTranslator, Mode=OneWay}" />
-                                </MenuFlyoutSubItem>
-                            </MenuFlyoutSubItem>
+                            <MenuFlyoutSubItem
+                                x:Name="ViewThemeMenu"
+                                Text="{x:Bind ViewModel.Ui.MenuTheme, Mode=OneWay}" />
                         </MenuBarItem>
 
                         <MenuBarItem
@@ -444,9 +559,11 @@
                                             Style="{StaticResource SectionTitleTextStyle}"
                                             Text="{x:Bind ViewModel.Ui.PluginSwitcherTitleText, Mode=OneWay}" />
                                         <TextBox
+                                            Style="{StaticResource UnifiedInputTextBoxStyle}"
                                             PlaceholderText="{x:Bind ViewModel.Ui.PluginSwitcherSearchPlaceholder, Mode=OneWay}"
                                             Text="{Binding PluginSwitcherSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                         <ListView
+                                            ItemContainerStyle="{StaticResource InteractiveListItemStyle}"
                                             IsItemClickEnabled="True"
                                             ItemClick="OnPluginSwitcherItemClick"
                                             ItemsSource="{Binding FilteredPluginSwitcherItems}"
@@ -531,7 +648,7 @@
 
             <Border
                 Grid.Column="0"
-                Style="{StaticResource PanelCardBorderStyle}">
+                Style="{StaticResource MetricPanelBorderStyle}">
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
@@ -544,7 +661,7 @@
 
             <Border
                 Grid.Column="1"
-                Style="{StaticResource PanelCardBorderStyle}">
+                Style="{StaticResource MetricPanelBorderStyle}">
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
@@ -557,7 +674,7 @@
 
             <Border
                 Grid.Column="2"
-                Style="{StaticResource PanelCardBorderStyle}">
+                Style="{StaticResource MetricPanelBorderStyle}">
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
@@ -570,7 +687,7 @@
 
             <Border
                 Grid.Column="3"
-                Style="{StaticResource PanelCardBorderStyle}">
+                Style="{StaticResource MetricPanelBorderStyle}">
                 <StackPanel>
                     <TextBlock
                         Style="{StaticResource MetricLabelTextStyle}"
@@ -587,18 +704,18 @@
             ColumnSpacing="10"
             RowSpacing="10">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="7*" />
                 <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="2.2*" />
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Border
                 Grid.Row="0"
                 Grid.Column="0"
-                Style="{StaticResource PanelCardBorderStyle}">
+                Style="{StaticResource MainPanelBorderStyle}">
                 <Grid RowSpacing="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -612,10 +729,12 @@
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="1.2*" />
                         </Grid.ColumnDefinitions>
                         <TextBox
                             x:Name="SearchTextBox"
                             Grid.Column="0"
+                            Style="{StaticResource UnifiedInputTextBoxStyle}"
                             Header="{x:Bind ViewModel.Ui.MainSearchBoxHeader, Mode=OneWay}"
                             KeyDown="OnSearchTextBoxKeyDown"
                             PlaceholderText="{x:Bind ViewModel.Ui.MainSearchBoxPlaceholderText, Mode=OneWay}"
@@ -623,6 +742,7 @@
                             Text="{Binding SearchText, Mode=TwoWay}" />
                         <ComboBox
                             Grid.Column="1"
+                            Style="{StaticResource UnifiedInputComboBoxStyle}"
                             Header="{x:Bind ViewModel.Ui.MainListFilterBoxHeader, Mode=OneWay}"
                             DisplayMemberPath="DisplayName"
                             ItemsSource="{Binding ListFilterOptions}"
@@ -639,15 +759,33 @@
                             Header="{x:Bind ViewModel.Ui.MainIncludeLockedToggleHeader, Mode=OneWay}"
                             IsOn="{Binding ShowLocked, Mode=TwoWay}"
                             TabIndex="3" />
+                        <StackPanel
+                            Grid.Column="4"
+                            Spacing="4">
+                            <TextBlock
+                                Style="{StaticResource MetricLabelTextStyle}"
+                                Text="{x:Bind ViewModel.Ui.AiCopilotProviderChainHeaderText, Mode=OneWay}" />
+                            <ComboBox
+                                x:Name="ModelSelectorComboBox"
+                                Style="{StaticResource UnifiedInputComboBoxStyle}"
+                                ItemsSource="{Binding ProviderOptions}"
+                                SelectedItem="{Binding SelectedProviderOption, Mode=TwoWay}"
+                                TabIndex="4">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="viewModels:ProviderChainItemViewModel">
+                                        <TextBlock
+                                            FontFamily="Cascadia Mono"
+                                            Text="{Binding DisplayText}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
                     </Grid>
 
                     <Border
                         Grid.Row="1"
-                        Background="Transparent"
-                        BorderBrush="{StaticResource VsCodeBorderBrush}"
-                        BorderThickness="0,0,0,1"
-                        CornerRadius="0"
-                        Padding="8,6">
+                        Style="{StaticResource InsetPanelBorderStyle}">
                         <Grid ColumnSpacing="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2.4*" />
@@ -657,19 +795,19 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 Grid.Column="0"
-                                Style="{StaticResource TableHeaderTextStyle}"
+                                Style="{StaticResource DenseHeaderTextStyle}"
                                 Text="{x:Bind ViewModel.Ui.MainTableHeaderEdidText, Mode=OneWay}" />
                             <TextBlock
                                 Grid.Column="1"
-                                Style="{StaticResource TableHeaderTextStyle}"
+                                Style="{StaticResource DenseHeaderTextStyle}"
                                 Text="{x:Bind ViewModel.Ui.MainTableHeaderFieldText, Mode=OneWay}" />
                             <TextBlock
                                 Grid.Column="2"
-                                Style="{StaticResource TableHeaderTextStyle}"
+                                Style="{StaticResource DenseHeaderTextStyle}"
                                 Text="{x:Bind ViewModel.Ui.MainTableHeaderSourceText, Mode=OneWay}" />
                             <TextBlock
                                 Grid.Column="3"
-                                Style="{StaticResource TableHeaderTextStyle}"
+                                Style="{StaticResource DenseHeaderTextStyle}"
                                 Text="{x:Bind ViewModel.Ui.MainTableHeaderTranslationText, Mode=OneWay}" />
                         </Grid>
                     </Border>
@@ -677,11 +815,16 @@
                     <ListView
                         x:Name="RowsListView"
                         Grid.Row="2"
+                        ItemContainerStyle="{StaticResource InteractiveListItemStyle}"
+                        Background="{StaticResource MainSurfaceAltBrush}"
+                        BorderBrush="{StaticResource MainPanelBorderBrush}"
+                        BorderThickness="1"
+                        Padding="0"
                         KeyDown="OnRowsListViewKeyDown"
                         ItemsSource="{Binding Rows}"
                         SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
                         SelectionMode="Single"
-                        TabIndex="4">
+                        TabIndex="5">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:TranslationRowViewModel">
                                 <Border
@@ -752,242 +895,292 @@
             </Border>
 
             <Border
-                Grid.Row="0"
-                Grid.RowSpan="2"
-                Grid.Column="1"
-                Style="{StaticResource PanelCardBorderStyle}">
+                x:Name="AiDrawerBorder"
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Style="{StaticResource MainPanelBorderStyle}">
                 <Grid RowSpacing="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Spacing="8">
+                            <TextBlock
+                                Style="{StaticResource SectionTitleTextStyle}"
+                                Text="{x:Bind ViewModel.Ui.AiCopilotSectionTitleText, Mode=OneWay}" />
+                            <TextBlock
+                                Style="{StaticResource MetricLabelTextStyle}"
+                                Text="{x:Bind ViewModel.Ui.AiCopilotMcpHintText, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                        <StackPanel
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="6">
+                            <Button
+                                Click="OnOpenAiProviderSetupPageClicked"
+                                Content="{x:Bind ViewModel.Ui.MenuConfiguration, Mode=OneWay}"
+                                Style="{StaticResource SubtleAction}"
+                                TabIndex="12" />
+                            <Button
+                                x:Name="AiDrawerToggleButton"
+                                Click="OnAiDrawerToggleClicked"
+                                Style="{StaticResource SubtleAction}"
+                                TabIndex="13" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid
+                        x:Name="AiDrawerContentGrid"
+                        Grid.Row="1"
+                        Height="{Binding AiDrawerHeight, Mode=TwoWay}"
+                        RowSpacing="8"
+                        Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Border
+                            x:Name="AiDrawerResizeHandle"
+                            Background="Transparent"
+                            CornerRadius="0"
+                            Padding="0,0,0,2"
+                            PointerCaptureLost="OnAiDrawerResizeHandlePointerCaptureLost"
+                            PointerMoved="OnAiDrawerResizeHandlePointerMoved"
+                            PointerPressed="OnAiDrawerResizeHandlePointerPressed"
+                            PointerReleased="OnAiDrawerResizeHandlePointerReleased">
+                            <Border
+                                Width="88"
+                                Height="4"
+                                CornerRadius="2"
+                                Background="{StaticResource VsCodeBorderBrush}"
+                                HorizontalAlignment="Center" />
+                        </Border>
+
+                        <ListView
+                            x:Name="AiChatMessagesListView"
+                            Grid.Row="1"
+                            Background="{StaticResource MainSurfaceAltBrush}"
+                            BorderBrush="{StaticResource MainPanelBorderBrush}"
+                            BorderThickness="1"
+                            IsItemClickEnabled="False"
+                            ItemsSource="{Binding AiChatMessages}"
+                            MaxHeight="340"
+                            MinHeight="220"
+                            SelectionMode="None"
+                            IsTabStop="False">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="viewModels:AiChatMessageViewModel">
+                                    <StackPanel Margin="0,0,0,8">
+                                        <StackPanel
+                                            HorizontalAlignment="{Binding BubbleAlignment}"
+                                            Orientation="Horizontal"
+                                            Spacing="8">
+                                            <TextBlock
+                                                Style="{StaticResource MetricLabelTextStyle}"
+                                                Text="{Binding RoleDisplayName}" />
+                                            <TextBlock
+                                                Style="{StaticResource MetricLabelTextStyle}"
+                                                Text="{Binding TimestampText}" />
+                                        </StackPanel>
+                                        <Border
+                                            HorizontalAlignment="{Binding BubbleAlignment}"
+                                            MaxWidth="840"
+                                            Background="{Binding BubbleBrush}"
+                                            BorderBrush="{StaticResource MainPanelBorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="10">
+                                            <TextBlock
+                                                FontSize="12"
+                                                Text="{Binding MessageText}"
+                                                TextWrapping="WrapWholeWords" />
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Grid
+                            Grid.Row="2"
+                            ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel
+                                Grid.Column="0"
+                                Spacing="4">
+                                <TextBox
+                                    x:Name="AiChatInputTextBox"
+                                    Style="{StaticResource UnifiedInputTextBoxStyle}"
+                                    AcceptsReturn="True"
+                                    KeyDown="OnAiChatInputKeyDown"
+                                    MaxHeight="180"
+                                    MinHeight="88"
+                                    PlaceholderText="{x:Bind ViewModel.Ui.AiCopilotInputBoxPlaceholderText, Mode=OneWay}"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                    TabIndex="14"
+                                    Text="{Binding AiChatInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <StackPanel
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                                    <ProgressRing
+                                        Height="14"
+                                        IsActive="{Binding IsAiChatBusy}"
+                                        Width="14" />
+                                    <TextBlock
+                                        Style="{StaticResource MetricLabelTextStyle}"
+                                        Text="{x:Bind ViewModel.Ui.AiCopilotBusyText, Mode=OneWay}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <Button
+                                Grid.Column="1"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding SendAiChatMessageCommand}"
+                                Content="{x:Bind ViewModel.Ui.AiCopilotSendButtonContent, Mode=OneWay}"
+                                TabIndex="15"
+                                Style="{StaticResource PrimaryAction}" />
+                            <Button
+                                Grid.Column="2"
+                                VerticalAlignment="Bottom"
+                                Command="{Binding ClearAiChatHistoryCommand}"
+                                Content="{x:Bind ViewModel.Ui.AiCopilotClearButtonContent, Mode=OneWay}"
+                                TabIndex="16"
+                                Style="{StaticResource SubtleAction}" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border
+                Grid.Row="0"
+                Grid.Column="1"
+                Style="{StaticResource MainPanelBorderStyle}">
+                <Grid RowSpacing="8">
+                    <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <TextBlock
                         Style="{StaticResource SectionTitleTextStyle}"
-                        Text="{x:Bind ViewModel.Ui.AiCopilotSectionTitleText, Mode=OneWay}" />
+                        Text="{x:Bind ViewModel.Ui.InspectorSectionTitleText, Mode=OneWay}" />
 
                     <StackPanel
                         Grid.Row="1"
-                        Spacing="4">
+                        Spacing="6">
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock
+                                    Style="{StaticResource MetricLabelTextStyle}"
+                                    Text="{x:Bind ViewModel.Ui.InspectorEdidLabelText, Mode=OneWay}" />
+                                <TextBlock
+                                    FontFamily="Cascadia Mono"
+                                    Text="{Binding InspectorRecordId}"
+                                    TextWrapping="WrapWholeWords" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock
+                                    Style="{StaticResource MetricLabelTextStyle}"
+                                    Text="{x:Bind ViewModel.Ui.InspectorFieldLabelText, Mode=OneWay}" />
+                                <TextBlock
+                                    FontFamily="Cascadia Mono"
+                                    Text="{Binding InspectorField}"
+                                    TextWrapping="WrapWholeWords" />
+                            </StackPanel>
+                        </Grid>
                         <TextBlock
                             Style="{StaticResource MetricLabelTextStyle}"
-                            Text="{x:Bind ViewModel.Ui.AiCopilotProviderChainHeaderText, Mode=OneWay}" />
-                        <ComboBox
-                            x:Name="ModelSelectorComboBox"
-                            ItemsSource="{Binding ProviderOptions}"
-                            SelectedItem="{Binding SelectedProviderOption, Mode=TwoWay}"
-                            TabIndex="9">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="viewModels:ProviderChainItemViewModel">
-                                    <TextBlock
-                                        FontFamily="Cascadia Mono"
-                                        Text="{Binding DisplayText}"
-                                        TextTrimming="CharacterEllipsis" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+                            Text="{Binding InspectorHint}"
+                            TextWrapping="WrapWholeWords" />
                     </StackPanel>
 
-                    <TextBlock
+                    <TextBox
                         Grid.Row="2"
-                        Style="{StaticResource MetricLabelTextStyle}"
-                        Text="{x:Bind ViewModel.Ui.AiCopilotMcpHintText, Mode=OneWay}"
-                        TextWrapping="WrapWholeWords" />
+                        Style="{StaticResource UnifiedInputTextBoxStyle}"
+                        AcceptsReturn="True"
+                        Header="{x:Bind ViewModel.Ui.InspectorSourceBoxHeader, Mode=OneWay}"
+                        IsReadOnly="True"
+                        MinHeight="120"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        Text="{Binding InspectorSourceText}" />
 
-                    <ListView
-                        x:Name="AiChatMessagesListView"
+                    <TextBox
+                        x:Name="InspectorTranslationTextBox"
                         Grid.Row="3"
-                        IsItemClickEnabled="False"
-                        ItemsSource="{Binding AiChatMessages}"
-                        SelectionMode="None"
-                        IsTabStop="False">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="viewModels:AiChatMessageViewModel">
-                                <StackPanel Margin="0,0,0,8">
-                                    <StackPanel
-                                        HorizontalAlignment="{Binding BubbleAlignment}"
-                                        Orientation="Horizontal"
-                                        Spacing="8">
-                                        <TextBlock
-                                            Style="{StaticResource MetricLabelTextStyle}"
-                                            Text="{Binding RoleDisplayName}" />
-                                        <TextBlock
-                                            Style="{StaticResource MetricLabelTextStyle}"
-                                            Text="{Binding TimestampText}" />
-                                    </StackPanel>
-                                    <Border
-                                        HorizontalAlignment="{Binding BubbleAlignment}"
-                                        MaxWidth="460"
-                                        Background="{Binding BubbleBrush}"
-                                        CornerRadius="8"
-                                        Padding="10">
-                                        <TextBlock
-                                            Text="{Binding MessageText}"
-                                            TextWrapping="WrapWholeWords" />
-                                    </Border>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        Style="{StaticResource UnifiedInputTextBoxStyle}"
+                        AcceptsReturn="True"
+                        Header="{x:Bind ViewModel.Ui.InspectorTranslationBoxHeader, Mode=OneWay}"
+                        KeyDown="OnInspectorTranslationTextBoxKeyDown"
+                        MinHeight="120"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        TabIndex="6"
+                        Text="{Binding InspectorTranslatedText, Mode=TwoWay}" />
 
                     <Grid
                         Grid.Row="4"
-                        ColumnSpacing="8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                        RowSpacing="6">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <StackPanel
-                            Grid.Column="0"
-                            Spacing="4">
-                            <TextBox
-                                x:Name="AiChatInputTextBox"
-                                AcceptsReturn="True"
-                                KeyDown="OnAiChatInputKeyDown"
-                                MaxHeight="180"
-                                MinHeight="78"
-                                PlaceholderText="{x:Bind ViewModel.Ui.AiCopilotInputBoxPlaceholderText, Mode=OneWay}"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                TabIndex="10"
-                                Text="{Binding AiChatInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <StackPanel
-                                Orientation="Horizontal"
-                                Spacing="6">
-                                <ProgressRing
-                                    Height="14"
-                                    IsActive="{Binding IsAiChatBusy}"
-                                    Width="14" />
-                                <TextBlock
-                                    Style="{StaticResource MetricLabelTextStyle}"
-                                    Text="{x:Bind ViewModel.Ui.AiCopilotBusyText, Mode=OneWay}" />
-                            </StackPanel>
-                        </StackPanel>
-                        <Button
-                            Grid.Column="1"
-                            VerticalAlignment="Bottom"
-                            Command="{Binding SendAiChatMessageCommand}"
-                            Content="{x:Bind ViewModel.Ui.AiCopilotSendButtonContent, Mode=OneWay}"
-                            TabIndex="11"
-                            Style="{StaticResource PrimaryAction}" />
-                        <Button
-                            Grid.Column="2"
-                            VerticalAlignment="Bottom"
-                            Command="{Binding ClearAiChatHistoryCommand}"
-                            Content="{x:Bind ViewModel.Ui.AiCopilotClearButtonContent, Mode=OneWay}"
-                            TabIndex="12"
-                            Style="{StaticResource SubtleAction}" />
-                    </Grid>
-                </Grid>
-            </Border>
-            <Border
-                Grid.Row="1"
-                Grid.Column="0"
-                Style="{StaticResource PanelCardBorderStyle}">
-                <Grid RowSpacing="6">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid ColumnSpacing="8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1.6*" />
-                            <ColumnDefinition Width="1.6*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel
-                            Grid.Column="0"
+                            Orientation="Horizontal"
                             Spacing="6">
-                            <TextBlock
-                                Style="{StaticResource SectionTitleTextStyle}"
-                                Text="{x:Bind ViewModel.Ui.InspectorSectionTitleText, Mode=OneWay}" />
-                            <Grid ColumnSpacing="8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock
-                                        Style="{StaticResource MetricLabelTextStyle}"
-                                        Text="{x:Bind ViewModel.Ui.InspectorEdidLabelText, Mode=OneWay}" />
-                                    <TextBlock
-                                        FontFamily="Cascadia Mono"
-                                        Text="{Binding InspectorRecordId}"
-                                        TextWrapping="WrapWholeWords" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1">
-                                    <TextBlock
-                                        Style="{StaticResource MetricLabelTextStyle}"
-                                        Text="{x:Bind ViewModel.Ui.InspectorFieldLabelText, Mode=OneWay}" />
-                                    <TextBlock
-                                        FontFamily="Cascadia Mono"
-                                        Text="{Binding InspectorField}"
-                                        TextWrapping="WrapWholeWords" />
-                                </StackPanel>
-                            </Grid>
-                            <TextBlock
-                                Style="{StaticResource MetricLabelTextStyle}"
-                                Text="{Binding InspectorHint}"
-                                TextWrapping="WrapWholeWords" />
-                            <TextBlock
-                                Style="{StaticResource MetricLabelTextStyle}"
-                                Text="{x:Bind ViewModel.Ui.InspectorProviderMovedHintText, Mode=OneWay}"
-                                TextWrapping="WrapWholeWords" />
+                            <Button
+                                Command="{Binding ApplyInspectorToRowCommand}"
+                                Content="{x:Bind ViewModel.Ui.InspectorApplyButtonContent, Mode=OneWay}"
+                                TabIndex="7"
+                                Style="{StaticResource PrimaryAction}" />
+                            <Button
+                                Command="{Binding CopySourceToTargetCommand}"
+                                Content="{x:Bind ViewModel.Ui.InspectorCopySourceButtonContent, Mode=OneWay}"
+                                TabIndex="8"
+                                Style="{StaticResource SubtleAction}" />
+                            <Button
+                                Command="{Binding MarkSelectedValidatedCommand}"
+                                Content="{x:Bind ViewModel.Ui.InspectorMarkValidatedButtonContent, Mode=OneWay}"
+                                TabIndex="9"
+                                Style="{StaticResource SecondaryAction}" />
                         </StackPanel>
-                        <TextBox
-                            Grid.Column="1"
-                            AcceptsReturn="True"
-                            Header="{x:Bind ViewModel.Ui.InspectorSourceBoxHeader, Mode=OneWay}"
-                            IsReadOnly="True"
-                            MaxHeight="180"
-                            MinHeight="72"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ScrollViewer.VerticalScrollBarVisibility="Auto"
-                            Text="{Binding InspectorSourceText}" />
-                        <TextBox
-                            x:Name="InspectorTranslationTextBox"
-                            Grid.Column="2"
-                            AcceptsReturn="True"
-                            Header="{x:Bind ViewModel.Ui.InspectorTranslationBoxHeader, Mode=OneWay}"
-                            MaxHeight="180"
-                            MinHeight="72"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ScrollViewer.VerticalScrollBarVisibility="Auto"
-                            TabIndex="5"
-                            Text="{Binding InspectorTranslatedText, Mode=TwoWay}" />
+                        <StackPanel
+                            Grid.Row="1"
+                            Orientation="Horizontal"
+                            Spacing="6">
+                            <Button
+                                Command="{Binding ToggleSelectedLockCommand}"
+                                Content="{x:Bind ViewModel.Ui.InspectorToggleLockButtonContent, Mode=OneWay}"
+                                TabIndex="10"
+                                Style="{StaticResource SubtleAction}" />
+                            <Button
+                                Command="{Binding AddScopedDictionaryEntryFromSelectedRowCommand}"
+                                Content="{x:Bind ViewModel.Ui.InspectorAddToDictionaryButtonContent, Mode=OneWay}"
+                                TabIndex="11"
+                                Style="{StaticResource SecondaryAction}" />
+                        </StackPanel>
                     </Grid>
-                    <StackPanel
-                        Grid.Row="1"
-                        Orientation="Horizontal"
-                        Spacing="6">
-                        <Button
-                            Command="{Binding ApplyInspectorToRowCommand}"
-                            Content="{x:Bind ViewModel.Ui.InspectorApplyButtonContent, Mode=OneWay}"
-                            TabIndex="6"
-                            Style="{StaticResource PrimaryAction}" />
-                        <Button
-                            Command="{Binding CopySourceToTargetCommand}"
-                            Content="{x:Bind ViewModel.Ui.InspectorCopySourceButtonContent, Mode=OneWay}"
-                            TabIndex="7"
-                            Style="{StaticResource SubtleAction}" />
-                        <Button
-                            Command="{Binding MarkSelectedValidatedCommand}"
-                            Content="{x:Bind ViewModel.Ui.InspectorMarkValidatedButtonContent, Mode=OneWay}"
-                            TabIndex="8"
-                            Style="{StaticResource SecondaryAction}" />
-                        <Button
-                            Command="{Binding ToggleSelectedLockCommand}"
-                            Content="{x:Bind ViewModel.Ui.InspectorToggleLockButtonContent, Mode=OneWay}"
-                            Style="{StaticResource SubtleAction}" />
-                        <Button
-                            Command="{Binding AddScopedDictionaryEntryFromSelectedRowCommand}"
-                            Content="{x:Bind ViewModel.Ui.InspectorAddToDictionaryButtonContent, Mode=OneWay}"
-                            Style="{StaticResource SecondaryAction}" />
-                    </StackPanel>
                 </Grid>
             </Border>
         </Grid>
@@ -996,6 +1189,7 @@
         <Border
             Grid.Row="3"
             Style="{StaticResource FluentSurfaceBorderStyle}"
+            Background="{StaticResource MainSurfaceBrush}"
             Padding="12,8">
             <Grid ColumnSpacing="10">
                 <Grid.ColumnDefinitions>

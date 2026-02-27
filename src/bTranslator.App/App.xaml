@@ -36,6 +36,102 @@
             <SolidColorBrush
                 x:Key="VsCodeAccentHoverBrush"
                 Color="#1177BB" />
+            <SolidColorBrush
+                x:Key="VsCodeAccentPressedBrush"
+                Color="#0C4F7D" />
+            <SolidColorBrush
+                x:Key="VsCodeSurfaceHoverBrush"
+                Color="#343438" />
+            <SolidColorBrush
+                x:Key="VsCodeSurfacePressedBrush"
+                Color="#2A2B2E" />
+            <SolidColorBrush
+                x:Key="VsCodeFocusBrush"
+                Color="#0E639C" />
+
+            <SolidColorBrush
+                x:Key="ButtonBackground"
+                Color="#2D2D30" />
+            <SolidColorBrush
+                x:Key="ButtonBackgroundPointerOver"
+                Color="#343438" />
+            <SolidColorBrush
+                x:Key="ButtonBackgroundPressed"
+                Color="#2A2B2E" />
+            <SolidColorBrush
+                x:Key="ButtonBorderBrush"
+                Color="#3C3C3C" />
+            <SolidColorBrush
+                x:Key="ButtonBorderBrushPointerOver"
+                Color="#4A4F56" />
+            <SolidColorBrush
+                x:Key="ButtonBorderBrushPressed"
+                Color="#0E639C" />
+            <SolidColorBrush
+                x:Key="ButtonForeground"
+                Color="#CCCCCC" />
+            <SolidColorBrush
+                x:Key="ButtonForegroundPointerOver"
+                Color="#F3F3F3" />
+            <SolidColorBrush
+                x:Key="ButtonForegroundPressed"
+                Color="#FFFFFF" />
+
+            <SolidColorBrush
+                x:Key="AccentButtonBackground"
+                Color="#0E639C" />
+            <SolidColorBrush
+                x:Key="AccentButtonBackgroundPointerOver"
+                Color="#1177BB" />
+            <SolidColorBrush
+                x:Key="AccentButtonBackgroundPressed"
+                Color="#0C4F7D" />
+            <SolidColorBrush
+                x:Key="AccentButtonBorderBrush"
+                Color="#0E639C" />
+            <SolidColorBrush
+                x:Key="AccentButtonBorderBrushPointerOver"
+                Color="#1177BB" />
+            <SolidColorBrush
+                x:Key="AccentButtonBorderBrushPressed"
+                Color="#0C4F7D" />
+            <SolidColorBrush
+                x:Key="AccentButtonForeground"
+                Color="#FFFFFF" />
+            <SolidColorBrush
+                x:Key="AccentButtonForegroundPointerOver"
+                Color="#FFFFFF" />
+            <SolidColorBrush
+                x:Key="AccentButtonForegroundPressed"
+                Color="#FFFFFF" />
+
+            <SolidColorBrush
+                x:Key="SubtleButtonBackground"
+                Color="#2D2D30" />
+            <SolidColorBrush
+                x:Key="SubtleButtonBackgroundPointerOver"
+                Color="#343438" />
+            <SolidColorBrush
+                x:Key="SubtleButtonBackgroundPressed"
+                Color="#2A2B2E" />
+            <SolidColorBrush
+                x:Key="SubtleButtonBorderBrush"
+                Color="#3C3C3C" />
+            <SolidColorBrush
+                x:Key="SubtleButtonBorderBrushPointerOver"
+                Color="#4A4F56" />
+            <SolidColorBrush
+                x:Key="SubtleButtonBorderBrushPressed"
+                Color="#3C3C3C" />
+            <SolidColorBrush
+                x:Key="SubtleButtonForeground"
+                Color="#CCCCCC" />
+            <SolidColorBrush
+                x:Key="SubtleButtonForegroundPointerOver"
+                Color="#F3F3F3" />
+            <SolidColorBrush
+                x:Key="SubtleButtonForegroundPressed"
+                Color="#FFFFFF" />
 
             <Style x:Key="PanelCardBorderStyle" TargetType="Border">
                 <Setter Property="Background" Value="Transparent" />
@@ -45,21 +141,29 @@
                 <Setter Property="Padding" Value="8" />
             </Style>
 
-            <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Style
+                x:Key="ActionButtonStyle"
+                BasedOn="{StaticResource DefaultButtonStyle}"
+                TargetType="Button">
                 <Setter Property="CornerRadius" Value="0" />
                 <Setter Property="FontFamily" Value="Segoe UI Variable Text" />
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="Padding" Value="12,6" />
                 <Setter Property="MinHeight" Value="30" />
                 <Setter Property="MinWidth" Value="72" />
+                <Setter Property="BorderThickness" Value="1" />
             </Style>
 
             <Style
                 x:Key="PrimaryAction"
-                BasedOn="{StaticResource ActionButtonStyle}"
+                BasedOn="{StaticResource AccentButtonStyle}"
                 TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource VsCodeAccentBrush}" />
-                <Setter Property="Foreground" Value="White" />
+                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable Text" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Padding" Value="12,6" />
+                <Setter Property="MinHeight" Value="30" />
+                <Setter Property="MinWidth" Value="72" />
                 <Setter Property="FontWeight" Value="SemiBold" />
             </Style>
 
@@ -68,15 +172,21 @@
                 BasedOn="{StaticResource ActionButtonStyle}"
                 TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource VsCodeSurfaceAltBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource VsCodeBorderBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource VsCodeTextBrush}" />
             </Style>
 
             <Style
                 x:Key="SubtleAction"
-                BasedOn="{StaticResource ActionButtonStyle}"
+                BasedOn="{StaticResource SubtleButtonStyle}"
                 TargetType="Button">
-                <Setter Property="Background" Value="{StaticResource VsCodeSurfaceAltBrush}" />
-                <Setter Property="Foreground" Value="{StaticResource VsCodeTextBrush}" />
+                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="FontFamily" Value="Segoe UI Variable Text" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Padding" Value="12,6" />
+                <Setter Property="MinHeight" Value="30" />
+                <Setter Property="MinWidth" Value="72" />
+                <Setter Property="BorderThickness" Value="1" />
             </Style>
 
             <Style x:Key="MetricLabelTextStyle" TargetType="TextBlock">
